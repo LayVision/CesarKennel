@@ -5,25 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตั้งค่าเว็บไซต์ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="admin-style.css">
-    <style>
-        #cover-image-preview-container {
-            margin-top: 10px;
-        }
-        #cover-image-preview {
-            max-width: 300px;
-            max-height: 200px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            object-fit: cover;
-        }
-    </style>
 </head>
 <body>
+    <!-- Main admin layout -->
     <div class="admin-layout">
-        <!-- Sidebar -->
+        <!-- Sidebar for admin navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo"><span class="logo-text-placeholder">Admin</span><span>.</span></div>
+                <div class="sidebar-logo">Admin<span>.</span></div>
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
@@ -40,181 +29,84 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main content area for settings -->
         <main class="admin-main">
+            <!-- Header for mobile view -->
             <header class="mobile-header">
-                <div class="mobile-logo"><span class="logo-text-placeholder">Admin</span><span>.</span></div>
+                <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
             
+            <!-- Header for desktop view -->
             <header class="desktop-header">
                 <h1>ตั้งค่าเว็บไซต์</h1>
             </header>
 
-            <form id="settings-form" class="admin-card">
+            <!-- Form containing all website settings, within a card -->
+            <form action="#" class="admin-card">
+                <!-- 1. Homepage Customization -->
                 <h2>ปรับแต่งหน้าแรก</h2>
                 <div class="form-grid">
                     <div class="input-group full-width">
-                        <label for="cover-image-upload">รูปภาพหน้าปก (Cover Image)</label>
+                        <label for="cover-image-upload">รูปภาพหน้าปก</label>
                         <input type="file" id="cover-image-upload" name="cover-image" accept="image/*">
-                        <div id="cover-image-preview-container"></div>
                     </div>
                     <div class="input-group full-width">
                         <label for="marquee-text">ข้อความวิ่ง</label>
-                        <input type="text" id="marquee-text" name="marquee-text">
+                        <input type="text" id="marquee-text" name="marquee-text" value="✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨">
                     </div>
                 </div>
 
+                <!-- 2. Shop Information -->
                 <h2 class="form-section-header">ข้อมูลร้านค้า</h2>
                 <div class="form-grid">
-                   <div class="input-group"><label for="shopName">ชื่อร้าน</label><input type="text" id="shopName" name="shopName"></div>
-                   <div class="input-group"><label for="logoText">ข้อความโลโก้ (สำหรับหน้าร้าน)</label><input type="text" id="logoText" name="logoText"></div>
-                   <div class="input-group"><label for="contactEmail">อีเมลติดต่อ</label><input type="email" id="contactEmail" name="contactEmail"></div>
-                   <div class="input-group"><label for="copyrightYear">ปีลิขสิทธิ์</label><input type="text" id="copyrightYear" name="copyrightYear"></div>
+                   <div class="input-group"><label for="shop-name">ชื่อร้าน</label><input type="text" id="shop-name" name="shop-name" value="ปอมปอม บูทีค"></div>
+                   <div class="input-group"><label for="logo-text">ข้อความโลโก้</label><input type="text" id="logo-text" name="logo-text" value="PomPom"></div>
+                   <div class="input-group"><label for="contact-email">อีเมลติดต่อ</label><input type="email" id="contact-email" name="contact-email" value="contact@pompomboutique.com"></div>
+                   <div class="input-group"><label for="copyright-year">ปีลิขสิทธิ์</label><input type="text" id="copyright-year" name="copyright-year" value="2568"></div>
                    <div class="input-group full-width">
-                       <label for="shop-description">คำอธิบายร้านค้า (สำหรับ Header หน้าร้าน)</label>
-                       <textarea id="shop-description" name="shop-description" rows="3"></textarea>
+                       <label for="shop-description">คำอธิบายร้านค้า (สำหรับ Header)</label>
+                       <textarea id="shop-description" name="shop-description" rows="3">น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</textarea>
                    </div>
                 </div>
 
+                <!-- 3. Footer & Social Settings -->
                 <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บและโซเชียลมีเดีย</h2>
                 <div class="form-grid">
                    <div class="input-group full-width">
-                       <label for="footerDescription">คำอธิบายสั้นๆ ท้ายเว็บ</label>
-                       <input type="text" id="footerDescription" name="footerDescription">
+                       <label for="footer-description">คำอธิบายสั้นๆ ท้ายเว็บ</label>
+                       <input type="text" id="footer-description" name="footer-description" value="ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ">
                    </div>
                    <div class="input-group">
-                       <label for="footerPhone">เบอร์โทรศัพท์</label>
-                       <input type="text" id="footerPhone" name="footerPhone">
+                       <label for="footer-phone">เบอร์โทรศัพท์</label>
+                       <input type="text" id="footer-phone" name="footer-phone" value="081-234-5678">
                    </div>
                    <div class="input-group">
-                       <label for="footerFacebook">Facebook URL</label>
-                       <input type="url" id="footerFacebook" name="footerFacebook" placeholder="https://facebook.com/yourpage">
+                       <label for="footer-facebook">Facebook URL</label>
+                       <input type="url" id="footer-facebook" name="footer-facebook" placeholder="https://facebook.com/yourpage">
                    </div>
                     <div class="input-group">
-                       <label for="footerInstagram">Instagram URL</label>
-                       <input type="url" id="footerInstagram" name="footerInstagram" placeholder="https://instagram.com/yourprofile">
+                       <label for="footer-instagram">Instagram URL</label>
+                       <input type="url" id="footer-instagram" name="footer-instagram" placeholder="https://instagram.com/yourprofile">
                    </div>
                     <div class="input-group">
-                       <label for="footerLine">LINE URL หรือ ID</label>
-                       <input type="text" id="footerLine" name="footerLine" placeholder="https://line.me/ti/p/~@yourid">
+                       <label for="footer-line">LINE URL หรือ ID</label>
+                       <input type="text" id="footer-line" name="footer-line" placeholder="https://line.me/ti/p/~@yourid">
                    </div>
+                   <div class="input-group">
+                        <label for="footer-messenger">Facebook Messenger URL</label>
+                        <input type="url" id="footer-messenger" name="footer-messenger" placeholder="https://m.me/yourpage">
+                    </div>
                 </div>
 
+                <!-- Form submission button -->
                 <div class="form-actions full-width">
-                   <button type="submit" id="save-button" class="button button-primary">บันทึกการตั้งค่าทั้งหมด</button>
+                   <button type="submit" class="button button-primary">บันทึกการตั้งค่าทั้งหมด</button>
                </div>
             </form>
         </main>
     </div>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
-    
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
-          authDomain: "cesarkennel.firebaseapp.com",
-          projectId: "cesarkennel",
-          storageBucket: "cesarkennel.firebasestorage.app",
-          messagingSenderId: "512752480416",
-          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                loadSettings();
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
-    
-        const db = firebase.firestore();
-        const settingsForm = document.getElementById('settings-form');
-        const saveButton = document.getElementById('save-button');
-        const previewContainer = document.getElementById('cover-image-preview-container');
-        
-        const settingsRef = db.collection('settings').doc('main_config');
-        let currentCoverImageUrl = '';
-
-        async function loadSettings() {
-            try {
-                const docSnap = await settingsRef.get();
-                if (docSnap.exists) {
-                    const settings = docSnap.data();
-                    
-                    document.getElementById('marquee-text').value = settings.marqueeText || '';
-                    document.getElementById('shopName').value = settings.shopName || '';
-                    document.getElementById('logoText').value = settings.logoText || '';
-                    document.getElementById('contactEmail').value = settings.contactEmail || '';
-                    document.getElementById('copyrightYear').value = settings.copyrightYear || new Date().getFullYear();
-                    document.getElementById('shop-description').value = settings.shopDescription || '';
-                    document.getElementById('footerDescription').value = settings.footerDescription || '';
-                    document.getElementById('footerPhone').value = settings.footerPhone || '';
-                    document.getElementById('footerFacebook').value = settings.footerFacebook || '';
-                    document.getElementById('footerInstagram').value = settings.footerInstagram || '';
-                    document.getElementById('footerLine').value = settings.footerLine || '';
-
-                    if (settings.coverImageUrl) {
-                        currentCoverImageUrl = settings.coverImageUrl;
-                        previewContainer.innerHTML = `<img id="cover-image-preview" src="${currentCoverImageUrl}" alt="Cover Image Preview">`;
-                    }
-                } else {
-                    console.log("No settings document found. A new one will be created on save.");
-                }
-            } catch (error) {
-                console.error("Error loading settings:", error);
-                alert('เกิดข้อผิดพลาดในการโหลดการตั้งค่า');
-            }
-        }
-
-        settingsForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            saveButton.disabled = true;
-            saveButton.textContent = 'กำลังบันทึก...';
-
-            try {
-                const imageFile = document.getElementById('cover-image-upload').files[0];
-                let newImageUrl = null;
-                if (imageFile) {
-                    newImageUrl = await uploadImageToImgBB(imageFile);
-                }
-
-                const settingsData = {
-                    marqueeText: document.getElementById('marquee-text').value,
-                    shopName: document.getElementById('shopName').value,
-                    logoText: document.getElementById('logoText').value,
-                    contactEmail: document.getElementById('contactEmail').value,
-                    copyrightYear: document.getElementById('copyrightYear').value,
-                    shopDescription: document.getElementById('shop-description').value,
-                    footerDescription: document.getElementById('footerDescription').value,
-                    footerPhone: document.getElementById('footerPhone').value,
-                    footerFacebook: document.getElementById('footerFacebook').value,
-                    footerInstagram: document.getElementById('footerInstagram').value,
-                    footerLine: document.getElementById('footerLine').value,
-                    coverImageUrl: newImageUrl || currentCoverImageUrl,
-                };
-
-                await settingsRef.set(settingsData, { merge: true });
-
-                alert('บันทึกการตั้งค่าสำเร็จ!');
-                if (newImageUrl) {
-                    previewContainer.innerHTML = `<img id="cover-image-preview" src="${newImageUrl}" alt="Cover Image Preview">`;
-                    currentCoverImageUrl = newImageUrl;
-                }
-
-            } catch (error) {
-                console.error("Error saving settings:", error);
-                alert(`เกิดข้อผิดพลาดในการบันทึก: ${error.message}`);
-            } finally {
-                saveButton.disabled = false;
-                saveButton.textContent = 'บันทึกการตั้งค่าทั้งหมด';
-            }
-        });
-    </script>
 </body>
 </html>

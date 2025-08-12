@@ -1,268 +1,163 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <!-- Main layout grid for the entire shop interface -->
     <div class="shop-layout">
-        <!-- Sidebar -->
+        <!-- Sidebar for navigation and filtering -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo"><span class="logo-text-placeholder">PomPom</span><span>.</span></div>
+                <!-- Shop Logo -->
+                <div class="sidebar-logo">PomPom<span>.</span></div>
+                
+                <!-- Main Navigation Menu -->
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
-                        <li><a href="index.html" id="nav-all">น้องหมาทั้งหมด</a></li>
-                        <li><a href="?gender=ผู้" id="nav-male">เพศผู้</a></li>
-                        <li><a href="?gender=เมีย" id="nav-female">เพศเมีย</a></li>
+                        <li><a href="index.html" class="active">น้องหมาทั้งหมด</a></li>
+                        <li><a href="#">เพศผู้</a></li>
+                        <li><a href="#">เพศเมีย</a></li>
                         <li><a href="#">เกี่ยวกับเรา</a></li>
                     </ul>
                 </nav>
+                
+                <!-- Filtering options for products -->
                 <div class="sidebar-filters">
                     <h3>ตัวกรอง</h3>
+                    <!-- Filter by color -->
                     <div class="filter-group">
                         <label for="filter-color">สี</label>
-                        <select id="filter-color" name="color"></select>
+                        <select id="filter-color" name="color">
+                            <option>ทั้งหมด</option>
+                            <option>ขาว</option>
+                            <option>น้ำตาล</option>
+                            <option>ดำ</option>
+                        </select>
                     </div>
+                    <!-- Filter by age -->
                     <div class="filter-group">
                         <label for="filter-age">อายุ</label>
-                        <select id="filter-age" name="age"></select>
+                        <select id="filter-age" name="age">
+                            <option>ทั้งหมด</option>
+                            <option>2 เดือน</option>
+                            <option>3 เดือน</option>
+                            <option>4 เดือนขึ้นไป</option>
+                        </select>
                     </div>
                 </div>
             </div>
+            <!-- Sidebar footer with copyright and admin login link -->
             <div class="sidebar-footer">
-                <a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a>
-                <p class="copyright-text"></p>
+                &copy; 2568 ปอมปอม บูทีค
+                <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
         
-        <!-- Main Content -->
+        <!-- Main content area for displaying products -->
         <main class="main-content">
+            <!-- Header for mobile view, includes logo and menu toggle -->
             <header class="mobile-header">
-                <div class="mobile-logo"><span class="logo-text-placeholder">PomPom</span><span>.</span></div>
+                <div class="mobile-logo">PomPom<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
+            <!-- Hero section with a large cover image and marquee text -->
             <section class="hero-section">
                 <div class="hero-image-container">
-                    <img id="hero-image" src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
+                    <img src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
                 </div>
                 <div class="marquee-container">
-                    <p class="marquee-text" id="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
+                    <p class="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
 
+            <!-- Header for desktop view -->
             <header class="desktop-header">
                 <h1>เพื่อนคู่ใจแสนน่ารัก</h1>
-                <p id="shop-description">น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
+                <p>น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
             </header>
 
+            <!-- Grid container for all product cards -->
             <div class="product-grid" id="product-grid">
-                <p>กำลังโหลดข้อมูลน้องหมา...</p>
+                <!-- Product Card 1: Links to product detail page -->
+                <a href="product-detail.html" class="product-card">
+                    <div class="card-image-container"><span class="card-status available">พร้อมย้ายบ้าน</span><img src="https://images.pexels.com/photos/1619690/pexels-photo-1619690.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องปุยฝ้าย"></div>
+                    <div class="card-content"><h3>น้องปุยฝ้าย</h3><div class="card-details"><span>เพศเมีย</span><span>2 เดือน</span></div><div class="card-price">22,000 บาท</div></div>
+                </a>
+                <!-- Product Card 2: Sold item, not clickable -->
+                <a href="#" class="product-card sold-item">
+                    <div class="card-image-container"><span class="card-status sold">ขายแล้ว</span><img src="https://images.pexels.com/photos/59523/pexels-photo-59523.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องคอปเตอร์"></div>
+                    <div class="card-content"><h3>น้องคอปเตอร์</h3><div class="card-details"><span>เพศผู้</span><span>3 เดือน</span></div><div class="card-price">25,000 บาท</div></div>
+                </a>
+                <!-- Product Card 3: Pre-ordered item with a discount -->
+                <a href="product-detail.html" class="product-card">
+                    <div class="card-image-container"><span class="card-status preordered">ติดจอง</span><img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องโมจิ"></div>
+                    <div class="card-content">
+                        <h3>น้องโมจิ</h3>
+                        <div class="card-details"><span>เพศเมีย</span><span>2 เดือน</span></div>
+                        <div class="card-price">
+                            <span class="original-price">28,000</span>
+                            <span class="discounted-price">25,500 บาท</span>
+                        </div>
+                    </div>
+                </a>
+                <!-- Additional product cards... -->
+                 <a href="#" class="product-card">
+                    <div class="card-image-container"><span class="card-status available">พร้อมย้ายบ้าน</span><img src="https://images.pexels.com/photos/2023384/pexels-photo-2023384.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องโอเลี้ยง"></div>
+                    <div class="card-content"><h3>น้องโอเลี้ยง</h3><div class="card-details"><span>เพศผู้</span><span>2 เดือน</span></div><div class="card-price">24,000 บาท</div></div>
+                </a>
+                 <a href="#" class="product-card">
+                    <div class="card-image-container"><span class="card-status available">พร้อมย้ายบ้าน</span><img src="https://images.pexels.com/photos/2607544/pexels-photo-2607544.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องชีสเค้ก"></div>
+                    <div class="card-content"><h3>น้องชีสเค้ก</h3><div class="card-details"><span>เพศเมีย</span><span>3 เดือน</span></div><div class="card-price">29,000 บาท</div></div>
+                </a>
+                 <a href="#" class="product-card">
+                    <div class="card-image-container"><span class="card-status available">พร้อมย้ายบ้าน</span><img src="https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องชาเย็น"></div>
+                    <div class="card-content"><h3>น้องชาเย็น</h3><div class="card-details"><span>เพศผู้</span><span>2 เดือน</span></div><div class="card-price">23,000 บาท</div></div>
+                </a>
+                 <a href="#" class="product-card">
+                    <div class="card-image-container"><span class="card-status available">พร้อมย้ายบ้าน</span><img src="https://images.pexels.com/photos/3361739/pexels-photo-3361739.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องสำลี"></div>
+                    <div class="card-content"><h3>น้องสำลี</h3><div class="card-details"><span>เพศเมีย</span><span>4 เดือน</span></div><div class="card-price">21,000 บาท</div></div>
+                </a>
+                 <a href="#" class="product-card sold-item">
+                    <div class="card-image-container"><span class="card-status sold">ขายแล้ว</span><img src="https://images.pexels.com/photos/1254140/pexels-photo-1254140.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องหมูหยอง"></div>
+                    <div class="card-content"><h3>น้องหมูหยอง</h3><div class="card-details"><span>เพศผู้</span><span>3 เดือน</span></div><div class="card-price">26,000 บาท</div></div>
+                </a>
+                 <a href="#" class="product-card">
+                    <div class="card-image-container"><span class="card-status available">พร้อมย้ายบ้าน</span><img src="https://images.pexels.com/photos/4588052/pexels-photo-4588052.jpeg?auto=compress&cs=tinysrgb&w=400" alt="น้องลาเต้"></div>
+                    <div class="card-content"><h3>น้องลาเต้</h3><div class="card-details"><span>เพศผู้</span><span>2 เดือน</span></div><div class="card-price">27,000 บาท</div></div>
+                </a>
             </div>
 
+            <!-- Container for pagination buttons, populated by script.js -->
             <div class="pagination-container" id="pagination"></div>
         </main>
-    </div>
+    </div> <!-- End of .shop-layout -->
 
+    <!-- Main site footer, separate from the grid layout -->
     <footer class="site-footer">
         <div class="footer-content">
-            <h3 class="footer-logo" id="footer-shop-name">ปอมปอม บูทีค</h3>
-            <p class="footer-description" id="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
-            <div class="footer-contact" id="footer-contact-details"></div>
+            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
+            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+            <div class="footer-contact">
+                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
+            </div>
+            <!-- Social media links -->
             <div class="social-links">
-                <a href="#" aria-label="Facebook" id="social-fb" class="hidden">FB</a>
-                <a href="#" aria-label="Instagram" id="social-ig" class="hidden">IG</a>
-                <a href="#" aria-label="Line" id="social-line" class="hidden">LINE</a>
+                <a href="#" aria-label="Facebook">FB</a>
+                <a href="#" aria-label="Instagram">IG</a>
+                <a href="#" aria-label="Line">LINE</a>
             </div>
         </div>
     </footer>
 
-    <!-- SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
-
-    <script>
-        // Define Firebase Config
-        const firebaseConfig = {
-          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
-          authDomain: "cesarkennel.firebaseapp.com",
-          projectId: "cesarkennel",
-          storageBucket: "cesarkennel.firebasestorage.app",
-          messagingSenderId: "512752480416",
-          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-
-        // --- DYNAMIC AUTH LINK ---
-        firebase.auth().onAuthStateChanged(function(user) {
-            const authLink = document.getElementById('auth-link');
-            if (user) {
-                authLink.textContent = 'แผงควบคุม';
-                authLink.href = 'admin.html';
-            } else {
-                authLink.textContent = 'เข้าสู่ระบบผู้ดูแล';
-                authLink.href = 'login.html';
-            }
-        });
-
-        // --- PAGE LOGIC ---
-        const db = firebase.firestore();
-        const productGrid = document.getElementById('product-grid');
-        const colorFilter = document.getElementById('filter-color');
-        const ageFilter = document.getElementById('filter-age');
-
-        function createDogCard(dogData, docId) {
-            const card = document.createElement('a');
-            card.href = `product-detail.html?id=${docId}`;
-            card.className = `product-card ${dogData.status === 'sold' ? 'sold-item' : ''}`;
-
-            let statusText = 'พร้อมย้ายบ้าน';
-            if (dogData.status === 'preordered') statusText = 'ติดจอง';
-            if (dogData.status === 'sold') statusText = 'ขายแล้ว';
-            
-            const priceHtml = dogData.discountPrice && dogData.discountPrice > 0
-                ? `<span class="original-price">${dogData.price.toLocaleString()}</span> <span class="discounted-price">${dogData.discountPrice.toLocaleString()} บาท</span>`
-                : `<div class="card-price">${dogData.price.toLocaleString()} บาท</div>`;
-
-            card.innerHTML = `
-                <div class="card-image-container">
-                    <span class="card-status ${dogData.status}">${statusText}</span>
-                    <img src="${dogData.imageUrls && dogData.imageUrls.length > 0 ? dogData.imageUrls[0] : 'https://via.placeholder.com/400'}" alt="${dogData.name}">
-                </div>
-                <div class="card-content">
-                    <h3>${dogData.name}</h3>
-                    <div class="card-details">
-                        <span>${dogData.gender}</span>
-                        <span>${dogData.age}</span>
-                    </div>
-                    <div class="card-price">${priceHtml}</div>
-                </div>
-            `;
-            return card;
-        }
-
-        async function fetchAndDisplayDogs(params) {
-            productGrid.innerHTML = '<p>กำลังโหลดข้อมูลน้องหมา...</p>';
-            let query = db.collection("dogs");
-
-            const gender = params.get('gender');
-            if (gender) query = query.where('gender', '==', gender);
-
-            const color = params.get('color');
-            if (color) query = query.where('color', '==', color);
-            
-            const age = params.get('age');
-            if (age) query = query.where('age', '==', age);
-
-            query = query.orderBy("order", "asc");
-
-            try {
-                const dogsSnapshot = await query.get();
-                productGrid.innerHTML = ''; 
-
-                if (dogsSnapshot.empty) {
-                    productGrid.innerHTML = '<p>ไม่พบข้อมูลน้องหมาตามเงื่อนไขที่เลือกค่ะ</p>';
-                } else {
-                    dogsSnapshot.forEach(doc => {
-                        const dogCard = createDogCard(doc.data(), doc.id);
-                        productGrid.appendChild(dogCard);
-                    });
-                }
-                
-                await populateFilterOptions(params);
-                updateActiveNav();
-
-            } catch (error) {
-                console.error("Error fetching dogs: ", error);
-                productGrid.innerHTML = "<p>เกิดข้อผิดพลาดในการโหลดข้อมูล โปรดลองอีกครั้ง</p>";
-            }
-        }
-        
-        async function populateFilterOptions(params) {
-            const selectedColor = params.get('color');
-            const selectedAge = params.get('age');
-            
-            const allDogsSnapshot = await db.collection("dogs").where("status", "!=", "sold").get();
-            const uniqueColors = new Set();
-            const uniqueAges = new Set();
-            allDogsSnapshot.forEach(doc => {
-                const data = doc.data();
-                if(data.color) uniqueColors.add(data.color);
-                if(data.age) uniqueAges.add(data.age);
-            });
-            
-            colorFilter.innerHTML = '<option value="">ทั้งหมด</option>';
-            uniqueColors.forEach(c => {
-                const option = document.createElement('option');
-                option.value = c;
-                option.textContent = c;
-                if (c === selectedColor) option.selected = true;
-                colorFilter.appendChild(option);
-            });
-
-            ageFilter.innerHTML = '<option value="">ทั้งหมด</option>';
-            uniqueAges.forEach(a => {
-                const option = document.createElement('option');
-                option.value = a;
-                option.textContent = a;
-                if (a === selectedAge) option.selected = true;
-                ageFilter.appendChild(option);
-            });
-        }
-
-        function setupFilterEventListeners() {
-            const handleFilterChange = () => {
-                const params = new URLSearchParams(window.location.search);
-                
-                if (colorFilter.value) {
-                    params.set('color', colorFilter.value);
-                } else {
-                    params.delete('color');
-                }
-
-                if (ageFilter.value) {
-                    params.set('age', ageFilter.value);
-                } else {
-                    params.delete('age');
-                }
-                
-                // Preserve gender filter if it exists
-                const genderParam = new URLSearchParams(window.location.search).get('gender');
-                if(genderParam) {
-                    params.set('gender', genderParam);
-                }
-
-                window.location.search = params.toString();
-            };
-
-            colorFilter.addEventListener('change', handleFilterChange);
-            ageFilter.addEventListener('change', handleFilterChange);
-        }
-        
-        function updateActiveNav() {
-            document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
-            const genderParam = new URLSearchParams(window.location.search).get('gender');
-            
-            if (!genderParam) {
-                document.getElementById('nav-all')?.classList.add('active');
-            } else if (genderParam === 'ผู้') {
-                document.getElementById('nav-male')?.classList.add('active');
-            } else if (genderParam === 'เมีย') {
-                document.getElementById('nav-female')?.classList.add('active');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            fetchAndDisplayDogs(urlParams);
-            setupFilterEventListeners();
-        });
-    </script>
 </body>
 </html>

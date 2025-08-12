@@ -7,11 +7,14 @@
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
+    <!-- Main layout grid for the admin panel -->
     <div class="admin-layout">
-        <!-- Sidebar -->
+        <!-- Admin Sidebar for navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo"><span class="logo-text-placeholder">Admin</span><span>.</span></div>
+                <!-- Admin Panel Logo -->
+                <div class="sidebar-logo">Admin<span>.</span></div>
+                <!-- Main Admin Navigation -->
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
@@ -20,6 +23,7 @@
                     </ul>
                 </nav>
             </div>
+             <!-- Secondary navigation for viewing the live site and logging out -->
              <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.html" target="_blank">ดูหน้าร้าน</a></li>
@@ -28,163 +32,99 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main content area for the admin panel -->
         <main class="admin-main">
+            <!-- Header for mobile view -->
             <header class="mobile-header">
-                <div class="mobile-logo"><span class="logo-text-placeholder">Admin</span><span>.</span></div>
+                <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
             
+            <!-- Header for desktop view -->
             <header class="desktop-header">
                 <h1>จัดการน้องหมา</h1>
                 <a href="add-item.html" class="button button-primary">เพิ่มน้องหมาตัวใหม่</a>
             </header>
 
+            <!-- Card containing the product list -->
             <div class="admin-card">
-                 <h2>รายการทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
+                 <h2>รายการทั้งหมด</h2>
+                 <!-- Table to display all products (dogs) -->
                  <table class="product-table">
                      <thead>
-                         <tr><th class="drag-header"></th><th>ข้อมูลน้องหมา</th><th>สถานะ</th><th>ราคา</th><th>การกระทำ</th></tr>
+                         <tr>
+                            <th class="drag-header"></th><!-- Header for drag handle column -->
+                            <th>ข้อมูลน้องหมา</th>
+                            <th>สถานะ</th>
+                            <th>ราคา</th>
+                            <th>การกระทำ</th>
+                        </tr>
                      </thead>
+                     <!-- Table body where product rows are listed. ID allows for drag-and-drop functionality -->
                      <tbody id="product-table-body">
-                         <tr><td colspan="5" style="text-align: center;">กำลังโหลดข้อมูล...</td></tr>
+                         <!-- Example Row 1 -->
+                         <tr>
+                             <td><span class="drag-handle">☰</span></td> <!-- Drag handle for sorting -->
+                             <td data-label="ข้อมูล">
+                                 <div class="product-info-cell">
+                                     <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Dog">
+                                     <div><div class="name">น้องโมจิ</div><div class="details">ปอมเมอเรเนียน (เมีย, ขาว)</div></div>
+                                 </div>
+                             </td>
+                             <td data-label="สถานะ"><span class="status-badge preordered">ติดจอง</span></td>
+                             <td data-label="ราคา">28,000 บาท</td>
+                             <td data-label="การกระทำ">
+                                 <div class="action-buttons">
+                                     <a href="add-item.html" class="button edit-btn">แก้ไข</a>
+                                     <button class="button delete-btn">ลบ</button>
+                                 </div>
+                             </td>
+                         </tr>
+                         <!-- Example Row 2 -->
+                         <tr>
+                             <td><span class="drag-handle">☰</span></td>
+                             <td data-label="ข้อมูล">
+                                <div class="product-info-cell">
+                                    <img src="https://images.pexels.com/photos/2023384/pexels-photo-2023384.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Dog">
+                                    <div><div class="name">น้องบราวนี่</div><div class="details">ปอมเมอเรเนียน (ผู้, น้ำตาล)</div></div>
+                                </div>
+                            </td>
+                             <td data-label="สถานะ"><span class="status-badge sold">ขายแล้ว</span></td>
+                             <td data-label="ราคา">26,000 บาท</td>
+                             <td data-label="การกระทำ">
+                                 <div class="action-buttons">
+                                     <a href="add-item.html" class="button edit-btn">แก้ไข</a>
+                                     <button class="button delete-btn">ลบ</button>
+                                 </div>
+                             </td>
+                         </tr>
+                         <!-- Example Row 3 -->
+                         <tr>
+                            <td><span class="drag-handle">☰</span></td>
+                            <td data-label="ข้อมูล">
+                                <div class="product-info-cell">
+                                    <img src="https://images.pexels.com/photos/1619690/pexels-photo-1619690.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Dog">
+                                    <div><div class="name">น้องปุยฝ้าย</div><div class="details">ปอมเมอเรเนียน (เมีย, ขาว)</div></div>
+                                </div>
+                            </td>
+                            <td data-label="สถานะ"><span class="status-badge available">พร้อมขาย</span></td>
+                            <td data-label="ราคา">22,000 บาท</td>
+                            <td data-label="การกระทำ">
+                                <div class="action-buttons">
+                                    <a href="add-item.html" class="button edit-btn">แก้ไข</a>
+                                    <button class="button delete-btn">ลบ</button>
+                                </div>
+                            </td>
+                        </tr>
                      </tbody>
                  </table>
             </div>
         </main>
     </div>
 
-    <!-- REQUIRED SDKs -->
+    <!-- JavaScript library for drag-and-drop table sorting -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
-
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
-          authDomain: "cesarkennel.firebaseapp.com",
-          projectId: "cesarkennel",
-          storageBucket: "cesarkennel.firebasestorage.app",
-          messagingSenderId: "512752480416",
-          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                fetchAndDisplayDogs();
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
-
-        const db = firebase.firestore();
-        const tableBody = document.getElementById('product-table-body');
-
-        function createTableRow(dogData, docId) {
-            const row = document.createElement('tr');
-            row.setAttribute('data-id', docId);
-
-            let statusText = 'พร้อมขาย';
-            let statusClass = dogData.status;
-            if (dogData.status === 'available') statusText = 'พร้อมย้ายบ้าน';
-            if (dogData.status === 'preordered') statusText = 'ติดจอง';
-            if (dogData.status === 'sold') statusText = 'ขายแล้ว';
-            
-            const priceText = dogData.discountPrice > 0 
-                ? `<span style="text-decoration: line-through; color: #999;">${dogData.price.toLocaleString()}</span> ${dogData.discountPrice.toLocaleString()} บาท`
-                : `${dogData.price.toLocaleString()} บาท`;
-
-            row.innerHTML = `
-                <td><span class="drag-handle">☰</span></td>
-                <td data-label="ข้อมูล">
-                    <div class="product-info-cell">
-                        <img src="${dogData.imageUrls && dogData.imageUrls.length > 0 ? dogData.imageUrls[0] : 'https://via.placeholder.com/100'}" alt="${dogData.name}">
-                        <div>
-                            <div class="name">${dogData.name}</div>
-                            <div class="details">${dogData.breed} (${dogData.gender}, ${dogData.color})</div>
-                        </div>
-                    </div>
-                </td>
-                <td data-label="สถานะ"><span class="status-badge ${statusClass}">${statusText}</span></td>
-                <td data-label="ราคา">${priceText}</td>
-                <td data-label="การกระทำ">
-                    <div class="action-buttons">
-                        <a href="add-item.html?id=${docId}" class="button edit-btn">แก้ไข</a>
-                        <button class="button delete-btn" data-id="${docId}" data-name="${dogData.name}">ลบ</button>
-                    </div>
-                </td>
-            `;
-            return row;
-        }
-
-        async function fetchAndDisplayDogs() {
-            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">กำลังโหลด...</td></tr>';
-            const dogsSnapshot = await db.collection("dogs").orderBy("order", "asc").get();
-            tableBody.innerHTML = '';
-            
-            if (dogsSnapshot.empty) {
-                tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>';
-                return;
-            }
-            
-            dogsSnapshot.forEach(doc => {
-                const row = createTableRow(doc.data(), doc.id);
-                tableBody.appendChild(row);
-            });
-            
-            setupActionListeners();
-            initializeSortable();
-        }
-
-        function setupActionListeners() {
-            tableBody.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', async (e) => {
-                    const docId = e.target.dataset.id;
-                    const dogName = e.target.dataset.name;
-                    if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${dogName}"? การกระทำนี้ไม่สามารถย้อนกลับได้`)) {
-                        try {
-                            await db.collection("dogs").doc(docId).delete();
-                            alert('ลบข้อมูลสำเร็จ!');
-                            fetchAndDisplayDogs();
-                        } catch (error) {
-                            console.error("Error deleting document: ", error);
-                            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                        }
-                    }
-                });
-            });
-        }
-        
-        function initializeSortable() {
-            new Sortable(tableBody, {
-                handle: '.drag-handle',
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                onEnd: async function (evt) {
-                    const rows = tableBody.querySelectorAll('tr');
-                    const batch = db.batch();
-                    
-                    rows.forEach((row, index) => {
-                        const docId = row.dataset.id;
-                        if (docId) {
-                            const docRef = db.collection("dogs").doc(docId);
-                            batch.update(docRef, { order: index });
-                        }
-                    });
-                    
-                    try {
-                        await batch.commit();
-                        // No alert needed for a smooth UX
-                    } catch (error) {
-                        console.error('Error updating order:', error);
-                        alert('เกิดข้อผิดพลาดในการบันทึกลำดับ');
-                    }
-                }
-            });
-        }
-    </script>
 </body>
 </html>

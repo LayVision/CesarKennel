@@ -1,159 +1,100 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ข้อมูลน้องหมา - ปอมปอม บูทีค</title>
+    <title>น้องโมจิ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <!-- Main layout grid, consistent with index.html -->
     <div class="shop-layout">
-        <!-- Sidebar -->
+        <!-- Sidebar for navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo"><span class="logo-text-placeholder">PomPom</span><span>.</span></div>
+                <div class="sidebar-logo">PomPom<span>.</span></div>
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
                         <li><a href="index.html">น้องหมาทั้งหมด</a></li>
-                        <li><a href="index.html?gender=ผู้">เพศผู้</a></li>
-                        <li><a href="index.html?gender=เมีย">เพศเมีย</a></li>
+                        <li><a href="#">เพศผู้</a></li>
+                        <li><a href="#">เพศเมีย</a></li>
                         <li><a href="#">เกี่ยวกับเรา</a></li>
                     </ul>
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a>
-                <p class="copyright-text"></p>
+                &copy; 2568 ปอมปอม บูทีค
+                <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
-
-        <!-- Main Content -->
+        
+        <!-- Main content area -->
         <main class="main-content">
+            <!-- Header for mobile view -->
             <header class="mobile-header">
-                <div class="mobile-logo"><span class="logo-text-placeholder">PomPom</span><span>.</span></div>
+                <div class="mobile-logo">PomPom<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <div id="detail-container" class="product-detail-grid">
-                <p>กำลังโหลดข้อมูล...</p>
+            <!-- Grid layout for product details, splitting gallery and info -->
+            <div class="product-detail-grid">
+                <!-- Image gallery section -->
+                <div class="detail-gallery">
+                    <!-- Main, large image that changes on thumbnail click -->
+                    <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=800" alt="รูปหลัก" id="mainImage" class="main-image">
+                    <!-- Container for clickable thumbnail images -->
+                    <div class="detail-thumbnails">
+                        <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 1" class="active">
+                        <img src="https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 2">
+                        <img src="https://images.pexels.com/photos/3361739/pexels-photo-3361739.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 3">
+                        <img src="https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 4">
+                    </div>
+                </div>
+                <!-- Information section for the product -->
+                <div class="detail-info">
+                    <h1>น้องโมจิ</h1>
+                    <!-- Price display, including original and discounted price -->
+                    <div class="price">
+                        <span class="original-price">28,000</span>
+                        <span class="discounted-price">25,500 บาท</span>
+                    </div>
+                    <p class="description">ปอมเมอเรเนียนหน้าหมี สีขาวล้วน ขนแน่นเหมือนปุยเมฆ นิสัยร่าเริง ติดคน ขี้อ้อนสุดๆ ทานเก่ง สุขภาพแข็งแรง วัคซีนครบแล้ว</p>
+                    
+                    <!-- Unordered list of dog's specific details -->
+                    <ul class="details-list">
+                        <li><strong>สายพันธุ์:</strong><span>ปอมเมอเรเนียน</span></li>
+                        <li><strong>อายุ:</strong><span>2 เดือน</span></li>
+                        <li><strong>เพศ:</strong><span>เมีย</span></li>
+                        <li><strong>ตัวสี:</strong><span>ขาว</span></li>
+                        <li><strong>ตาสี:</strong><span>ดำ</span></li>
+                        <li><strong>วัคซีน:</strong><span>เข็มที่ 2</span></li>
+                    </ul>
+
+                    <!-- Call-to-action button -->
+                    <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
+                </div>
             </div>
         </main>
-    </div>
+    </div> <!-- End of .shop-layout -->
 
+    <!-- Main site footer -->
     <footer class="site-footer">
         <div class="footer-content">
-            <h3 class="footer-logo" id="footer-shop-name"></h3>
-            <p class="footer-description" id="footer-description"></p>
-            <div class="footer-contact" id="footer-contact-details"></div>
+            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
+            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+            <div class="footer-contact">
+                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
+            </div>
             <div class="social-links">
-                <a href="#" aria-label="Facebook" id="social-fb" class="hidden">FB</a>
-                <a href="#" aria-label="Instagram" id="social-ig" class="hidden">IG</a>
-                <a href="#" aria-label="Line" id="social-line" class="hidden">LINE</a>
+                <a href="#" aria-label="Facebook">FB</a>
+                <a href="#" aria-label="Instagram">IG</a>
+                <a href="#" aria-label="Line">LINE</a>
             </div>
         </div>
     </footer>
 
-    <!-- Firebase and Page Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
-
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
-          authDomain: "cesarkennel.firebaseapp.com",
-          projectId: "cesarkennel",
-          storageBucket: "cesarkennel.firebasestorage.app",
-          messagingSenderId: "512752480416",
-          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        const detailContainer = document.getElementById('detail-container');
-
-        function displayDogDetails(dog) {
-            document.title = `${dog.name} - ปอมปอม บูทีค`;
-            
-            const priceHtml = dog.discountPrice && dog.discountPrice > 0
-                ? `<span class="original-price">${dog.price.toLocaleString()}</span> <span class="discounted-price">${dog.discountPrice.toLocaleString()} บาท</span>`
-                : `<span class="discounted-price">${dog.price.toLocaleString()} บาท</span>`;
-
-            const thumbnailsHtml = dog.imageUrls.map((url, index) =>
-                `<img src="${url}" alt="รูปย่อ ${index + 1}" class="${index === 0 ? 'active' : ''}">`
-            ).join('');
-
-            detailContainer.innerHTML = `
-                <div class="detail-gallery">
-                    <img src="${dog.imageUrls[0]}" alt="รูปหลัก" id="mainImage" class="main-image">
-                    <div class="detail-thumbnails" id="detail-thumbnails">
-                        ${thumbnailsHtml}
-                    </div>
-                </div>
-                <div class="detail-info">
-                    <h1>${dog.name}</h1>
-                    <div class="price">${priceHtml}</div>
-                    <p class="description">${dog.description || ''}</p>
-                    
-                    <ul class="details-list">
-                        <li><strong>สายพันธุ์:</strong><span>${dog.breed}</span></li>
-                        <li><strong>อายุ:</strong><span>${dog.age}</span></li>
-                        <li><strong>เพศ:</strong><span>${dog.gender}</span></li>
-                        <li><strong>ตัวสี:</strong><span>${dog.color}</span></li>
-                        <li><strong>ตาสี:</strong><span>${dog.eyeColor || '-'}</span></li>
-                        <li><strong>วัคซีน:</strong><span>${dog.vaccine || '-'}</span></li>
-                    </ul>
-
-                    <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
-                </div>
-            `;
-            
-            setupGalleryListeners();
-        }
-
-        function setupGalleryListeners() {
-            const mainImage = document.getElementById('mainImage');
-            const thumbnails = document.querySelectorAll('#detail-thumbnails img');
-            if (mainImage && thumbnails.length) {
-                thumbnails.forEach(thumb => {
-                    thumb.addEventListener('click', function() {
-                        mainImage.src = this.src;
-                        thumbnails.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                    });
-                });
-            }
-        }
-
-        async function fetchDogById() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const dogId = urlParams.get('id');
-
-            if (!dogId) {
-                detailContainer.innerHTML = "<p>ไม่พบข้อมูลน้องหมา กรุณาระบุ ID ที่ถูกต้อง</p>";
-                return;
-            }
-
-            try {
-                const docRef = db.collection('dogs').doc(dogId);
-                const docSnap = await docRef.get();
-
-                if (docSnap.exists) {
-                    displayDogDetails(docSnap.data());
-                } else {
-                    detailContainer.innerHTML = `<p>ไม่พบข้อมูลน้องหมาสำหรับ ID: ${dogId}</p>`;
-                }
-            } catch (error) {
-                console.error("Error fetching dog details:", error);
-                detailContainer.innerHTML = "<p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>";
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', fetchDogById);
-    </script>
 </body>
 </html>

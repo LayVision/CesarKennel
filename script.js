@@ -1,169 +1,156 @@
-// --- FUNCTION TO APPLY GLOBAL SETTINGS FROM FIRESTORE ---
-async function applyGlobalSettings() {
-    if (typeof firebase === 'undefined' || typeof firebase.firestore === 'undefined') {
-        console.warn("Firebase not ready for applyGlobalSettings.");
-        return;
-    }
-    const db = firebase.firestore();
-    const settingsRef = db.collection('settings').doc('main_config');
-
-    try {
-        const docSnap = await settingsRef.get();
-        if (!docSnap.exists) {
-            console.log("Settings document not found. Using default values.");
-            return;
-        }
-        const settings = docSnap.data();
-
-        // 1. Logo Text
-        const isUserOnAdminPage = window.location.pathname.includes('admin') || window.location.pathname.includes('settings') || window.location.pathname.includes('add-item');
-        const defaultLogo = isUserOnAdminPage ? 'Admin' : 'PomPom';
-        const logoText = settings.logoText || defaultLogo;
-        document.querySelectorAll('.logo-text-placeholder').forEach(el => {
-            el.textContent = logoText;
-        });
-        
-        // 2. Copyright Text
-        const copyrightElements = document.querySelectorAll('.copyright-text');
-        if (copyrightElements.length > 0) {
-            const year = settings.copyrightYear || new Date().getFullYear();
-            const name = settings.shopName || 'ปอมปอม บูทีค';
-            copyrightElements.forEach(el => {
-                el.innerHTML = `&copy; ${year} ${name}`;
-            });
-        }
-        
-        // 3. Public Page Headers & Footers
-        const shopDesc = document.getElementById('shop-description');
-        if (shopDesc && settings.shopDescription) shopDesc.textContent = settings.shopDescription;
-
-        const footerShopName = document.getElementById('footer-shop-name');
-        if (footerShopName && settings.shopName) footerShopName.textContent = settings.shopName;
-
-        const footerDesc = document.getElementById('footer-description');
-        if (footerDesc && settings.footerDescription) footerDesc.textContent = settings.footerDescription;
-
-        const footerContact = document.getElementById('footer-contact-details');
-        if (footerContact) {
-            let contactHTML = '';
-            if (settings.footerPhone) contactHTML += `<span>โทร: ${settings.footerPhone}</span>`;
-            if (settings.footerPhone && settings.contactEmail) contactHTML += ' | ';
-            if (settings.contactEmail) contactHTML += `<span>อีเมล: ${settings.contactEmail}</span>`;
-            footerContact.innerHTML = contactHTML;
-        }
-
-        // 4. Social Media Links
-        const socialLinks = {
-            'social-fb': settings.footerFacebook,
-            'social-ig': settings.footerInstagram,
-            'social-line': settings.footerLine
-        };
-        for(const [id, url] of Object.entries(socialLinks)) {
-            const linkEl = document.getElementById(id);
-            if(linkEl) {
-                if(url) {
-                    linkEl.href = url;
-                    linkEl.classList.remove('hidden');
-                } else {
-                    linkEl.classList.add('hidden');
-                }
-            }
-        }
-
-        // 5. Homepage Specifics
-        const heroImage = document.getElementById('hero-image');
-        if (heroImage && settings.coverImageUrl) {
-            heroImage.src = settings.coverImageUrl;
-        }
-
-        const marqueeText = document.getElementById('marquee-text');
-        if (marqueeText && settings.marqueeText) {
-            marqueeText.textContent = settings.marqueeText;
-        }
-
-    } catch (error) {
-        console.error("Error applying global settings:", error);
-    }
-}
-
-// --- SHARED UTILITY FUNCTIONS ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu Toggle
+    // --- Mobile Menu Toggle for BOTH frontend and admin ---
+    // This script handles the slide-in sidebar for mobile views.
     const menuButton = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
 
     if (menuButton && sidebar) {
+        // Toggles the 'open' class on the sidebar when the menu button is clicked.
         menuButton.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevents the click from closing the menu immediately.
             sidebar.classList.toggle('open');
         });
+        // Adds an event listener to the whole document to close the menu when clicking outside of it.
         document.addEventListener('click', (e) => {
-            if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuButton.contains(e.target)) {
+            if (sidebar.classList.contains('open') && !sidebar.contains(e.target)) {
                 sidebar.classList.remove('open');
             }
         });
     }
 
-    // Admin Logout Button
+    // --- Product Detail Gallery ---
+    // Manages the image gallery on the product-detail.html page.
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.querySelectorAll('.detail-thumbnails img');
+    if (mainImage && thumbnails.length) {
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                // Gets a higher resolution version of the thumbnail source for the main image.
+                const highResSrc = this.src.replace('&w=400', '&w=800');
+                mainImage.src = highResSrc;
+                // Updates the 'active' class to highlight the selected thumbnail.
+                thumbnails.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    }
+
+    // --- Admin Login/Logout Links ---
+    // Manages the authentication link text and behavior based on login state.
+    const authLink = document.getElementById('auth-link');
     const logoutButton = document.getElementById('logout-button');
+    // Checks localStorage to see if the user is logged in.
+    const isAdmin = localStorage.getItem('isAdminLoggedIn') === 'true';
+
+    // On the public site, changes the login link to a dashboard link if logged in.
+    if (authLink) {
+        if(isAdmin) {
+            authLink.textContent = 'แผงควบคุม';
+            authLink.href = 'admin.html';
+        } else {
+            authLink.textContent = 'เข้าสู่ระบบผู้ดูแล';
+            authLink.href = 'login.html';
+        }
+    }
+    
+    // In the admin panel, handles the logout functionality.
     if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
             e.preventDefault();
-            if (typeof firebase !== 'undefined') {
-                firebase.auth().signOut().then(() => {
-                    alert('คุณออกจากระบบแล้ว');
-                    window.location.href = 'index.html';
-                }).catch((error) => {
-                    console.error("Logout Error:", error);
-                    alert('เกิดข้อผิดพลาดในการออกจากระบบ');
-                });
-            }
+            // Removes the login flag from localStorage and redirects to the homepage.
+            localStorage.removeItem('isAdminLoggedIn');
+            alert('คุณออกจากระบบแล้ว');
+            window.location.href = 'index.html';
         });
     }
 
-    // Apply global settings on all pages
-    if (typeof firebase !== 'undefined') {
-        firebase.auth().onAuthStateChanged(() => {
-             applyGlobalSettings();
+    // --- URL-BASED PAGINATION LOGIC ---
+    // Handles pagination on the index.html page.
+    const productGrid = document.getElementById('product-grid');
+    const paginationContainer = document.getElementById('pagination');
+
+    if (productGrid && paginationContainer) {
+        const itemsPerPage = 6;
+        const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
+        const totalPages = Math.ceil(allItems.length / itemsPerPage);
+
+        // Function to display items for a specific page.
+        function displayPage(page) {
+            page = Math.max(1, Math.min(page, totalPages)); // Ensure page is within valid range.
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            // Hide all items, then show only the ones for the current page.
+            allItems.forEach(item => item.style.display = 'none');
+            allItems.slice(startIndex, endIndex).forEach(item => item.style.display = 'block');
+            
+            // Re-generate pagination buttons.
+            paginationContainer.innerHTML = '';
+            if (totalPages <= 1) return; // No pagination if only one page.
+
+            // Create "Previous" button.
+            const prevButton = document.createElement('a');
+            prevButton.classList.add('page-btn');
+            prevButton.textContent = 'ก่อนหน้า';
+            prevButton.href = `?page=${page - 1}`;
+            if (page === 1) { prevButton.classList.add('disabled'); }
+            paginationContainer.appendChild(prevButton);
+
+            // Create page number buttons.
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('a');
+                pageButton.classList.add('page-btn');
+                pageButton.textContent = i;
+                pageButton.href = (i === 1) ? window.location.pathname.split('?')[0] : `?page=${i}`; // Clean URL for page 1.
+                if (i === page) { pageButton.classList.add('active'); }
+                paginationContainer.appendChild(pageButton);
+            }
+
+            // Create "Next" button.
+            const nextButton = document.createElement('a');
+            nextButton.classList.add('page-btn');
+            nextButton.textContent = 'ถัดไป';
+            nextButton.href = `?page=${page + 1}`;
+             if (page === totalPages) { nextButton.classList.add('disabled'); }
+            paginationContainer.appendChild(nextButton);
+        }
+
+        // Handles clicks on pagination buttons.
+        function handleNavigation(e) {
+            const target = e.target.closest('.page-btn');
+            if (!target || target.classList.contains('active') || target.classList.contains('disabled')) {
+                e.preventDefault(); return;
+            }
+            e.preventDefault(); // Prevent default link behavior.
+            const url = new URL(target.href);
+            const page = parseInt(url.searchParams.get('page')) || 1;
+            // Update the browser URL without a full page reload.
+            history.pushState({page: page}, '', target.href);
+            displayPage(page);
+        }
+
+        paginationContainer.addEventListener('click', handleNavigation);
+        
+        // Handles browser back/forward navigation.
+        window.addEventListener('popstate', (e) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const page = parseInt(urlParams.get('page')) || 1;
+            displayPage(page);
+        });
+
+        // Get the initial page from the URL on first load.
+        const initialUrlParams = new URLSearchParams(window.location.search);
+        const initialPage = parseInt(initialUrlParams.get('page')) || 1;
+        displayPage(initialPage);
+    }
+
+    // --- DRAG & DROP SORTING FOR ADMIN TABLE ---
+    // Uses the SortableJS library to enable row sorting.
+    const tableBody = document.getElementById('product-table-body');
+    if (tableBody) {
+        new Sortable(tableBody, {
+            handle: '.drag-handle', // Specifies which element triggers the drag.
+            animation: 150, // Animation speed in ms.
+            ghostClass: 'sortable-ghost', // CSS class for the placeholder element.
         });
     }
 });
-
-// --- ImgBB IMAGE UPLOAD HELPER FUNCTIONS ---
-async function uploadImageToImgBB(imageFile) {
-    const apiKey = '2c1b183962c1d06f8aecea08cbc78d11'; // ImgBB API Key
-    const formData = new FormData();
-    formData.append('image', imageFile);
-
-    try {
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-            method: 'POST',
-            body: formData,
-        });
-        const data = await response.json();
-        if (data.success) {
-            // Return the URL for the medium-sized, web-friendly version
-            return data.data.medium?.url || data.data.url;
-        } else {
-            throw new Error(`ImgBB upload failed: ${data.error?.message || 'Unknown error'}`);
-        }
-    } catch (error) {
-        console.error('Error uploading to ImgBB:', error);
-        throw error;
-    }
-}
-
-async function uploadMultipleImages(imageFiles) {
-    const uploadPromises = Array.from(imageFiles).map(file => uploadImageToImgBB(file));
-    // Use Promise.allSettled to continue even if one upload fails
-    const results = await Promise.allSettled(uploadPromises);
-    const successfulUrls = results
-        .filter(result => result.status === 'fulfilled')
-        .map(result => result.value);
-    
-    if (results.some(r => r.status === 'rejected')) {
-        console.warn("Some images failed to upload.");
-    }
-
-    return successfulUrls;
-}```

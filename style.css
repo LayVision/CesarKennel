@@ -2,23 +2,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
 
 /* ======== 1. ROOT & UNIVERSAL STYLES ======== */
+/* Defines global CSS variables for colors, fonts, and shadows for theme consistency. */
 :root {
-    --bg-canvas: #F8F9FA;
-    --bg-main: #FFFFFF;
-    --border-color: #E9ECEF;
-    --text-primary: #212529;
-    --text-secondary: #6C757D;
-    --accent-primary: #4C6EF5;
-    --accent-green: #28A745;
-    --accent-yellow: #FFC107;
-    --accent-gray: #ADB5BD;
-    --font-main: 'Kanit', sans-serif;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-    --radius-md: 12px;
-    --radius-lg: 16px;
+    --bg-canvas: #F8F9FA; /* Page background color */
+    --bg-main: #FFFFFF; /* Content background color (cards, sidebars) */
+    --border-color: #E9ECEF; /* Border color for elements */
+    --text-primary: #212529; /* Main text color */
+    --text-secondary: #6C757D; /* Lighter text color for details */
+    --accent-primary: #4C6EF5; /* Primary brand color (blue) */
+    --accent-green: #28A745; /* Color for "available" status */
+    --accent-yellow: #FFC107; /* Color for "preordered" status */
+    --accent-gray: #ADB5BD; /* Color for "sold" status */
+    --font-main: 'Kanit', sans-serif; /* Main font for the site */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04); /* Small box shadow */
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08); /* Medium box shadow */
+    --radius-md: 12px; /* Medium border radius */
+    --radius-lg: 16px; /* Large border radius */
 }
 
+/* Basic body styles and link reset */
 body {
     margin: 0;
     font-family: var(--font-main);
@@ -28,6 +30,7 @@ body {
 a { text-decoration: none; color: inherit; }
 
 /* ======== 2. MAIN SHOP LAYOUT ======== */
+/* Defines the main two-column grid for the shop (sidebar + main content) */
 .shop-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -35,11 +38,12 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 3. SIDEBAR STYLING ======== */
+/* Styles for the sidebar container */
 .sidebar {
     background-color: var(--bg-main);
     border-right: 1px solid var(--border-color);
     padding: 32px;
-    position: sticky;
+    position: sticky; /* Keeps sidebar visible on scroll */
     top: 0;
     height: 100vh;
     box-sizing: border-box;
@@ -47,6 +51,7 @@ a { text-decoration: none; color: inherit; }
     flex-direction: column;
     justify-content: space-between;
 }
+/* Sidebar logo style */
 .sidebar-logo {
     font-size: 1.8em;
     font-weight: 700;
@@ -54,6 +59,8 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 40px;
 }
 .sidebar-logo span { color: var(--accent-primary); }
+
+/* Section headings within the sidebar */
 .sidebar-nav h3, .sidebar-filters h3 {
     font-size: 0.8em;
     font-weight: 600;
@@ -67,38 +74,33 @@ a { text-decoration: none; color: inherit; }
     padding: 0;
     margin: 0 0 40px 0;
 }
+/* Navigation links in the sidebar */
 .sidebar-nav a {
     display: block; padding: 12px; border-radius: 8px;
     font-weight: 500; transition: background-color 0.2s; font-size: 1.05em;
 }
 .sidebar-nav a:hover { background-color: var(--bg-canvas); }
 .sidebar-nav a.active { background-color: var(--accent-primary); color: white; }
+
+/* Filter group styles */
 .filter-group { margin-bottom: 24px; }
 .filter-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; }
 .filter-group select, .filter-group input {
     width: 100%; padding: 10px; border: 1px solid var(--border-color);
     border-radius: 8px; background-color: var(--bg-canvas); font-family: var(--font-main);
-    font-size: 1em;
 }
-.sidebar-footer {
-    font-size: 0.9em;
-    color: var(--text-secondary);
-}
-.sidebar-footer a {
-    color: var(--accent-primary);
-    font-weight: 600;
-    display: block; /* Make it easier to click */
-    margin-bottom: 8px;
-}
-.sidebar-footer p { margin: 0; }
+.sidebar-footer a { color: var(--accent-primary); font-weight: 600; }
 
 /* ======== 4. MAIN CONTENT AREA ======== */
+/* Styles for the main content container */
 .main-content {
     padding: 40px;
     overflow-y: auto;
 }
+/* Desktop header styles */
 .desktop-header {
     margin-bottom: 40px;
+    margin-top: 40px;
 }
 .desktop-header h1 {
     font-size: 2.5em; font-weight: 700; margin: 0;
@@ -108,12 +110,14 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 5. HERO SECTION & MARQUEE ======== */
-.hero-section { width: 100%; margin-bottom: 40px; }
+.hero-section { width: 100%; }
 .hero-image-container {
     width: 100%; height: 400px; border-radius: var(--radius-lg);
     overflow: hidden; background-color: var(--border-color);
 }
 .hero-image-container img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Scrolling text banner styles */
 .marquee-container {
     width: 100%; background-color: var(--text-primary); color: white;
     padding: 12px 0; overflow: hidden; white-space: nowrap;
@@ -129,19 +133,25 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 6. PRODUCT GRID & CARDS ======== */
+/* Grid layout for product cards */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 32px;
 }
+/* Individual product card styling */
 .product-card {
     background: var(--bg-main); border: 1px solid var(--border-color);
     border-radius: var(--radius-lg); overflow: hidden;
     box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s;
 }
 .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+/* Card image container and image styles */
 .card-image-container { position: relative; }
 .card-image-container img { width: 100%; height: 250px; object-fit: cover; display: block; }
+
+/* Status badge on the product card (e.g., "Available", "Sold") */
 .card-status {
     position: absolute; top: 16px; left: 16px; padding: 6px 12px;
     font-size: 0.8em; font-weight: 600; border-radius: 20px;
@@ -150,7 +160,11 @@ a { text-decoration: none; color: inherit; }
 .card-status.available { background-color: var(--accent-green); }
 .card-status.preordered { background-color: var(--accent-yellow); color: var(--text-primary); }
 .card-status.sold { background-color: var(--accent-gray); }
+
+/* Makes the image grayscale for sold items */
 .product-card.sold-item .card-image-container img { filter: grayscale(1); }
+
+/* Content section of the card */
 .card-content { padding: 20px; }
 .card-content h3 { font-size: 1.4em; font-weight: 700; margin: 0 0 8px 0; }
 .card-details {
@@ -163,8 +177,8 @@ a { text-decoration: none; color: inherit; }
     color: var(--accent-primary);
     display: flex;
     align-items: baseline;
-    flex-wrap: wrap; /* Allow wrapping for long prices */
 }
+/* Price styles for discounts */
 .original-price {
     font-size: 0.75em;
     text-decoration: line-through;
@@ -178,6 +192,7 @@ a { text-decoration: none; color: inherit; }
 
 
 /* ======== 7. PRODUCT DETAIL PAGE STYLES ======== */
+/* Grid for the product detail page layout */
 .product-detail-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -187,14 +202,13 @@ a { text-decoration: none; color: inherit; }
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
 }
+/* Main image in the gallery */
 .detail-gallery .main-image {
     width: 100%;
     border-radius: var(--radius-md);
     margin-bottom: 16px;
-    height: auto;
-    max-height: 600px;
-    object-fit: cover;
 }
+/* Thumbnail images in the gallery */
 .detail-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .detail-thumbnails img {
     width: 100%;
@@ -206,6 +220,8 @@ a { text-decoration: none; color: inherit; }
     transition: border-color 0.2s;
 }
 .detail-thumbnails img.active, .detail-thumbnails img:hover { border-color: var(--accent-primary); }
+
+/* Product information section */
 .detail-info h1 { font-size: 3em; font-weight: 700; margin: 0; }
 .detail-info .price {
     font-size: 2em;
@@ -216,7 +232,7 @@ a { text-decoration: none; color: inherit; }
     align-items: baseline;
 }
 .detail-info .price .original-price {
-    font-size: 0.7em;
+    font-size: 0.7em; /* Make it a bit smaller here */
 }
 .detail-info .description { line-height: 1.8; color: var(--text-secondary); margin-bottom: 32px; font-size: 1.1em;}
 .details-list { list-style: none; padding: 0; margin: 32px 0; }
@@ -228,30 +244,37 @@ a { text-decoration: none; color: inherit; }
     font-size: 1.1em;
 }
 .details-list li:first-child { border-top: 1px solid var(--border-color); }
-.details-list li strong { font-weight: 600; color: var(--text-primary); margin-right: 16px;}
-.details-list li span { color: var(--text-secondary); text-align: right; }
+.details-list li strong { font-weight: 600; }
+
+/* Call-to-action button */
 .add-to-cart-button {
     display: block; width: 100%; padding: 18px; background-color: var(--accent-primary);
     color: white; text-align: center; font-size: 1.2em; font-weight: 600;
-    border: none; border-radius: 12px; transition: background-color 0.2s; cursor: pointer;
+    border: none; border-radius: 12px; transition: background-color 0.2s;
 }
 .add-to-cart-button:hover { background-color: #3B5BDB; }
 
 
 /* ======== 8. RESPONSIVE DESIGN ======== */
-.mobile-header, .mobile-menu-button { display: none; }
+.mobile-header, .mobile-menu-button { display: none; } /* Hidden on desktop */
+
+/* Styles for tablets and smaller screens */
 @media (max-width: 1024px) {
-    .shop-layout { grid-template-columns: 1fr; min-height: auto; }
+    .shop-layout { grid-template-columns: 1fr; min-height: auto; } /* Single column layout */
+    /* Sidebar becomes a slide-in menu */
     .sidebar {
         position: fixed; left: -100%; top: 0; z-index: 200; height: 100%;
         transition: left 0.3s ease-in-out; box-shadow: var(--shadow-md); width: 280px;
     }
-    .sidebar.open { left: 0; }
+    .sidebar.open { left: 0; } /* Class to show the sidebar */
+    
     .main-content { padding: 24px; }
+    
+    /* Mobile header becomes visible */
     .mobile-header {
         display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
     }
-    .desktop-header { margin-top: 0; margin-bottom: 32px; text-align: left; }
+    .desktop-header { margin-top: 32px; margin-bottom: 32px; text-align: center; }
     .desktop-header h1 { font-size: 1.8em; }
     .desktop-header p { font-size: 1em; }
     .mobile-logo { font-size: 1.5em; font-weight: 700; }
@@ -263,16 +286,17 @@ a { text-decoration: none; color: inherit; }
     .hero-section { margin-top: 0; }
     .hero-image-container { height: 250px; }
     
+    /* Product detail grid stacks vertically on mobile */
     .product-detail-grid { 
         grid-template-columns: 1fr; 
         padding: 24px;
-        gap: 24px;
     }
     .detail-info h1 { font-size: 2.2em; }
     .detail-info .price { font-size: 1.8em; }
 }
 
 /* ======== 9. PAGINATION ======== */
+/* Container for pagination links */
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -281,6 +305,7 @@ a { text-decoration: none; color: inherit; }
     gap: 8px;
     margin-top: 48px;
 }
+/* Individual pagination button styling */
 .page-btn {
     display: inline-block;
     border: 1px solid var(--border-color);
@@ -314,8 +339,9 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 10. SITE FOOTER ======== */
+/* Main footer styling */
 .site-footer {
-    grid-column: 1 / -1;
+    grid-column: 1 / -1; /* Spans full width of the layout */
     background-color: var(--text-primary);
     color: #E9ECEF;
     padding: 40px 24px;
@@ -331,14 +357,14 @@ a { text-decoration: none; color: inherit; }
     font-size: 0.9em;
     max-width: 450px;
     margin: 0 auto 16px auto;
-    color: #ADB5BD;
+    color: var(--text-secondary);
 }
 .footer-contact {
     font-size: 0.9em;
     margin-bottom: 24px;
-    color: #ADB5BD;
 }
 .footer-contact span { margin: 0 8px; }
+/* Social media links styling */
 .social-links {
     display: flex;
     justify-content: center;
@@ -354,13 +380,8 @@ a { text-decoration: none; color: inherit; }
     border-radius: 50%;
     text-decoration: none;
     font-weight: 600;
-    transition: background-color 0.2s, opacity 0.2s;
+    transition: background-color 0.2s;
 }
 .social-links a:hover {
     background-color: var(--accent-primary);
-}
-.social-links a.hidden {
-    opacity: 0;
-    pointer-events: none;
-    display: none;
 }

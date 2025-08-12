@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
 
 /* ======== 1. ROOT & UNIVERSAL STYLES ======== */
+/* Defines global CSS variables for the admin theme. */
 :root {
     --bg-canvas: #F8F9FA;
     --bg-main: #FFFFFF;
@@ -9,7 +10,7 @@
     --text-primary: #212529;
     --text-secondary: #6C757D;
     --accent-primary: #4C6EF5;
-    --accent-red: #FA5252;
+    --accent-red: #FA5252; /* For delete/logout actions */
     --font-main: 'Kanit', sans-serif;
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
     --radius-md: 12px;
@@ -25,6 +26,7 @@ body {
 a { text-decoration: none; color: inherit; }
 
 /* ======== 2. ADMIN LAYOUT ======== */
+/* Main two-column grid for the admin panel. */
 .admin-layout {
     display: grid;
     grid-template-columns: 260px 1fr;
@@ -32,6 +34,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 3. ADMIN SIDEBAR ======== */
+/* Styles for the admin sidebar container. */
 .sidebar {
     background-color: var(--bg-main);
     border-right: 1px solid var(--border-color);
@@ -52,6 +55,7 @@ a { text-decoration: none; color: inherit; }
 }
 .sidebar-logo span { color: var(--accent-primary); }
 
+/* Navigation menu within the sidebar. */
 .sidebar-nav h3 {
     font-size: 0.8em;
     font-weight: 600;
@@ -79,6 +83,7 @@ a { text-decoration: none; color: inherit; }
 /* ======== 4. ADMIN MAIN CONTENT ======== */
 .admin-main { padding: 40px; }
 
+/* Header for the main content area (desktop). */
 .desktop-header {
     display: flex;
     justify-content: space-between;
@@ -86,6 +91,7 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 40px;
 }
 .desktop-header h1 { font-size: 2.2em; font-weight: 700; margin: 0; }
+/* General button styles. */
 .button {
     padding: 10px 20px;
     border: none;
@@ -95,9 +101,6 @@ a { text-decoration: none; color: inherit; }
     cursor: pointer;
     transition: all 0.2s;
     font-size: 1em;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
 }
 .button-primary { background-color: var(--accent-primary); color: white; }
 .button-primary:hover { background-color: #3B5BDB; }
@@ -105,6 +108,7 @@ a { text-decoration: none; color: inherit; }
 .button-secondary:hover { background-color: var(--bg-canvas); }
 
 /* ======== 5. ADMIN CARDS & FORMS ======== */
+/* Container card for forms and tables. */
 .admin-card {
     background: var(--bg-main);
     border: 1px solid var(--border-color);
@@ -115,20 +119,14 @@ a { text-decoration: none; color: inherit; }
 .admin-card h2 { margin-top: 0; font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;}
 .form-section-header {
     margin-top: 40px;
-    font-size: 1.5em;
-    font-weight: 700;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 16px;
-    margin-bottom: 24px;
 }
+/* Grid layout for form fields. */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 22px;
 }
-.input-group {
-    margin-bottom: 0; /* remove default margin */
-}
+/* Input group styling (label + input). */
 .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9em; }
 .input-group input, .input-group textarea, .input-group select {
     width: 100%;
@@ -147,7 +145,7 @@ a { text-decoration: none; color: inherit; }
     box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.2);
     background-color: var(--bg-main);
 }
-.form-grid .full-width { grid-column: 1 / -1; }
+.form-grid .full-width { grid-column: 1 / -1; } /* Allows an element to span the full grid width. */
 .form-actions { margin-top: 32px; }
 
 
@@ -157,25 +155,27 @@ a { text-decoration: none; color: inherit; }
 .product-table thead { color: var(--text-secondary); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px;}
 .product-table tbody tr:last-child td { border-bottom: none; }
 
+/* Cell containing product image and details. */
 .product-info-cell { display: flex; align-items: center; gap: 16px; }
 .product-info-cell img { width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-md); }
 .product-info-cell .name { font-weight: 600; }
 .product-info-cell .details { font-size: 0.9em; color: var(--text-secondary); }
 
+/* Status badge styling. */
 .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
 .status-badge.available { background-color: #D3F9D8; color: #2B8A3E; }
 .status-badge.preordered { background-color: #FFF3BF; color: #C59300; }
 .status-badge.sold { background-color: #E9ECEF; color: #495057; }
 
-.action-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* Action buttons (Edit, Delete) in the table. */
 .action-buttons a, .action-buttons button {
     font-size: 0.9em; padding: 6px 12px; border-radius: 6px;
-    border: 1px solid transparent;
-    margin-right: 0; /* remove old margin */
+    margin-right: 8px; border: 1px solid transparent;
 }
 .action-buttons .edit-btn { background-color: #E7F5FF; color: #1971C2; }
 .action-buttons .delete-btn { background-color: #FFF5F5; color: var(--accent-red); }
 
+/* Styles for drag-and-drop functionality in the table. */
 .drag-header {
     width: 40px;
     text-align: center;
@@ -189,6 +189,7 @@ a { text-decoration: none; color: inherit; }
     display: inline-block;
     width: 100%;
 }
+/* Style for the placeholder element while dragging. */
 .sortable-ghost {
     background-color: #e7f5ff;
     opacity: 0.8;
@@ -199,6 +200,7 @@ a { text-decoration: none; color: inherit; }
 
 
 /* ======== 7. LOGIN PAGE ======== */
+/* Centered container for the login form. */
 .login-container {
     display: flex;
     justify-content: center;
@@ -207,6 +209,7 @@ a { text-decoration: none; color: inherit; }
     padding: 24px;
     box-sizing: border-box;
 }
+/* Login form card styles. */
 .login-form {
     width: 100%;
     max-width: 420px;
@@ -232,7 +235,6 @@ a { text-decoration: none; color: inherit; }
     margin-top: 8px;
 }
 .login-form .home-link {
-    display: block;
     text-align: center;
     margin-top: 24px;
     font-size: 0.9em;
@@ -243,9 +245,11 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 8. RESPONSIVE ADMIN ======== */
-.mobile-header { display: none; }
+.mobile-header { display: none; } /* Hidden on desktop. */
 @media (max-width: 1024px) {
-    .admin-layout { grid-template-columns: 1fr; }
+    .admin-layout { grid-template-columns: 1fr; } /* Single-column layout. */
+    
+    /* Sidebar becomes a slide-in menu on mobile. */
     .sidebar {
         position: fixed;
         left: -100%;
@@ -256,8 +260,11 @@ a { text-decoration: none; color: inherit; }
         box-shadow: 0 0 40px rgba(0,0,0,0.1);
         width: 280px;
     }
-    .sidebar.open { left: 0; }
-    .desktop-header { display: none; }
+    .sidebar.open { left: 0; } /* Class to show the sidebar. */
+    
+    .desktop-header { display: none; } /* Hide desktop header on mobile. */
+    
+    /* Show mobile header. */
     .mobile-header {
         display: flex;
         justify-content: space-between;
@@ -274,9 +281,12 @@ a { text-decoration: none; color: inherit; }
         cursor: pointer;
         padding: 0;
     }
+    
     .admin-main { padding: 24px; }
+    
+    /* Responsive table: transforms into a list of cards on mobile. */
     .product-table { display: block; }
-    .product-table thead { display: none; }
+    .product-table thead { display: none; } /* Hide table header. */
     .product-table tbody, .product-table tr, .product-table td { display: block; width: 100%; box-sizing: border-box; }
     .product-table tr {
         border: 1px solid var(--border-color);
@@ -293,15 +303,15 @@ a { text-decoration: none; color: inherit; }
         border-bottom: 1px solid var(--border-color);
     }
     .product-table tr td:first-child {
-        display: none; /* Hide drag handle on mobile */
+        display: none; /* Hide drag handle. */
     }
     .product-table tr td:last-child { border-bottom: none; }
+    /* Use data-label attribute to create labels for table cells. */
     .product-table td::before {
         content: attr(data-label);
         font-weight: 600;
-        color: var(--text-primary); /* Changed to primary for better readability */
+        color: var(--text-secondary);
         margin-right: 16px;
     }
     .product-info-cell { flex-direction: row; }
-    .action-buttons { justify-content: flex-end; }
 }
