@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>น้องโมจิ - ปอมปอม บูทีค</title>
+    <!-- Title will be set dynamically -->
+    <title>ข้อมูลน้องหมา - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,50 +31,16 @@
         </aside>
         
         <!-- Main content area -->
-        <main class="main-content">
+        <main class="main-content" id="main-content">
             <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">PomPom<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <!-- Grid layout for product details, splitting gallery and info -->
-            <div class="product-detail-grid">
-                <!-- Image gallery section -->
-                <div class="detail-gallery">
-                    <!-- Main, large image that changes on thumbnail click -->
-                    <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=800" alt="รูปหลัก" id="mainImage" class="main-image">
-                    <!-- Container for clickable thumbnail images -->
-                    <div class="detail-thumbnails">
-                        <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 1" class="active">
-                        <img src="https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 2">
-                        <img src="https://images.pexels.com/photos/3361739/pexels-photo-3361739.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 3">
-                        <img src="https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 4">
-                    </div>
-                </div>
-                <!-- Information section for the product -->
-                <div class="detail-info">
-                    <h1>น้องโมจิ</h1>
-                    <!-- Price display, including original and discounted price -->
-                    <div class="price">
-                        <span class="original-price">28,000</span>
-                        <span class="discounted-price">25,500 บาท</span>
-                    </div>
-                    <p class="description">ปอมเมอเรเนียนหน้าหมี สีขาวล้วน ขนแน่นเหมือนปุยเมฆ นิสัยร่าเริง ติดคน ขี้อ้อนสุดๆ ทานเก่ง สุขภาพแข็งแรง วัคซีนครบแล้ว</p>
-                    
-                    <!-- Unordered list of dog's specific details -->
-                    <ul class="details-list">
-                        <li><strong>สายพันธุ์:</strong><span>ปอมเมอเรเนียน</span></li>
-                        <li><strong>อายุ:</strong><span>2 เดือน</span></li>
-                        <li><strong>เพศ:</strong><span>เมีย</span></li>
-                        <li><strong>ตัวสี:</strong><span>ขาว</span></li>
-                        <li><strong>ตาสี:</strong><span>ดำ</span></li>
-                        <li><strong>วัคซีน:</strong><span>เข็มที่ 2</span></li>
-                    </ul>
-
-                    <!-- Call-to-action button -->
-                    <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
-                </div>
+            <!-- Grid layout for product details, content will be loaded here -->
+            <div class="product-detail-grid" id="product-detail-container">
+                <!-- Loading message or dynamic content appears here -->
             </div>
         </main>
     </div> <!-- End of .shop-layout -->
@@ -94,7 +61,157 @@
         </div>
     </footer>
 
-    <!-- Link to the main JavaScript file -->
+    <!-- Link to the global JavaScript file -->
     <script src="script.js"></script>
+
+    <!-- Main Firebase Logic for this page -->
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // --- Firebase Initialization ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+            authDomain: "cesarkennel.firebaseapp.com",
+            projectId: "cesarkennel",
+            storageBucket: "cesarkennel.firebasestorage.app",
+            messagingSenderId: "512752480416",
+            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+        
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // --- Manage Admin Link in Sidebar ---
+        const authLink = document.getElementById('auth-link');
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                authLink.textContent = 'แผงควบคุม';
+                authLink.href = 'admin.html';
+            } else {
+                authLink.textContent = 'เข้าสู่ระบบผู้ดูแล';
+                authLink.href = 'login.html';
+            }
+        });
+        
+        // --- Main function to fetch and display product details ---
+        const container = document.getElementById('product-detail-container');
+        const fetchProductDetails = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                container.innerHTML = '<h1>ไม่พบรหัสสินค้า</h1><p>ไม่พบข้อมูลน้องหมาที่คุณต้องการ โปรดกลับไปที่<a href="index.html">หน้าร้าน</a></p>';
+                return;
+            }
+
+            container.innerHTML = '<p style="text-align: center;">กำลังโหลดข้อมูล...</p>';
+
+            try {
+                const docRef = doc(db, 'products', productId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const product = docSnap.data();
+                    displayProductDetails(product);
+                } else {
+                    container.innerHTML = '<h1>404 - ไม่พบข้อมูล</h1><p>เราไม่พบน้องหมาที่คุณค้นหา อาจถูกลบไปแล้วหรือคุณมีลิงก์ที่ไม่ถูกต้อง <a href="index.html">กลับสู่หน้าร้าน</a></p>';
+                    document.title = "ไม่พบข้อมูล - ปอมปอม บูทีค";
+                }
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+                container.innerHTML = '<p style="color: red; text-align: center;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+            }
+        };
+
+        // --- Helper function to populate the DOM ---
+        const displayProductDetails = (product) => {
+            // Set Page Title
+            document.title = `${product.name} - ปอมปอม บูทีค`;
+
+            // Price HTML
+            const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
+            let priceHTML = `<span class="discounted-price">${product.price.toLocaleString('th-TH')} บาท</span>`;
+            if (hasDiscount) {
+                priceHTML = `
+                    <span class="original-price">${product.price.toLocaleString('th-TH')}</span>
+                    <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>
+                `;
+            }
+
+            // Image Gallery HTML
+            let thumbnailsHTML = '';
+            if (product.imageUrls && product.imageUrls.length > 0) {
+                product.imageUrls.forEach((url, index) => {
+                    // Add &w=400 to get a smaller version for the thumbnail
+                    const thumbUrl = url.includes('?') ? `${url}&w=400` : `${url}?w=400`;
+                    thumbnailsHTML += `<img src="${thumbUrl}" alt="รูปย่อ ${index + 1}" class="${index === 0 ? 'active' : ''}">`;
+                });
+            }
+            
+            // Main Image URL (use the first image, higher resolution)
+            const mainImageUrl = (product.imageUrls && product.imageUrls.length > 0) ? 
+                                  product.imageUrls[0].replace('&w=400', '&w=800') : 
+                                  'https://via.placeholder.com/800';
+
+
+            // Full component HTML
+            container.innerHTML = `
+                <!-- Image gallery section -->
+                <div class="detail-gallery">
+                    <img src="${mainImageUrl}" alt="รูปหลักของ ${product.name}" id="mainImage" class="main-image">
+                    <div class="detail-thumbnails" id="thumbnail-container">
+                        ${thumbnailsHTML}
+                    </div>
+                </div>
+                <!-- Information section for the product -->
+                <div class="detail-info">
+                    <h1>${product.name}</h1>
+                    <div class="price">${priceHTML}</div>
+                    <p class="description">${product.description || 'ไม่มีคำอธิบายเพิ่มเติม'}</p>
+                    
+                    <ul class="details-list">
+                        <li><strong>สายพันธุ์:</strong><span>${product.breed}</span></li>
+                        <li><strong>อายุ:</strong><span>${product.age}</span></li>
+                        <li><strong>เพศ:</strong><span>${product.gender}</span></li>
+                        <li><strong>ตัวสี:</strong><span>${product.color}</span></li>
+                        <li><strong>ตาสี:</strong><span>${product.eyeColor || '-'}</span></li>
+                        <li><strong>วัคซีน:</strong><span>${product.vaccine || '-'}</span></li>
+                    </ul>
+
+                    <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
+                </div>
+            `;
+
+            // After HTML is rendered, initialize the gallery click listeners
+            initializeGalleryListeners();
+        };
+        
+        // --- Function to make the image gallery interactive ---
+        const initializeGalleryListeners = () => {
+            const mainImage = document.getElementById('mainImage');
+            const thumbnails = document.querySelectorAll('#thumbnail-container img');
+            
+            if (mainImage && thumbnails.length) {
+                thumbnails.forEach(thumb => {
+                    thumb.addEventListener('click', function() {
+                        // Get a higher resolution version of the thumbnail source for the main image
+                        const highResSrc = this.src.replace('&w=400', '&w=800');
+                        mainImage.src = highResSrc;
+                        mainImage.alt = this.alt.replace('รูปย่อ', 'รูปหลักของ');
+                        
+                        // Update the 'active' class to highlight the selected thumbnail
+                        thumbnails.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            }
+        }
+
+        // --- Run everything on page load ---
+        fetchProductDetails();
+    </script>
 </body>
 </html>
