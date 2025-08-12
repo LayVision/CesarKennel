@@ -10,7 +10,7 @@
     <div class="admin-layout">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div>
+             <div>
                 <div class="sidebar-logo">Admin<span>.</span></div>
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
@@ -30,69 +30,189 @@
 
         <!-- Main Content -->
         <main class="admin-main">
-             <header class="mobile-header">
-                <div class="mobile-logo">Admin<span>.</span></div>
-                <button class="mobile-menu-button" id="menu-toggle">☰</button>
-            </header>
-
             <header class="desktop-header">
-                <h1>เพิ่ม / แก้ไขข้อมูลน้องหมา</h1>
+                <h1 id="page-title">เพิ่มข้อมูลน้องหมา</h1>
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
-            <form action="admin.html" class="admin-card">
+            <form id="dog-form" class="admin-card">
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
-                    <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" value="น้องโมจิ" required></div>
-                    <div class="input-group"><label for="breed">สายพันธุ์</label><input type="text" id="breed" name="breed" value="ปอมเมอเรเนียน" required></div>
-                    <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age" value="2 เดือน" required></div>
-                    <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" name="price" value="28000" required></div>
-                    <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
-                    
-                    <div class="input-group">
-                        <label for="gender">เพศ</label>
-                        <select id="gender" name="gender" required><option value="เมีย" selected>เมีย</option><option value="ผู้">ผู้</option></select>
-                    </div>
-                    <div class="input-group">
-                        <label for="color">ตัวสี</label>
-                        <input type="text" id="color" name="color" value="ขาว" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="eye-color">ตาสี</label>
-                        <input type="text" id="eye-color" name="eye-color" value="ดำ">
-                    </div>
-                    <!-- NEW: Vaccine field added -->
-                    <div class="input-group">
-                        <label for="vaccine">วัคซีน</label>
-                        <input type="text" id="vaccine" name="vaccine" value="เข็มที่ 2">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="status">สถานะ</label>
-                        <select id="status" name="status" required>
-                            <option value="available" selected>พร้อมย้ายบ้าน</option>
-                            <option value="preordered">ติดจอง</option>
-                            <option value="sold">ขายแล้ว</option>
-                        </select>
-                    </div>
-                    <div class="input-group full-width">
-                        <label for="description">รายละเอียดเพิ่มเติม</label>
-                        <textarea id="description" name="description" rows="4">ปอมเมอเรเนียนหน้าหมี สีขาวล้วน ขนแน่นเหมือนปุยเมฆ...</textarea>
-                    </div>
+                    <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" required></div>
+                    <div class="input-group"><label for="breed">สายพันธุ์</label><input type="text" id="breed" required></div>
+                    <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" required></div>
+                    <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" required></div>
+                    <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
+                    <div class="input-group"><label for="gender">เพศ</label><select id="gender" required><option value="เมีย">เมีย</option><option value="ผู้">ผู้</option></select></div>
+                    <div class="input-group"><label for="color">ตัวสี</label><input type="text" id="color" required></div>
+                    <div class="input-group"><label for="eye-color">ตาสี</label><input type="text" id="eye-color"></div>
+                    <div class="input-group"><label for="vaccine">วัคซีน</label><input type="text" id="vaccine"></div>
+                    <div class="input-group"><label for="status">สถานะ</label><select id="status" required><option value="available">พร้อมย้ายบ้าน</option><option value="preordered">ติดจอง</option><option value="sold">ขายแล้ว</option></select></div>
+                    <div class="input-group full-width"><label for="description">รายละเอียดเพิ่มเติม</label><textarea id="description" rows="4"></textarea></div>
                 </div>
 
                 <h2 class="form-section-header">รูปภาพ</h2>
+                <div id="existing-images-container" class="full-width"></div>
                  <div class="input-group full-width">
                     <label for="image_upload">อัปโหลดรูปภาพใหม่ (รูปแรกจะเป็นรูปปก)</label>
-                    <input type="file" id="image_upload" name="image_upload[]" multiple>
+                    <input type="file" id="image_upload" multiple accept="image/*">
                 </div>
                 
                 <div class="form-actions">
-                    <button type="submit" class="button button-primary">บันทึกข้อมูล</button>
+                    <button type="submit" class="button button-primary" id="submit-button">บันทึกข้อมูล</button>
                 </div>
             </form>
         </main>
     </div>
+
+    <!-- Firebase and Page Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Check if admin is logged in, redirect if not
+        if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+          authDomain: "cesarkennel.firebaseapp.com",
+          projectId: "cesarkennel",
+          storageBucket: "cesarkennel.firebasestorage.app",
+          messagingSenderId: "512752480416",
+          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const form = document.getElementById('dog-form');
+        const pageTitle = document.getElementById('page-title');
+        const submitButton = document.getElementById('submit-button');
+        const existingImagesContainer = document.getElementById('existing-images-container');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const dogId = urlParams.get('id');
+        const isEditMode = !!dogId;
+        let existingImageUrls = [];
+
+        async function initializeForm() {
+            if (isEditMode) {
+                pageTitle.textContent = 'แก้ไขข้อมูลน้องหมา';
+                submitButton.textContent = 'บันทึกการแก้ไข';
+                try {
+                    const docRef = db.collection('dogs').doc(dogId);
+                    const docSnap = await docRef.get();
+                    if (docSnap.exists) {
+                        const data = docSnap.data();
+                        document.getElementById('name').value = data.name || '';
+                        document.getElementById('breed').value = data.breed || '';
+                        document.getElementById('age').value = data.age || '';
+                        document.getElementById('price').value = data.price || 0;
+                        document.getElementById('discount-price').value = data.discountPrice || '';
+                        document.getElementById('gender').value = data.gender || 'เมีย';
+                        document.getElementById('color').value = data.color || '';
+                        document.getElementById('eye-color').value = data.eyeColor || '';
+                        document.getElementById('vaccine').value = data.vaccine || '';
+                        document.getElementById('status').value = data.status || 'available';
+                        document.getElementById('description').value = data.description || '';
+                        
+                        existingImageUrls = data.imageUrls || [];
+                        displayExistingImages();
+                    }
+                } catch (error) {
+                    console.error("Error fetching dog data:", error);
+                    alert('ไม่สามารถโหลดข้อมูลได้');
+                }
+            }
+        }
+        
+        function displayExistingImages() {
+            if (existingImageUrls.length === 0) return;
+            existingImagesContainer.innerHTML = '<h4>รูปภาพปัจจุบัน</h4>';
+            const imageGrid = document.createElement('div');
+            imageGrid.style.display = 'flex';
+            imageGrid.style.gap = '10px';
+            imageGrid.style.flexWrap = 'wrap';
+            
+            existingImageUrls.forEach((url, index) => {
+                const imgWrapper = document.createElement('div');
+                imgWrapper.style.position = 'relative';
+                imgWrapper.innerHTML = `
+                    <img src="${url}" alt="Existing image ${index + 1}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">
+                    <button type="button" class="delete-img-btn" data-index="${index}" style="position:absolute; top:2px; right:2px;">X</button>
+                `;
+                imageGrid.appendChild(imgWrapper);
+            });
+            existingImagesContainer.appendChild(imageGrid);
+            
+            // Add event listeners to delete buttons
+            existingImagesContainer.querySelectorAll('.delete-img-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const indexToRemove = parseInt(e.target.dataset.index);
+                    existingImageUrls.splice(indexToRemove, 1);
+                    displayExistingImages(); // Re-render the images
+                });
+            });
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitButton.disabled = true;
+            submitButton.textContent = 'กำลังบันทึก...';
+            
+            try {
+                // 1. Upload new images
+                const imageFiles = document.getElementById('image_upload').files;
+                let newImageUrls = [];
+                if (imageFiles.length > 0) {
+                    newImageUrls = await uploadMultipleImages(imageFiles);
+                }
+                
+                // Combine old and new image URLs
+                const allImageUrls = [...existingImageUrls, ...newImageUrls];
+
+                // 2. Prepare data object
+                const dogData = {
+                    name: document.getElementById('name').value,
+                    breed: document.getElementById('breed').value,
+                    age: document.getElementById('age').value,
+                    price: Number(document.getElementById('price').value),
+                    discountPrice: Number(document.getElementById('discount-price').value) || 0,
+                    gender: document.getElementById('gender').value,
+                    color: document.getElementById('color').value,
+                    eyeColor: document.getElementById('eye-color').value,
+                    vaccine: document.getElementById('vaccine').value,
+                    status: document.getElementById('status').value,
+                    description: document.getElementById('description').value,
+                    imageUrls: allImageUrls
+                };
+
+                // 3. Save to Firebase
+                if (isEditMode) {
+                    // Update existing document
+                    await db.collection("dogs").doc(dogId).update(dogData);
+                    alert('อัปเดตข้อมูลสำเร็จ!');
+                } else {
+                    // Add new document
+                    const docCountSnapshot = await db.collection("dogs").get();
+                    dogData.order = docCountSnapshot.size; // Set order to be the last
+                    await db.collection("dogs").add(dogData);
+                    alert('เพิ่มน้องหมาสำเร็จ!');
+                }
+                
+                window.location.href = 'admin.html';
+
+            } catch (error) {
+                console.error("Error saving dog data:", error);
+                alert(`เกิดข้อผิดพลาด: ${error.message}`);
+                submitButton.disabled = false;
+                submitButton.textContent = isEditMode ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล';
+            }
+        });
+
+        // Initialize the form when the page loads
+        initializeForm();
+    </script>
 </body>
 </html>
