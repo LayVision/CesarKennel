@@ -84,10 +84,10 @@
                 <p>น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
             </header>
 
-            <!-- REMOVED: All hardcoded product cards have been deleted. -->
-            <!-- This grid will be populated dynamically by script.js with data from Firebase. -->
+            <!-- Grid container for all product cards -->
+            <!-- This container is now correctly structured and ready for dynamic content. -->
             <div class="product-grid" id="product-grid">
-
+                <!-- Products will be loaded here by JavaScript -->
             </div>
 
             <!-- Container for pagination buttons, populated by script.js -->
@@ -95,7 +95,7 @@
         </main>
     </div> <!-- End of .shop-layout -->
 
-    <!-- Main site footer, separate from the grid layout -->
+    <!-- Main site footer, correctly placed outside the main layout grid -->
     <footer class="site-footer">
         <div class="footer-content">
             <h3 class="footer-logo">ปอมปอม บูทีค</h3>
@@ -104,104 +104,6 @@
                 <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
             </div>
             <!-- Social media links -->
-            <div class="social-links">
-                <a href="#" aria-label="Facebook">FB</a>
-                <a href="#" aria-label="Instagram">IG</a>
-                <a href="#" aria-label="Line">LINE</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Link to the main JavaScript file -->
-    <script src="script.js"></script>
-</body>
-</html>```
-
-### 3. `product-detail.html` (Cleaned)
-
-This page is now a blank template, waiting for a specific product's data to be loaded.
-
-```html
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title will be set dynamically -->
-    <title>รายละเอียดน้องหมา - ปอมปอม บูทีค</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- Main layout grid, consistent with index.html -->
-    <div class="shop-layout">
-        <!-- Sidebar for navigation -->
-        <aside class="sidebar" id="sidebar">
-            <div>
-                <div class="sidebar-logo">PomPom<span>.</span></div>
-                <nav class="sidebar-nav">
-                    <h3>เมนู</h3>
-                    <ul>
-                        <li><a href="index.html">น้องหมาทั้งหมด</a></li>
-                        <li><a href="#">เพศผู้</a></li>
-                        <li><a href="#">เพศเมีย</a></li>
-                        <li><a href="#">เกี่ยวกับเรา</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="sidebar-footer">
-                &copy; 2568 ปอมปอม บูทีค
-                <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
-            </div>
-        </aside>
-        
-        <!-- Main content area -->
-        <main class="main-content">
-            <!-- Header for mobile view -->
-            <header class="mobile-header">
-                <div class="mobile-logo">PomPom<span>.</span></div>
-                <button class="mobile-menu-button" id="menu-toggle">☰</button>
-            </header>
-
-            <!-- Grid layout for product details, all content below will be loaded dynamically -->
-            <div class="product-detail-grid">
-                <!-- Image gallery section -->
-                <div class="detail-gallery">
-                    <!-- REMOVED: Hardcoded images. Src will be set dynamically. -->
-                    <img src="" alt="รูปหลัก" id="mainImage" class="main-image">
-                    <!-- REMOVED: Hardcoded thumbnails. These will be generated dynamically. -->
-                    <div class="detail-thumbnails">
-                    </div>
-                </div>
-                <!-- Information section for the product -->
-                <div class="detail-info">
-                    <!-- REMOVED: All hardcoded text content. Will be populated by JS. -->
-                    <h1></h1>
-                    <div class="price"></div>
-                    <p class="description"></p>
-                    
-                    <ul class="details-list">
-                        <li><strong>สายพันธุ์:</strong><span></span></li>
-                        <li><strong>อายุ:</strong><span></span></li>
-                        <li><strong>เพศ:</strong><span></span></li>
-                        <li><strong>ตัวสี:</strong><span></span></li>
-                        <li><strong>ตาสี:</strong><span></span></li>
-                        <li><strong>วัคซีน:</strong><span></span></li>
-                    </ul>
-
-                    <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
-                </div>
-            </div>
-        </main>
-    </div> <!-- End of .shop-layout -->
-
-    <!-- Main site footer -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
-            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
-            <div class="footer-contact">
-                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
-            </div>
             <div class="social-links">
                 <a href="#" aria-label="Facebook">FB</a>
                 <a href="#" aria-label="Instagram">IG</a>
