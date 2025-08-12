@@ -1,4 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Firebase Initialization (for pages that need auth state) ---
+    // We initialize Firebase here to make auth services available on all pages.
+    // This allows us to have a persistent login state and a working logout button.
+    const firebaseConfig = {
+        apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+        authDomain: "cesarkennel.firebaseapp.com",
+        projectId: "cesarkennel",
+        storageBucket: "cesarkennel.firebasestorage.app",
+        messagingSenderId: "512752480416",
+        appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+    };
+
+    // Initialize Firebase if it hasn't been initialized yet.
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
     // --- Mobile Menu Toggle for BOTH frontend and admin ---
     // This script handles the slide-in sidebar for mobile views.
     const menuButton = document.getElementById('menu-toggle');
@@ -35,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Admin Login/Logout Links ---
+    // --- Admin Login/Logout Links (REVISED) ---
     // Manages the authentication link text and behavior based on login state.
     const authLink = document.getElementById('auth-link');
     const logoutButton = document.getElementById('logout-button');
@@ -57,10 +75,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
             e.preventDefault();
-            // Removes the login flag from localStorage and redirects to the homepage.
-            localStorage.removeItem('isAdminLoggedIn');
-            alert('คุณออกจากระบบแล้ว');
-            window.location.href = 'index.html';
+            
+            // --- REVISED LOGIC ---
+            // Signs the user out of their Firebase session.
+            auth.signOut().then(() => {
+                // This block runs after a successful sign-out.
+                // Removes the login flag from localStorage.
+                localStorage.removeItem('isAdminLoggedIn');
+                alert('คุณออกจากระบบแล้ว');
+                // Redirects to the homepage.
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                // This block runs if there's an error during sign-out.
+                console.error('Logout failed:', error);
+                alert('เกิดข้อผิดพลาดในการออกจากระบบ');
+            });
         });
     }
 

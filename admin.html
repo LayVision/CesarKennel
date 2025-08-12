@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="admin-style.css">
+    <!-- ADDED: Firebase SDKs to enable auth services on this page for logout -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
     <!-- Main layout grid for the admin panel -->
@@ -26,7 +29,6 @@
              <!-- Secondary navigation for viewing the live site and logging out -->
              <nav class="sidebar-nav">
                 <ul>
-                    <!-- MODIFIED: Removed target="_blank" to open the link in the same tab -->
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
                 </ul>
