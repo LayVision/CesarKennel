@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายละเอียดน้องหมา - ปอมปอม บูทีค</title>
+    <title>น้องโมจิ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Firebase SDKs for Auth and Firestore -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-     <div class="shop-layout">
+    <!-- Main layout grid, consistent with index.html -->
+    <div class="shop-layout">
+        <!-- Sidebar for navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">PomPom<span>.</span></div>
@@ -30,35 +28,57 @@
                 <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
+        
+        <!-- Main content area -->
         <main class="main-content">
+            <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">PomPom<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
+
+            <!-- Grid layout for product details, splitting gallery and info -->
             <div class="product-detail-grid">
+                <!-- Image gallery section -->
                 <div class="detail-gallery">
-                    <img src="" alt="รูปหลัก" id="mainImage" class="main-image">
-                    <div class="detail-thumbnails" id="detail-thumbnails">
-                        <!-- Thumbnails will be inserted here by script.js -->
+                    <!-- Main, large image that changes on thumbnail click -->
+                    <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=800" alt="รูปหลัก" id="mainImage" class="main-image">
+                    <!-- Container for clickable thumbnail images -->
+                    <div class="detail-thumbnails">
+                        <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 1" class="active">
+                        <img src="https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 2">
+                        <img src="https://images.pexels.com/photos/3361739/pexels-photo-3361739.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 3">
+                        <img src="https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=400" alt="รูปย่อ 4">
                     </div>
                 </div>
+                <!-- Information section for the product -->
                 <div class="detail-info">
-                    <h1 id="detail-name"></h1>
-                    <div class="price" id="detail-price"></div>
-                    <p class="description" id="detail-description"></p>
+                    <h1>น้องโมจิ</h1>
+                    <!-- Price display, including original and discounted price -->
+                    <div class="price">
+                        <span class="original-price">28,000</span>
+                        <span class="discounted-price">25,500 บาท</span>
+                    </div>
+                    <p class="description">ปอมเมอเรเนียนหน้าหมี สีขาวล้วน ขนแน่นเหมือนปุยเมฆ นิสัยร่าเริง ติดคน ขี้อ้อนสุดๆ ทานเก่ง สุขภาพแข็งแรง วัคซีนครบแล้ว</p>
+                    
+                    <!-- Unordered list of dog's specific details -->
                     <ul class="details-list">
-                        <li><strong>สายพันธุ์:</strong><span id="detail-breed"></span></li>
-                        <li><strong>อายุ:</strong><span id="detail-age"></span></li>
-                        <li><strong>เพศ:</strong><span id="detail-gender"></span></li>
-                        <li><strong>ตัวสี:</strong><span id="detail-color"></span></li>
-                        <li><strong>ตาสี:</strong><span id="detail-eye-color"></span></li>
-                        <li><strong>วัคซีน:</strong><span id="detail-vaccine"></span></li>
+                        <li><strong>สายพันธุ์:</strong><span>ปอมเมอเรเนียน</span></li>
+                        <li><strong>อายุ:</strong><span>2 เดือน</span></li>
+                        <li><strong>เพศ:</strong><span>เมีย</span></li>
+                        <li><strong>ตัวสี:</strong><span>ขาว</span></li>
+                        <li><strong>ตาสี:</strong><span>ดำ</span></li>
+                        <li><strong>วัคซีน:</strong><span>เข็มที่ 2</span></li>
                     </ul>
+
+                    <!-- Call-to-action button -->
                     <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
                 </div>
             </div>
         </main>
-    </div>
+    </div> <!-- End of .shop-layout -->
+
+    <!-- Main site footer -->
     <footer class="site-footer">
         <div class="footer-content">
             <h3 class="footer-logo">ปอมปอม บูทีค</h3>
@@ -73,6 +93,8 @@
             </div>
         </div>
     </footer>
+
+    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>

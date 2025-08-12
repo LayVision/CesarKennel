@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตั้งค่าเว็บไซต์ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
+    <!-- Main admin layout -->
     <div class="admin-layout">
+        <!-- Sidebar for admin navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Admin<span>.</span></div>
@@ -24,24 +23,29 @@
             </div>
              <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="index.html">ดูหน้าร้าน</a></li>
-                    <li><a href="#" class="logout-link">ออกจากระบบ</a></li>
+                    <li><a href="index.html" target="_blank">ดูหน้าร้าน</a></li>
+                    <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
                 </ul>
             </nav>
         </aside>
 
-        <main class="main-main">
+        <!-- Main content area for settings -->
+        <main class="admin-main">
+            <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
             
+            <!-- Header for desktop view -->
             <header class="desktop-header">
                 <h1>ตั้งค่าเว็บไซต์</h1>
             </header>
 
+            <!-- Form containing all website settings, within a card -->
             <form action="#" class="admin-card">
-                 <h2>ปรับแต่งหน้าแรก</h2>
+                <!-- 1. Homepage Customization -->
+                <h2>ปรับแต่งหน้าแรก</h2>
                 <div class="form-grid">
                     <div class="input-group full-width">
                         <label for="cover-image-upload">รูปภาพหน้าปก</label>
@@ -52,6 +56,8 @@
                         <input type="text" id="marquee-text" name="marquee-text" value="✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨">
                     </div>
                 </div>
+
+                <!-- 2. Shop Information -->
                 <h2 class="form-section-header">ข้อมูลร้านค้า</h2>
                 <div class="form-grid">
                    <div class="input-group"><label for="shop-name">ชื่อร้าน</label><input type="text" id="shop-name" name="shop-name" value="ปอมปอม บูทีค"></div>
@@ -63,7 +69,9 @@
                        <textarea id="shop-description" name="shop-description" rows="3">น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</textarea>
                    </div>
                 </div>
-                 <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บและโซเชียลมีเดีย</h2>
+
+                <!-- 3. Footer & Social Settings -->
+                <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บและโซเชียลมีเดีย</h2>
                 <div class="form-grid">
                    <div class="input-group full-width">
                        <label for="footer-description">คำอธิบายสั้นๆ ท้ายเว็บ</label>
@@ -90,12 +98,15 @@
                         <input type="url" id="footer-messenger" name="footer-messenger" placeholder="https://m.me/yourpage">
                     </div>
                 </div>
+
+                <!-- Form submission button -->
                 <div class="form-actions full-width">
                    <button type="submit" class="button button-primary">บันทึกการตั้งค่าทั้งหมด</button>
                </div>
             </form>
         </main>
     </div>
+    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>

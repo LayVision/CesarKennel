@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แผงควบคุมสำหรับผู้ดูแล</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
-
 <body>
+    <!-- Centered container for the login form -->
     <div class="login-container">
+        <!-- The login form itself -->
         <form id="login-form" class="login-form">
             <h2>ผู้ดูแลระบบ</h2>
             <div class="input-group">
@@ -28,8 +25,12 @@
         </form>
     </div>
 
-    <script>
-        // Firebase Configuration
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+        // --- Firebase Initialization ---
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -39,31 +40,39 @@
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        // Login Form Event Listener
-        document.getElementById('login-form').addEventListener('submit', function (event) {
-            event.preventDefault();
+        // If user is already logged in, redirect them to the admin panel
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'admin.html';
+            }
+        });
 
-            const email = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        // --- Login Form Logic ---
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = loginForm.username.value;
+            const password = loginForm.password.value;
+            const button = loginForm.querySelector('button');
+            button.disabled = true;
+            button.textContent = 'กำลังเข้าสู่ระบบ...';
 
-            // Sign in with Firebase
-            auth.signInWithEmailAndPassword(email, password)
+            signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Set a flag in local storage so other pages know the user is an admin.
-                    localStorage.setItem('isAdminLoggedIn', 'true');
-                    alert('เข้าสู่ระบบสำเร็จ!');
+                    // Signed in successfully, redirect will be handled by onAuthStateChanged
                     window.location.href = 'admin.html';
                 })
                 .catch((error) => {
-                    console.error('Login failed:', error);
-                    alert(`เกิดข้อผิดพลาดในการเข้าสู่ระบบ: ${error.message}`);
+                    console.error("Login Error:", error.message);
+                    alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+                    button.disabled = false;
+                    button.textContent = 'เข้าสู่ระบบ';
                 });
         });
     </script>
 </body>
-
 </html>
