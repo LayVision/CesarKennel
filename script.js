@@ -61,6 +61,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- NEW, ALTERNATIVE SOLUTION USING EVENT DELEGATION ---
+    // This listener is attached to the whole sidebar.
+    if (sidebar) {
+        sidebar.addEventListener('click', (e) => {
+            // Check if the clicked element is a navigation link.
+            const navLink = e.target.closest('.sidebar-nav a');
+            if (!navLink) {
+                return; // If not a nav link, do nothing.
+            }
+
+            const linkPageName = new URL(navLink.href).pathname.split('/').pop();
+            const currentPageName = window.location.pathname.split('/').pop();
+
+            // If the link is for the page we are already on...
+            if (linkPageName === currentPageName) {
+                e.preventDefault(); // ...stop the default navigation.
+
+                // And if that page is admin.html, refresh the data.
+                if (currentPageName === 'admin.html') {
+                    fetchAndDisplayAdminProducts();
+                }
+                // This could be expanded for other pages if needed.
+            }
+        });
+    }
+    // --- END OF NEW, ALTERNATIVE SOLUTION ---
+
+
     // --- DYNAMIC CONTENT LOADER ---
     const currentPageName = window.location.pathname.split('/').pop();
     if (currentPageName === 'index.html' || currentPageName === '') {
@@ -70,20 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchProductDetails();
     }
     if (currentPageName === 'admin.html') {
-        // 1. Initial load of products when the page is first visited.
         fetchAndDisplayAdminProducts();
-
-        // 2. NEW: Add a specific handler for the 'Manage Dogs' link.
-        const manageDogsLink = document.getElementById('nav-manage-dogs');
-        if (manageDogsLink) {
-            manageDogsLink.addEventListener('click', (e) => {
-                // Prevent the browser from trying to reload the page.
-                e.preventDefault(); 
-                
-                // Manually re-run the function to fetch and display the product list.
-                fetchAndDisplayAdminProducts(); 
-            });
-        }
     }
     
     // --- Homepage Product Display Function ---
