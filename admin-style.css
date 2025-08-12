@@ -112,12 +112,16 @@ a { text-decoration: none; color: inherit; }
 .admin-card h2 { margin-top: 0; font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;}
 .form-section-header {
     margin-top: 40px;
+    font-size: 1.5em;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
 }
-/* MODIFIED: Refined grid for a more compact layout */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 22px; /* Slightly reduced gap */
+    gap: 22px;
 }
 .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9em; }
 .input-group input, .input-group textarea, .input-group select {

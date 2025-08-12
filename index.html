@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div class="shop-layout">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo">PomPom<span>.</span></div>
+                <div class="sidebar-logo"><span class="logo-text-placeholder">PomPom</span><span>.</span></div>
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
-                        <!-- Links updated for filtering -->
                         <li><a href="index.html" id="nav-all">น้องหมาทั้งหมด</a></li>
                         <li><a href="?gender=ผู้" id="nav-male">เพศผู้</a></li>
                         <li><a href="?gender=เมีย" id="nav-female">เพศเมีย</a></li>
@@ -29,36 +26,36 @@
                     <div class="filter-group">
                         <label for="filter-color">สี</label>
                         <select id="filter-color" name="color">
-                            <!-- Options will be populated dynamically -->
+                            <!-- Options populated dynamically -->
                         </select>
                     </div>
                     <div class="filter-group">
                         <label for="filter-age">อายุ</label>
                         <select id="filter-age" name="age">
-                            <!-- Options will be populated dynamically -->
+                            <!-- Options populated dynamically -->
                         </select>
                     </div>
                 </div>
             </div>
             <div class="sidebar-footer">
-                &copy; 2568 ปอมปอม บูทีค
-                <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
+                <a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a>
+                <p class="copyright-text">&copy; 2568 ปอมปอม บูทีค</p>
             </div>
         </aside>
         
         <!-- Main Content -->
         <main class="main-content">
             <header class="mobile-header">
-                <div class="mobile-logo">PomPom<span>.</span></div>
+                <div class="mobile-logo"><span class="logo-text-placeholder">PomPom</span><span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
             <section class="hero-section">
                 <div class="hero-image-container">
-                    <img src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
+                    <img id="hero-image" src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
                 </div>
                 <div class="marquee-container">
-                    <p class="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
+                    <p class="marquee-text" id="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
 
@@ -73,12 +70,20 @@
 
             <div class="pagination-container" id="pagination"></div>
         </main>
-    </div> <!-- End of .shop-layout -->
+    </div>
 
     <footer class="site-footer">
         <div class="footer-content">
-            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
-            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+            <h3 class="footer-logo" id="footer-logo">ปอมปอม บูทีค</h3>
+            <p class="footer-description" id="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+            <div class="footer-contact" id="footer-contact-details">
+                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
+            </div>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook" id="social-fb" class="hidden">FB</a>
+                <a href="#" aria-label="Instagram" id="social-ig" class="hidden">IG</a>
+                <a href="#" aria-label="Line" id="social-line" class="hidden">LINE</a>
+            </div>
         </div>
     </footer>
 
@@ -130,7 +135,7 @@
             
             const priceHtml = dogData.discountPrice && dogData.discountPrice > 0
                 ? `<span class="original-price">${dogData.price.toLocaleString()}</span> <span class="discounted-price">${dogData.discountPrice.toLocaleString()} บาท</span>`
-                : `${dogData.price.toLocaleString()} บาท`;
+                : `<span class="discounted-price">${dogData.price.toLocaleString()} บาท</span>`;
 
             card.innerHTML = `
                 <div class="card-image-container">
@@ -155,20 +160,15 @@
 
             // --- Apply Filters based on URL parameters ---
             const gender = params.get('gender');
-            if (gender) {
-                query = query.where('gender', '==', gender);
-            }
-            const color = params.get('color');
-            if (color) {
-                query = query.where('color', '==', color);
-            }
-            const age = params.get('age');
-            if (age) {
-                query = query.where('age', '==', age);
-            }
+            if (gender) query = query.where('gender', '==', gender);
 
-            // --- Apply Sorting: Newest First ---
-            query = query.orderBy("createdAt", "desc");
+            const color = params.get('color');
+            if (color) query = query.where('color', '==', color);
+            
+            const age = params.get('age');
+            if (age) query = query.where('age', '==', age);
+
+            query = query.orderBy("order", "asc");
 
             try {
                 const dogsSnapshot = await query.get();
@@ -176,18 +176,13 @@
 
                 if (dogsSnapshot.empty) {
                     productGrid.innerHTML = '<p>ไม่พบข้อมูลน้องหมาตามเงื่อนไขที่เลือกค่ะ</p>';
+                } else {
+                    dogsSnapshot.forEach(doc => {
+                        const dogCard = createDogCard(doc.data(), doc.id);
+                        productGrid.appendChild(dogCard);
+                    });
                 }
-
-                const allItems = [];
-                dogsSnapshot.forEach(doc => {
-                    const dogCard = createDogCard(doc.data(), doc.id);
-                    productGrid.appendChild(dogCard);
-                    allItems.push(dogCard);
-                });
                 
-                setupPagination(allItems);
-                // After displaying dogs, we need to populate the filters
-                // To do this, we fetch ALL dogs just to get the unique filter values
                 populateFilterOptions(params);
                 updateActiveNav(gender);
 
@@ -245,7 +240,6 @@
                     params.delete('age');
                 }
                 
-                // Navigate to the new URL which will trigger a reload and re-fetch
                 window.location.search = params.toString();
             };
 
@@ -255,18 +249,15 @@
         
         function updateActiveNav(activeGender) {
             document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
-            if (!activeGender) {
+            const genderParam = new URLSearchParams(window.location.search).get('gender');
+
+            if (!genderParam) {
                 document.getElementById('nav-all')?.classList.add('active');
-            } else if (activeGender === 'ผู้') {
+            } else if (genderParam === 'ผู้') {
                 document.getElementById('nav-male')?.classList.add('active');
-            } else if (activeGender === 'เมีย') {
+            } else if (genderParam === 'เมีย') {
                 document.getElementById('nav-female')?.classList.add('active');
             }
-        }
-        
-        function setupPagination(allItems) {
-             const itemsPerPage = 6;
-             // ... The rest of your pagination logic remains the same ...
         }
 
         // --- Initial Load ---
@@ -275,7 +266,6 @@
             fetchAndDisplayDogs(urlParams);
             setupFilterEventListeners();
         });
-
     </script>
 </body>
 </html>
