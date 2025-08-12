@@ -23,7 +23,7 @@
             </div>
              <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="index.html" target="_blank">ดูหน้าร้าน</a></li>
+                    <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
                 </ul>
             </nav>
@@ -171,8 +171,6 @@
                     document.getElementById('vaccine').value = data.vaccine || '';
                     document.getElementById('status').value = data.status || 'available';
                     document.getElementById('description').value = data.description || '';
-                    // Note: This form doesn't display existing images, but they will be kept
-                    // unless new images are uploaded, which will overwrite them.
                 } else {
                     console.error("Document not found!");
                     alert('ไม่พบข้อมูลน้องหมา');
@@ -197,7 +195,6 @@
             submitButton.textContent = 'กำลังบันทึก...';
 
             try {
-                // 1. Upload new images to ImgBB
                 const imageInput = document.getElementById('image_upload');
                 const files = imageInput.files;
                 const imageUrls = [];
@@ -219,7 +216,6 @@
                     }
                 }
 
-                // 2. Prepare data object from form fields
                 const productData = {
                     name: document.getElementById('name').value,
                     breed: document.getElementById('breed').value,
@@ -235,11 +231,8 @@
                     updatedAt: serverTimestamp(),
                 };
 
-                // 3. Save to Firestore
                 if (itemId) {
-                    // UPDATE existing document
                     const docRef = doc(db, 'products', itemId);
-                    // If new images were uploaded, overwrite the old list
                     if (imageUrls.length > 0) {
                         productData.imageUrls = imageUrls;
                         productData.thumbnailUrl = imageUrls[0];
@@ -247,7 +240,6 @@
                     await updateDoc(docRef, productData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
-                    // ADD new document
                     productData.imageUrls = imageUrls;
                     productData.thumbnailUrl = imageUrls.length > 0 ? imageUrls[0] : '';
                     productData.createdAt = serverTimestamp();
@@ -265,6 +257,5 @@
             }
         });
     </script>
-
 </body>
 </html>

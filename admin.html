@@ -26,7 +26,7 @@
              <!-- Secondary navigation for viewing the live site and logging out -->
              <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="index.html" target="_blank">ดูหน้าร้าน</a></li>
+                    <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
                 </ul>
             </nav>
@@ -62,25 +62,7 @@
                      </thead>
                      <!-- Table body will be populated dynamically by the script below -->
                      <tbody id="product-table-body">
-                         <!-- Example of what the script will generate:
-                         <tr>
-                             <td><span class="drag-handle">☰</span></td>
-                             <td data-label="ข้อมูล">
-                                 <div class="product-info-cell">
-                                     <img src="..." alt="...">
-                                     <div><div class="name">...</div><div class="details">...</div></div>
-                                 </div>
-                             </td>
-                             <td data-label="สถานะ"><span class="status-badge ...">...</span></td>
-                             <td data-label="ราคา">... บาท</td>
-                             <td data-label="การกระทำ">
-                                 <div class="action-buttons">
-                                     <a href="add-item.html?id=..." class="button edit-btn">แก้ไข</a>
-                                     <button class="button delete-btn" data-id="...">ลบ</button>
-                                 </div>
-                             </td>
-                         </tr>
-                         -->
+                         <!-- Data will be loaded here by script -->
                      </tbody>
                  </table>
             </div>
@@ -206,7 +188,6 @@
         // --- Event Listener for Delete Buttons (using Event Delegation) ---
         const tableBody = document.getElementById('product-table-body');
         tableBody.addEventListener('click', async (e) => {
-            // Check if a delete button was clicked
             if (e.target && e.target.classList.contains('delete-btn')) {
                 const button = e.target;
                 const productId = button.dataset.id;
@@ -214,21 +195,14 @@
 
                 if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${productName}"? การกระทำนี้ไม่สามารถย้อนกลับได้`)) {
                     try {
-                        // Disable button to prevent multiple clicks
                         button.disabled = true;
                         button.textContent = 'กำลังลบ...';
-
-                        // Delete the document from Firestore
                         await deleteDoc(doc(db, "products", productId));
-                        
-                        // Remove the row from the table in the UI
                         button.closest('tr').remove();
                         alert(`ลบ "${productName}" สำเร็จแล้ว`);
-
                     } catch (error) {
                         console.error("Error deleting document: ", error);
                         alert("เกิดข้อผิดพลาดในการลบข้อมูล");
-                        // Re-enable the button if deletion fails
                         button.disabled = false;
                         button.textContent = 'ลบ';
                     }
