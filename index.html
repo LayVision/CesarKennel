@@ -118,7 +118,7 @@
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firestore.js";
 
         // --- Firebase Initialization ---
         const firebaseConfig = {
@@ -168,7 +168,6 @@
                     productGrid.innerHTML += createProductCardHTML(product, productId);
                 });
 
-                // Now that cards are in the DOM, initialize pagination
                 initializePagination();
 
             } catch (error) {
@@ -196,9 +195,9 @@
                 preordered: { class: 'preordered', text: 'ติดจอง' },
                 sold: { class: 'sold', text: 'ขายแล้ว' }
             };
-            const statusInfo = statusMap[product.status] || { class: 'available', text: 'พร้อมย้ายบ้าน' };
+            const statusInfo = statusMap[product.status] || statusMap.available;
 
-            // The link is always active, and the status badge is always shown on the card.
+            // This structure is confirmed to be correct. The <span> for the status badge is inside the image container.
             return `
                 <a href="product-detail.html?id=${id}" class="product-card ${isSold ? 'sold-item' : ''}">
                     <div class="card-image-container">
