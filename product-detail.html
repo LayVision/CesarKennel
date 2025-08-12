@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- The title will be set dynamically by JavaScript -->
     <title>รายละเอียดน้องหมา - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="style.css">
-    <!-- ADDED: Firebase SDKs to enable auth state checking on the detail page -->
+    <!-- ADDED: Firebase SDKs for Auth and Firestore -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <!-- Main layout grid, consistent with index.html -->
-    <div class="shop-layout">
-        <!-- Sidebar for navigation -->
+    <!-- ... body content remains the same ... -->
+     <div class="shop-layout">
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">PomPom<span>.</span></div>
@@ -32,35 +31,21 @@
                 <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
-        
-        <!-- Main content area -->
         <main class="main-content">
-            <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">PomPom<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
-
-            <!-- Grid layout for product details. All content below will be loaded dynamically by JavaScript. -->
             <div class="product-detail-grid">
-                <!-- Image gallery section -->
                 <div class="detail-gallery">
-                    <!-- Main image. The `src` attribute will be set by JavaScript. -->
                     <img src="" alt="รูปหลัก" id="mainImage" class="main-image">
-                    <!-- Thumbnail images will be generated and added here by JavaScript. -->
                     <div class="detail-thumbnails" id="detail-thumbnails">
                     </div>
                 </div>
-                <!-- Information section for the product -->
                 <div class="detail-info">
-                    <!-- Dog's name -->
                     <h1 id="detail-name"></h1>
-                    <!-- Price display -->
                     <div class="price" id="detail-price"></div>
-                    <!-- Detailed description -->
                     <p class="description" id="detail-description"></p>
-                    
-                    <!-- Unordered list of dog's specific details. Spans will be filled by JavaScript. -->
                     <ul class="details-list">
                         <li><strong>สายพันธุ์:</strong><span id="detail-breed"></span></li>
                         <li><strong>อายุ:</strong><span id="detail-age"></span></li>
@@ -74,9 +59,7 @@
                 </div>
             </div>
         </main>
-    </div> <!-- End of .shop-layout -->
-
-    <!-- Main site footer -->
+    </div>
     <footer class="site-footer">
         <div class="footer-content">
             <h3 class="footer-logo">ปอมปอม บูทีค</h3>
@@ -91,8 +74,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>

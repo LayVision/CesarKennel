@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เพิ่ม/แก้ไข ข้อมูลน้องหมา</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- Firebase SDKs to enable auth services on this page for logout -->
+    <!-- ADDED: Firebase SDKs for Auth, Firestore, and Storage -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
     <!-- Main layout for the admin interface -->
@@ -26,7 +28,8 @@
             </div>
              <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="index.html" target="_blank">ดูหน้าร้าน</a></li>
+                    <!-- MODIFIED: Removed target="_blank" -->
+                    <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
                 </ul>
             </nav>
@@ -46,19 +49,15 @@
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
-            <!-- Main form for item data, enclosed in a card -->
-            <!-- REMOVED: Changed action="admin.html" to "#" as form submission will be handled by JavaScript -->
+            <!-- MODIFIED: Gave form an ID and removed the 'action' attribute -->
             <form id="add-item-form" class="admin-card">
                 <h2>ข้อมูลทั่วไป</h2>
-                <!-- Grid layout for form fields -->
                 <div class="form-grid">
-                    <!-- REMOVED: All `value` attributes and `selected` options to make the form empty by default -->
                     <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" required></div>
                     <div class="input-group"><label for="breed">สายพันธุ์</label><input type="text" id="breed" name="breed" required></div>
                     <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age" required></div>
                     <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" name="price" required></div>
                     <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
-                    
                     <div class="input-group">
                         <label for="gender">เพศ</label>
                         <select id="gender" name="gender" required><option value="เมีย">เมีย</option><option value="ผู้">ผู้</option></select>
@@ -71,12 +70,10 @@
                         <label for="eye-color">ตาสี</label>
                         <input type="text" id="eye-color" name="eye-color">
                     </div>
-                    
                     <div class="input-group">
                         <label for="vaccine">วัคซีน</label>
                         <input type="text" id="vaccine" name="vaccine">
                     </div>
-
                     <div class="input-group">
                         <label for="status">สถานะ</label>
                         <select id="status" name="status" required>
@@ -91,21 +88,91 @@
                     </div>
                 </div>
 
-                <!-- Section for uploading images -->
                 <h2 class="form-section-header">รูปภาพ</h2>
                  <div class="input-group full-width">
                     <label for="image_upload">อัปโหลดรูปภาพใหม่ (รูปแรกจะเป็นรูปปก)</label>
-                    <input type="file" id="image_upload" name="image_upload[]" multiple>
+                    <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*">
                 </div>
                 
-                <!-- Form submission button -->
                 <div class="form-actions">
-                    <button type="submit" class="button button-primary">บันทึกข้อมูล</button>
+                    <button type="submit" class="button button-primary" id="submit-button">บันทึกข้อมูล</button>
                 </div>
             </form>
         </main>
     </div>
-    <!-- Link to the main JavaScript file -->
+    
+    <!-- Link to the main script file -->
     <script src="script.js"></script>
+
+    <!-- NEW: Dedicated script to handle form submission logic -->
+    <script>
+        // --- Firebase Initialization ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+            authDomain: "cesarkennel.firebaseapp.com",
+            projectId: "cesarkennel",
+            storageBucket: "cesarkennel.firebasestorage.app",
+            messagingSenderId: "512752480416",
+            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // --- Form Submission Logic ---
+        const form = document.getElementById('add-item-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = document.getElementById('submit-button');
+            submitButton.disabled = true;
+            submitButton.textContent = 'กำลังบันทึก...';
+
+            try {
+                // 1. Upload Images to Firebase Storage
+                const imageFiles = document.getElementById('image_upload').files;
+                const imageUrls = [];
+
+                if (imageFiles.length > 0) {
+                    const uploadPromises = Array.from(imageFiles).map(file => {
+                        const storageRef = storage.ref(`products/${Date.now()}-${file.name}`);
+                        return storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL());
+                    });
+                    imageUrls.push(...await Promise.all(uploadPromises));
+                }
+
+                // 2. Prepare Product Data Object
+                const productData = {
+                    name: form.name.value,
+                    breed: form.breed.value,
+                    age: form.age.value,
+                    price: Number(form.price.value),
+                    discountPrice: form['discount-price'].value ? Number(form['discount-price'].value) : null,
+                    gender: form.gender.value,
+                    color: form.color.value,
+                    eyeColor: form['eye-color'].value,
+                    vaccine: form.vaccine.value,
+                    status: form.status.value,
+                    description: form.description.value,
+                    imageUrls: imageUrls,
+                    // Add a timestamp for sorting by newest
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                };
+
+                // 3. Save to Firestore
+                await db.collection('products').add(productData);
+
+                alert('บันทึกข้อมูลน้องหมาสำเร็จ!');
+                window.location.href = 'admin.html';
+
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert(`เกิดข้อผิดพลาด: ${error.message}`);
+                submitButton.disabled = false;
+                submitButton.textContent = 'บันทึกข้อมูล';
+            }
+        });
+    </script>
 </body>
 </html>
