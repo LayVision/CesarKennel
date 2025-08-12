@@ -61,33 +61,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- NEW, ALTERNATIVE SOLUTION USING EVENT DELEGATION ---
-    // This listener is attached to the whole sidebar.
+    // --- Event Delegation for Navigation ---
     if (sidebar) {
         sidebar.addEventListener('click', (e) => {
-            // Check if the clicked element is a navigation link.
             const navLink = e.target.closest('.sidebar-nav a');
-            if (!navLink) {
-                return; // If not a nav link, do nothing.
-            }
+            if (!navLink) return;
 
             const linkPageName = new URL(navLink.href).pathname.split('/').pop();
             const currentPageName = window.location.pathname.split('/').pop();
 
-            // If the link is for the page we are already on...
             if (linkPageName === currentPageName) {
-                e.preventDefault(); // ...stop the default navigation.
-
-                // And if that page is admin.html, refresh the data.
+                e.preventDefault();
                 if (currentPageName === 'admin.html') {
+                    console.log("Admin link clicked again. Re-fetching products.");
                     fetchAndDisplayAdminProducts();
                 }
-                // This could be expanded for other pages if needed.
             }
         });
     }
-    // --- END OF NEW, ALTERNATIVE SOLUTION ---
-
 
     // --- DYNAMIC CONTENT LOADER ---
     const currentPageName = window.location.pathname.split('/').pop();
@@ -98,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchProductDetails();
     }
     if (currentPageName === 'admin.html') {
+        console.log("Admin page loaded. Doing initial fetch.");
         fetchAndDisplayAdminProducts();
     }
     
@@ -132,18 +124,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Admin Page Product Table Display Function ---
+    // --- Admin Page Product Table Display Function (WITH LOGGING) ---
     async function fetchAndDisplayAdminProducts() {
-        if (!db) return;
+        console.log("--- Starting fetchAndDisplayAdminProducts ---");
+        if (!db) {
+            console.error("Database (db) is not initialized!");
+            return;
+        }
         const tableBody = document.getElementById('product-table-body');
-        if (!tableBody) return;
+        if (!tableBody) {
+            console.error("Element with ID 'product-table-body' not found!");
+            return;
+        }
 
         try {
             tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`;
+            console.log("Querying 'products' collection, ordered by createdAt desc...");
+
             const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+            
+            console.log(`Query successful. Found ${snapshot.size} documents.`);
+
             tableBody.innerHTML = '';
 
             if (snapshot.empty) {
+                console.log("Snapshot is empty. Displaying 'no data' message.");
                 tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>`;
                 return;
             }
@@ -166,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         } catch (error) {
-            console.error("Error fetching admin products:", error);
+            console.error("CRITICAL ERROR in fetchAndDisplayAdminProducts:", error);
             tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
         }
     }
