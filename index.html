@@ -172,21 +172,31 @@
 
             } catch (error) {
                 console.error("Error fetching products:", error);
-                productGrid.innerHTML = '<p style="color: red; text-align: center; grid-column: 1 / -1;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+                // This error message now specifically mentions the index issue.
+                if (error.code === 'failed-precondition') {
+                     productGrid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">
+                        <b>ข้อผิดพลาด:</b> ต้องสร้าง Index ใน Firestore ก่อน โปรดเปิด Console (F12) เพื่อหาลิงก์สำหรับสร้าง Index
+                     </p>`;
+                } else {
+                     productGrid.innerHTML = '<p style="color: red; text-align: center; grid-column: 1 / -1;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+                }
             }
         };
 
-        // --- Helper Function to Create Product Card HTML ---
+        // --- Helper Function to Create Product Card HTML (More Robust) ---
         const createProductCardHTML = (product, id) => {
             const isSold = product.status === 'sold';
-            const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
+            // Use default values (e.g., 0, "") to prevent errors if data is missing
+            const price = product.price || 0;
+            const discountPrice = product.discountPrice || 0;
+            const hasDiscount = discountPrice > 0 && discountPrice < price;
 
-            let priceHTML = `<div class="card-price">${product.price.toLocaleString('th-TH')} บาท</div>`;
+            let priceHTML = `<div class="card-price">${price.toLocaleString('th-TH')} บาท</div>`;
             if (hasDiscount) {
                 priceHTML = `
                     <div class="card-price">
-                        <span class="original-price">${product.price.toLocaleString('th-TH')}</span>
-                        <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>
+                        <span class="original-price">${price.toLocaleString('th-TH')}</span>
+                        <span class="discounted-price">${discountPrice.toLocaleString('th-TH')} บาท</span>
                     </div>`;
             }
 
@@ -197,16 +207,18 @@
             };
             const statusInfo = statusMap[product.status] || statusMap.available;
 
-            // This structure is confirmed to be correct. The <span> for the status badge is inside the image container.
             return `
                 <a href="product-detail.html?id=${id}" class="product-card ${isSold ? 'sold-item' : ''}">
                     <div class="card-image-container">
                         <span class="card-status ${statusInfo.class}">${statusInfo.text}</span>
-                        <img src="${product.thumbnailUrl || 'https://via.placeholder.com/400'}" alt="${product.name}">
+                        <img src="${product.thumbnailUrl || 'https://via.placeholder.com/400'}" alt="${product.name || 'น้องหมา'}">
                     </div>
                     <div class="card-content">
-                        <h3>${product.name}</h3>
-                        <div class="card-details"><span>เพศ${product.gender}</span><span>${product.age}</span></div>
+                        <h3>${product.name || 'ไม่มีชื่อ'}</h3>
+                        <div class="card-details">
+                            <span>เพศ${product.gender || '-'}</span>
+                            <span>${product.age || '-'}</span>
+                        </div>
                         ${priceHTML}
                     </div>
                 </a>`;
@@ -219,7 +231,10 @@
 
             const itemsPerPage = 6;
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
-            if (allItems.length <= itemsPerPage) return;
+            if (allItems.length <= itemsPerPage) {
+                paginationContainer.innerHTML = ''; // Clear pagination if not needed
+                return;
+            };
 
             const totalPages = Math.ceil(allItems.length / itemsPerPage);
 
@@ -232,9 +247,12 @@
                 });
                 
                 updatePaginationButtons(page, totalPages);
-                const url = new URL(window.location);
-                url.searchParams.set('page', page);
-                history.pushState({page: page}, '', url);
+                // Only push state if the page is not the initial one to avoid duplicate history entries
+                if (history.state?.page !== page) {
+                    const url = new URL(window.location);
+                    url.searchParams.set('page', page);
+                    history.pushState({page: page}, '', url);
+                }
             }
 
             function updatePaginationButtons(currentPage, totalPages) {
@@ -265,10 +283,10 @@
                 paginationContainer.appendChild(createButton('ถัดไป', currentPage + 1, currentPage === totalPages));
             }
             
-            window.addEventListener('popstate', (e) => {
+            window.onpopstate = (e) => {
                 const page = e.state?.page || 1;
                 displayPage(page);
-            });
+            };
 
             const initialUrlParams = new URLSearchParams(window.location.search);
             const initialPage = parseInt(initialUrlParams.get('page')) || 1;
