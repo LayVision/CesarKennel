@@ -6,7 +6,7 @@
     <title>เพิ่ม/แก้ไข ข้อมูลน้องหมา</title>
     <link rel="stylesheet" href="admin-style.css">
     <style>
-        /* Simple style for existing image previews */
+        /* Styles for image previews */
         #existing-images-grid {
             display: flex;
             gap: 12px;
@@ -69,6 +69,7 @@
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
+            <!-- IMPORTANT: Removed hardcoded values from the form inputs -->
             <form id="dog-form" class="admin-card">
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
@@ -87,7 +88,7 @@
 
                 <h2 class="form-section-header">รูปภาพ</h2>
                  <div id="existing-images-container" class="input-group full-width">
-                    <!-- Existing images will be shown here -->
+                    <!-- Existing images will be shown here by JavaScript -->
                  </div>
                  <div class="input-group full-width">
                     <label for="image_upload">อัปโหลดรูปภาพใหม่ (รูปแรกจะเป็นรูปปก)</label>
@@ -101,7 +102,7 @@
         </main>
     </div>
 
-    <!-- SDKs -->
+    <!-- REQUIRED SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -117,19 +118,23 @@
         };
         const app = firebase.initializeApp(firebaseConfig);
 
-        // --- AUTH GUARD ---
+        // --- AUTH GUARD: Protects the page ---
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
+                // User is signed in, so we can run the form logic.
                 initializeForm();
             } else {
+                // Redirect if not logged in.
                 window.location.href = 'login.html';
             }
         });
     </script>
     
+    <!-- This script file contains image upload functions -->
     <script src="script.js"></script>
 
     <script>
+        // This is the CORE LOGIC for this page
         const db = firebase.firestore();
         const form = document.getElementById('dog-form');
         const pageTitle = document.getElementById('page-title');
@@ -141,6 +146,7 @@
         const isEditMode = !!dogId;
         let existingImageUrls = [];
 
+        // Function to check URL for an ID and load data if it's an edit
         async function initializeForm() {
             if (isEditMode) {
                 pageTitle.textContent = 'แก้ไขข้อมูลน้องหมา';
@@ -150,6 +156,7 @@
                     const docSnap = await docRef.get();
                     if (docSnap.exists) {
                         const data = docSnap.data();
+                        // Pre-fill the form with data from Firestore
                         document.getElementById('name').value = data.name || '';
                         document.getElementById('breed').value = data.breed || '';
                         document.getElementById('age').value = data.age || '';
@@ -167,11 +174,12 @@
                     }
                 } catch (error) {
                     console.error("Error fetching dog data:", error);
-                    alert('ไม่สามารถโหลดข้อมูลได้');
+                    alert('ไม่สามารถโหลดข้อมูลสำหรับแก้ไขได้');
                 }
             }
         }
         
+        // Function to display image previews for existing images
         function renderExistingImages() {
             existingImagesContainer.innerHTML = '';
             if (existingImageUrls.length === 0) return;
@@ -191,32 +199,38 @@
             });
             existingImagesContainer.appendChild(imageGrid);
             
+            // Make the 'X' buttons work
             imageGrid.querySelectorAll('.delete-img-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const indexToRemove = parseInt(e.target.dataset.index);
+                    const indexToRemove = parseInt(e.target.dataset.index, 10);
                     existingImageUrls.splice(indexToRemove, 1);
-                    renderExistingImages();
+                    renderExistingImages(); // Re-render the previews
                 });
             });
         }
 
+        // Main function that runs when the "Save" button is clicked
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             submitButton.disabled = true;
             submitButton.textContent = 'กำลังบันทึก...';
             
             try {
+                // 1. Upload any new images
                 const imageFiles = document.getElementById('image_upload').files;
                 let newImageUrls = [];
                 if (imageFiles.length > 0) {
+                    // This function is in script.js
                     newImageUrls = await uploadMultipleImages(imageFiles);
                 }
                 
+                // 2. Combine old and new image URLs
                 const allImageUrls = [...existingImageUrls, ...newImageUrls];
                 if (allImageUrls.length === 0) {
                     throw new Error('กรุณาอัปโหลดหรือคงเหลือรูปภาพอย่างน้อย 1 รูป');
                 }
 
+                // 3. Prepare the data object to be saved
                 const dogData = {
                     name: document.getElementById('name').value,
                     breed: document.getElementById('breed').value,
@@ -232,27 +246,27 @@
                     imageUrls: allImageUrls
                 };
 
+                // 4. Save to Firebase
                 if (isEditMode) {
-                    // Only update data, don't change createdAt or order
+                    // Update an existing document
                     await db.collection("dogs").doc(dogId).update(dogData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
-                    // This is a NEW dog
-                    // Get current number of dogs for the manual order
+                    // Create a new document
                     const docCountSnapshot = await db.collection("dogs").get();
-                    dogData.order = docCountSnapshot.size; 
-                    // Add the server timestamp for "newest first" sorting
-                    dogData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    dogData.order = docCountSnapshot.size; // Set initial order
+                    dogData.createdAt = firebase.firestore.FieldValue.serverTimestamp(); // Set timestamp for sorting
                     await db.collection("dogs").add(dogData);
                     alert('เพิ่มน้องหมาสำเร็จ!');
                 }
                 
-                window.location.href = 'admin.html';
+                window.location.href = 'admin.html'; // Go back to the list
 
             } catch (error) {
                 console.error("Error saving dog data:", error);
                 alert(`เกิดข้อผิดพลาด: ${error.message}`);
             } finally {
+                // Re-enable the button after success or failure
                 submitButton.disabled = false;
                 submitButton.textContent = isEditMode ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล';
             }

@@ -47,14 +47,15 @@
                          <tr><th class="drag-header"></th><th>ข้อมูลน้องหมา</th><th>สถานะ</th><th>ราคา</th><th>การกระทำ</th></tr>
                      </thead>
                      <tbody id="product-table-body">
-                         <!-- Dynamic rows will be inserted here -->
+                         <!-- This will be filled by JavaScript -->
+                         <tr><td colspan="5" style="text-align: center;">กำลังโหลดข้อมูล...</td></tr>
                      </tbody>
                  </table>
             </div>
         </main>
     </div>
 
-    <!-- SDKs -->
+    <!-- REQUIRED SDKs -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -72,28 +73,30 @@
         };
         const app = firebase.initializeApp(firebaseConfig);
         
-        // --- AUTH GUARD ---
+        // --- AUTH GUARD: Protects the page ---
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
-                // User is signed in, load page content.
+                // User is signed in, so we can load the page's main function.
                 fetchAndDisplayDogs();
             } else {
-                // No user is signed in, redirect.
+                // No user is signed in. Redirect them to the login page.
                 window.location.href = 'login.html';
             }
         });
     </script>
     
+    <!-- This script file contains the logout function -->
     <script src="script.js"></script>
 
     <script>
-        // Page-specific JavaScript
+        // This is the CORE LOGIC for this page
         const db = firebase.firestore();
         const tableBody = document.getElementById('product-table-body');
 
+        // Function to create one row in the table from Firestore data
         function createTableRow(dogData, docId) {
             const row = document.createElement('tr');
-            row.setAttribute('data-id', docId);
+            row.setAttribute('data-id', docId); // Crucial for sorting and deleting
 
             let statusText = 'พร้อมขาย';
             if (dogData.status === 'preordered') statusText = 'ติดจอง';
@@ -122,16 +125,19 @@
             return row;
         }
 
+        // Main function to fetch all dogs from the database
         async function fetchAndDisplayDogs() {
-            tableBody.innerHTML = '<tr><td colspan="5">กำลังโหลด...</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">กำลังโหลด...</td></tr>';
+            // Fetch dogs ordered by the 'order' field
             const dogsSnapshot = await db.collection("dogs").orderBy("order", "asc").get();
-            tableBody.innerHTML = '';
+            tableBody.innerHTML = ''; // Clear the "Loading..." message
             
             if (dogsSnapshot.empty) {
-                tableBody.innerHTML = '<tr><td colspan="5">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>';
                 return;
             }
             
+            // Create a table row for each dog
             dogsSnapshot.forEach(doc => {
                 const row = createTableRow(doc.data(), doc.id);
                 tableBody.appendChild(row);
@@ -141,25 +147,27 @@
             initializeSortable();
         }
 
+        // Function to make the "Delete" buttons work
         function setupActionListeners() {
             tableBody.querySelectorAll('.delete-btn').forEach(button => {
                 button.addEventListener('click', async (e) => {
                     const docId = e.target.dataset.id;
                     const dogName = e.target.dataset.name;
-                    if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${dogName}"?`)) {
+                    if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${dogName}"? การกระทำนี้ไม่สามารถย้อนกลับได้`)) {
                         try {
                             await db.collection("dogs").doc(docId).delete();
                             alert('ลบข้อมูลสำเร็จ!');
-                            fetchAndDisplayDogs();
+                            fetchAndDisplayDogs(); // Refresh the list
                         } catch (error) {
                             console.error("Error deleting document: ", error);
-                            alert('เกิดข้อผิดพลาดในการลบ');
+                            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
                         }
                     }
                 });
             });
         }
         
+        // Function to enable drag-and-drop
         function initializeSortable() {
             new Sortable(tableBody, {
                 handle: '.drag-handle',
@@ -167,8 +175,9 @@
                 ghostClass: 'sortable-ghost',
                 onEnd: async function (evt) {
                     const rows = tableBody.querySelectorAll('tr');
-                    const batch = db.batch();
+                    const batch = db.batch(); // Use a batch write for efficiency
                     
+                    // Update the 'order' field for each document based on its new position
                     rows.forEach((row, index) => {
                         const docId = row.dataset.id;
                         if (docId) {
