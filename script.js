@@ -24,15 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutButton.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // We need to have Firebase initialized on the page to use auth
-            // This is done on admin.html, add-item.html, and settings.html
+            // Firebase must be initialized on the page to use auth
             const auth = firebase.auth();
             auth.signOut().then(() => {
-                // Sign-out successful.
                 alert('คุณออกจากระบบแล้ว');
                 window.location.href = 'index.html';
             }).catch((error) => {
-                // An error happened.
                 console.error("Logout Error:", error);
                 alert('เกิดข้อผิดพลาดในการออกจากระบบ');
             });
@@ -56,24 +53,19 @@ async function uploadImageToImgBB(imageFile) {
         });
         const data = await response.json();
         if (data.success) {
-            console.log('Image uploaded successfully:', data.data.url);
-            return data.data.url; // Return the image URL
+            return data.data.url;
         } else {
             throw new Error(`ImgBB upload failed: ${data.error?.message || 'Unknown error'}`);
         }
     } catch (error) {
         console.error('Error uploading to ImgBB:', error);
-        throw error; // Re-throw the error to be handled by the caller
+        throw error;
     }
 }
 
-// Function to upload multiple image files by calling the single upload function for each
+// Function to upload multiple image files
 async function uploadMultipleImages(imageFiles) {
-    // Create an array of promises, where each promise is an upload task
     const uploadPromises = Array.from(imageFiles).map(file => uploadImageToImgBB(file));
-    
-    // Use Promise.all to wait for all uploads to complete
     const imageUrls = await Promise.all(uploadPromises);
-    
-    return imageUrls; // Returns an array of successfully uploaded image URLs
+    return imageUrls;
 }

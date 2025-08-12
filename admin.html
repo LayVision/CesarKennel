@@ -30,25 +30,31 @@
 
         <!-- Main Content -->
         <main class="admin-main">
+            <header class="mobile-header">
+                <div class="mobile-logo">Admin<span>.</span></div>
+                <button class="mobile-menu-button" id="menu-toggle">☰</button>
+            </header>
+            
             <header class="desktop-header">
                 <h1>จัดการน้องหมา</h1>
                 <a href="add-item.html" class="button button-primary">เพิ่มน้องหมาตัวใหม่</a>
             </header>
 
             <div class="admin-card">
-                 <h2>รายการทั้งหมด</h2>
+                 <h2>รายการทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
                  <table class="product-table">
                      <thead>
                          <tr><th class="drag-header"></th><th>ข้อมูลน้องหมา</th><th>สถานะ</th><th>ราคา</th><th>การกระทำ</th></tr>
                      </thead>
                      <tbody id="product-table-body">
-                         <!-- Rows will be dynamically inserted here -->
+                         <!-- Dynamic rows will be inserted here -->
                      </tbody>
                  </table>
             </div>
         </main>
     </div>
 
+    <!-- SDKs -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -64,21 +70,15 @@
           messagingSenderId: "512752480416",
           appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
-
-        // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         
         // --- AUTH GUARD ---
-        // This checks the user's login state and redirects if they are not logged in.
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
-                // User is signed in.
-                console.log('Access granted for:', user.email);
-                // Proceed to load page content
+                // User is signed in, load page content.
                 fetchAndDisplayDogs();
             } else {
-                // No user is signed in. Redirect to login page.
-                console.log('Access denied. Redirecting to login.');
+                // No user is signed in, redirect.
                 window.location.href = 'login.html';
             }
         });
@@ -87,7 +87,7 @@
     <script src="script.js"></script>
 
     <script>
-        // The rest of the page-specific JavaScript
+        // Page-specific JavaScript
         const db = firebase.firestore();
         const tableBody = document.getElementById('product-table-body');
 
@@ -127,16 +127,21 @@
             const dogsSnapshot = await db.collection("dogs").orderBy("order", "asc").get();
             tableBody.innerHTML = '';
             
+            if (dogsSnapshot.empty) {
+                tableBody.innerHTML = '<tr><td colspan="5">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>';
+                return;
+            }
+            
             dogsSnapshot.forEach(doc => {
                 const row = createTableRow(doc.data(), doc.id);
                 tableBody.appendChild(row);
             });
             
-            setupEventListeners();
+            setupActionListeners();
             initializeSortable();
         }
 
-        function setupEventListeners() {
+        function setupActionListeners() {
             tableBody.querySelectorAll('.delete-btn').forEach(button => {
                 button.addEventListener('click', async (e) => {
                     const docId = e.target.dataset.id;

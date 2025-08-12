@@ -5,6 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เพิ่ม/แก้ไข ข้อมูลน้องหมา</title>
     <link rel="stylesheet" href="admin-style.css">
+    <style>
+        /* Simple style for existing image previews */
+        #existing-images-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .img-preview-wrapper {
+            position: relative;
+        }
+        .img-preview-wrapper img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .delete-img-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-red);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 20px;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -52,7 +86,9 @@
                 </div>
 
                 <h2 class="form-section-header">รูปภาพ</h2>
-                <div id="existing-images-container" class="full-width"></div>
+                 <div id="existing-images-container" class="input-group full-width">
+                    <!-- Existing images will be shown here -->
+                 </div>
                  <div class="input-group full-width">
                     <label for="image_upload">อัปโหลดรูปภาพใหม่ (รูปแรกจะเป็นรูปปก)</label>
                     <input type="file" id="image_upload" multiple accept="image/*">
@@ -65,13 +101,12 @@
         </main>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     
     <script>
-        // Define Firebase Config
         const firebaseConfig = {
           apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
           authDomain: "cesarkennel.firebaseapp.com",
@@ -85,10 +120,8 @@
         // --- AUTH GUARD ---
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
-                // User is signed in, proceed to load form logic.
                 initializeForm();
             } else {
-                // No user is signed in. Redirect.
                 window.location.href = 'login.html';
             }
         });
@@ -130,7 +163,7 @@
                         document.getElementById('description').value = data.description || '';
                         
                         existingImageUrls = data.imageUrls || [];
-                        displayExistingImages();
+                        renderExistingImages();
                     }
                 } catch (error) {
                     console.error("Error fetching dog data:", error);
@@ -139,33 +172,30 @@
             }
         }
         
-        function displayExistingImages() {
-            if (existingImageUrls.length === 0) {
-                existingImagesContainer.innerHTML = '';
-                return;
-            };
-            existingImagesContainer.innerHTML = '<h4 style="margin-bottom: 12px;">รูปภาพปัจจุบัน (คลิก "X" เพื่อลบ)</h4>';
+        function renderExistingImages() {
+            existingImagesContainer.innerHTML = '';
+            if (existingImageUrls.length === 0) return;
+            
+            existingImagesContainer.innerHTML = '<h4>รูปภาพปัจจุบัน</h4>';
             const imageGrid = document.createElement('div');
-            imageGrid.style.display = 'flex';
-            imageGrid.style.gap = '10px';
-            imageGrid.style.flexWrap = 'wrap';
+            imageGrid.id = 'existing-images-grid';
             
             existingImageUrls.forEach((url, index) => {
                 const imgWrapper = document.createElement('div');
-                imgWrapper.style.position = 'relative';
+                imgWrapper.className = 'img-preview-wrapper';
                 imgWrapper.innerHTML = `
-                    <img src="${url}" alt="Existing image ${index + 1}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">
-                    <button type="button" class="delete-img-btn" data-index="${index}" style="position:absolute; top:2px; right:2px; cursor:pointer; background:red; color:white; border:none; border-radius:50%; width:20px; height:20px; line-height:20px; text-align:center; padding:0;">X</button>
+                    <img src="${url}" alt="Existing image ${index + 1}">
+                    <button type="button" class="delete-img-btn" data-index="${index}">X</button>
                 `;
                 imageGrid.appendChild(imgWrapper);
             });
             existingImagesContainer.appendChild(imageGrid);
             
-            existingImagesContainer.querySelectorAll('.delete-img-btn').forEach(btn => {
+            imageGrid.querySelectorAll('.delete-img-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const indexToRemove = parseInt(e.target.dataset.index);
                     existingImageUrls.splice(indexToRemove, 1);
-                    displayExistingImages();
+                    renderExistingImages();
                 });
             });
         }
@@ -184,7 +214,7 @@
                 
                 const allImageUrls = [...existingImageUrls, ...newImageUrls];
                 if (allImageUrls.length === 0) {
-                    throw new Error('กรุณาอัปโหลดรูปภาพอย่างน้อย 1 รูป');
+                    throw new Error('กรุณาอัปโหลดหรือคงเหลือรูปภาพอย่างน้อย 1 รูป');
                 }
 
                 const dogData = {
@@ -217,6 +247,7 @@
             } catch (error) {
                 console.error("Error saving dog data:", error);
                 alert(`เกิดข้อผิดพลาด: ${error.message}`);
+            } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = isEditMode ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล';
             }

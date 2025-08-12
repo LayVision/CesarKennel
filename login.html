@@ -10,7 +10,7 @@
     <div class="login-container">
         <form id="login-form" class="login-form">
             <h2>ผู้ดูแลระบบ</h2>
-            <!-- Element to show error messages -->
+            <!-- Add an element to show error messages -->
             <p id="error-message" style="color: var(--accent-red); text-align: center; display: none; margin-bottom: 16px;"></p>
             <div class="input-group">
                 <label for="email">อีเมล</label>
@@ -51,7 +51,6 @@
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Disable button and show loading text
             loginButton.disabled = true;
             loginButton.textContent = 'กำลังเข้าสู่ระบบ...';
             errorMessage.style.display = 'none';
@@ -62,22 +61,13 @@
             try {
                 // Sign in with Firebase Auth
                 await auth.signInWithEmailAndPassword(email, password);
-                // On success, Firebase automatically handles the session persistence.
-                // Redirect to the admin page.
+                // On success, redirect to the admin page.
                 window.location.href = 'admin.html';
             } catch (error) {
                 // On failure, show an error message
-                console.error("Login Failed:", error.code, error.message);
-                
-                // Provide a more specific error message if possible
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    errorMessage.textContent = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
-                } else {
-                    errorMessage.textContent = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
-                }
+                errorMessage.textContent = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
                 errorMessage.style.display = 'block';
 
-                // Re-enable the button so the user can try again
                 loginButton.disabled = false;
                 loginButton.textContent = 'เข้าสู่ระบบ';
             }
