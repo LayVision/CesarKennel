@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แผงควบคุมสำหรับผู้ดูแล</title>
     <link rel="stylesheet" href="admin-style.css">
+    <!-- Firebase App (Core) SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
     <!-- Centered container for the login form -->
@@ -13,8 +17,8 @@
         <form id="login-form" class="login-form">
             <h2>ผู้ดูแลระบบ</h2>
             <div class="input-group">
-                <label for="username">ชื่อผู้ใช้</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">อีเมล</label> <!-- Changed from "ชื่อผู้ใช้" to "อีเมล" for clarity -->
+                <input type="email" id="username" name="username" required>
             </div>
             <div class="input-group">
                 <label for="password">รหัสผ่าน</label>
@@ -26,18 +30,48 @@
     </div>
     
     <script>
-        // Attaches an event listener to the form submission.
+        // --- FIREBASE AUTHENTICATION SCRIPT ---
+
+        // 1. Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+            authDomain: "cesarkennel.firebaseapp.com",
+            projectId: "cesarkennel",
+            storageBucket: "cesarkennel.firebasestorage.app",
+            messagingSenderId: "512752480416",
+            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+
+        // 2. Initialize Firebase
+        // This sets up the connection to your Firebase project.
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth(); // Get the auth service
+
+        // 3. Attaches an event listener to the form submission.
         document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevents the form from actually submitting.
+            event.preventDefault(); // Prevents the form from a default submission.
             
-            // This is a simulation for demonstration purposes.
-            // In a real application, you would send credentials to a server for validation.
-            // Sets a flag in the browser's local storage to "remember" the login state.
-            localStorage.setItem('isAdminLoggedIn', 'true');
-            alert('เข้าสู่ระบบสำเร็จ!');
-            
-            // Redirects the user to the main admin page.
-            window.location.href = 'admin.html';
+            // Get user's email and password from the form fields.
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // 4. Sign in with Firebase Authentication
+            // This sends the credentials to Firebase for validation.
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // This block runs if the login is successful.
+                    console.log('Login successful!', userCredential.user);
+                    alert('เข้าสู่ระบบสำเร็จ!');
+                    
+                    // Redirects the user to the main admin page.
+                    window.location.href = 'admin.html';
+                })
+                .catch((error) => {
+                    // This block runs if the login fails.
+                    // It provides an error message for the user.
+                    console.error('Login failed:', error);
+                    alert(`เกิดข้อผิดพลาดในการเข้าสู่ระบบ: ${error.message}`);
+                });
         });
     </script>
 </body>
