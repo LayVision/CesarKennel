@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เพิ่ม/แก้ไข ข้อมูลน้องหมา</title>
+    <!-- Title will change dynamically -->
+    <title>เพิ่มข้อมูลน้องหมา</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- MODIFIED: Removed Firebase Storage, kept Auth and Firestore -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <!-- Main layout for the admin interface -->
     <div class="admin-layout">
-        <!-- Sidebar for admin navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Admin<span>.</span></div>
@@ -33,21 +31,25 @@
             </nav>
         </aside>
 
-        <!-- Main content area for the form -->
         <main class="admin-main">
-             <!-- Header for mobile view -->
              <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <!-- Header for desktop view with a back button -->
             <header class="desktop-header">
-                <h1>เพิ่ม / แก้ไขข้อมูลน้องหมา</h1>
+                <!-- Heading will change dynamically -->
+                <h1 id="form-heading">เพิ่มข้อมูลน้องหมา</h1>
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
             <form id="add-item-form" class="admin-card">
+                 <!-- Existing Images Display (for edit mode) -->
+                 <div id="existing-images-container" style="display: none; margin-bottom: 24px;">
+                    <h3>รูปภาพปัจจุบัน</h3>
+                    <div id="existing-images-grid" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                </div>
+
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
                     <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" required></div>
@@ -55,39 +57,17 @@
                     <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age" required></div>
                     <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" name="price" required></div>
                     <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
-                    <div class="input-group">
-                        <label for="gender">เพศ</label>
-                        <select id="gender" name="gender" required><option value="เมีย">เมีย</option><option value="ผู้">ผู้</option></select>
-                    </div>
-                    <div class="input-group">
-                        <label for="color">ตัวสี</label>
-                        <input type="text" id="color" name="color" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="eye-color">ตาสี</label>
-                        <input type="text" id="eye-color" name="eye-color">
-                    </div>
-                    <div class="input-group">
-                        <label for="vaccine">วัคซีน</label>
-                        <input type="text" id="vaccine" name="vaccine">
-                    </div>
-                    <div class="input-group">
-                        <label for="status">สถานะ</label>
-                        <select id="status" name="status" required>
-                            <option value="available">พร้อมย้ายบ้าน</option>
-                            <option value="preordered">ติดจอง</option>
-                            <option value="sold">ขายแล้ว</option>
-                        </select>
-                    </div>
-                    <div class="input-group full-width">
-                        <label for="description">รายละเอียดเพิ่มเติม</label>
-                        <textarea id="description" name="description" rows="4"></textarea>
-                    </div>
+                    <div class="input-group"><label for="gender">เพศ</label><select id="gender" name="gender" required><option value="เมีย">เมีย</option><option value="ผู้">ผู้</option></select></div>
+                    <div class="input-group"><label for="color">ตัวสี</label><input type="text" id="color" name="color" required></div>
+                    <div class="input-group"><label for="eye-color">ตาสี</label><input type="text" id="eye-color" name="eye-color"></div>
+                    <div class="input-group"><label for="vaccine">วัคซีน</label><input type="text" id="vaccine" name="vaccine"></div>
+                    <div class="input-group"><label for="status">สถานะ</label><select id="status" name="status" required><option value="available">พร้อมย้ายบ้าน</option><option value="preordered">ติดจอง</option><option value="sold">ขายแล้ว</option></select></div>
+                    <div class="input-group full-width"><label for="description">รายละเอียดเพิ่มเติม</label><textarea id="description" name="description" rows="4"></textarea></div>
                 </div>
 
                 <h2 class="form-section-header">รูปภาพ</h2>
                  <div class="input-group full-width">
-                    <label for="image_upload">อัปโหลดรูปภาพใหม่ (รูปแรกจะเป็นรูปปก)</label>
+                    <label for="image_upload">อัปโหลดรูปภาพใหม่ (จะถูกเพิ่มต่อท้ายรูปเดิม)</label>
                     <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*">
                 </div>
                 
@@ -98,94 +78,125 @@
         </main>
     </div>
     
-    <!-- Link to the main script file for general UI (menu, logout, etc.) -->
     <script src="script.js"></script>
 
-    <!-- Script to handle this specific form's submission -->
     <script>
-        // --- Firebase Initialization ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
-            authDomain: "cesarkennel.firebaseapp.com",
-            projectId: "cesarkennel",
-            storageBucket: "cesarkennel.firebasestorage.app",
-            messagingSenderId: "512752480416",
-            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
-        };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
-
-        // --- Form Submission Logic ---
-        const form = document.getElementById('add-item-form');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitButton = document.getElementById('submit-button');
-            submitButton.disabled = true;
-            submitButton.textContent = 'กำลังบันทึก...';
-
-            try {
-                // --- NEW: Upload Images to ImgBB ---
-                const imageFiles = document.getElementById('image_upload').files;
-                const imageUrls = [];
-                const imgbbApiKey = '2c1b183962c1d06f8aecea08cbc78d11';
-
-                if (imageFiles.length > 0) {
-                    // Create an array of upload promises
-                    const uploadPromises = Array.from(imageFiles).map(file => {
-                        const formData = new FormData();
-                        formData.append('key', imgbbApiKey);
-                        formData.append('image', file);
-
-                        // Return the fetch promise
-                        return fetch('https://api.imgbb.com/1/upload', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.success) {
-                                return result.data.url; // Return the image URL on success
-                            } else {
-                                throw new Error(result.error.message || 'ImgBB upload failed');
-                            }
-                        });
-                    });
-                    // Wait for all uploads to complete
-                    const uploadedUrls = await Promise.all(uploadPromises);
-                    imageUrls.push(...uploadedUrls);
-                }
-
-                // --- Prepare Product Data (No changes here) ---
-                const productData = {
-                    name: form.name.value,
-                    breed: form.breed.value,
-                    age: form.age.value,
-                    price: Number(form.price.value),
-                    discountPrice: form['discount-price'].value ? Number(form['discount-price'].value) : null,
-                    gender: form.gender.value,
-                    color: form.color.value,
-                    eyeColor: form['eye-color'].value,
-                    vaccine: form.vaccine.value,
-                    status: form.status.value,
-                    description: form.description.value,
-                    imageUrls: imageUrls, // Use the URLs from ImgBB
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                // --- Save to Firestore (No changes here) ---
-                await db.collection('products').add(productData);
-
-                alert('บันทึกข้อมูลน้องหมาสำเร็จ!');
-                window.location.href = 'admin.html';
-
-            } catch (error) {
-                console.error("Error processing form: ", error);
-                alert(`เกิดข้อผิดพลาด: ${error.message}`);
-                submitButton.disabled = false;
-                submitButton.textContent = 'บันทึกข้อมูล';
+        document.addEventListener('DOMContentLoaded', async () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+                authDomain: "cesarkennel.firebaseapp.com",
+                projectId: "cesarkennel",
+                storageBucket: "cesarkennel.firebasestorage.app",
+                messagingSenderId: "512752480416",
+                appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+            };
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
             }
+            const db = firebase.firestore();
+            const form = document.getElementById('add-item-form');
+            const formHeading = document.getElementById('form-heading');
+            let currentImageUrls = [];
+
+            // --- Check for Edit Mode ---
+            const params = new URLSearchParams(window.location.search);
+            const editId = params.get('edit');
+
+            if (editId) {
+                formHeading.textContent = 'แก้ไขข้อมูลน้องหมา';
+                document.title = 'แก้ไขข้อมูลน้องหมา - ปอมปอม บูทีค';
+
+                const docRef = db.collection('products').doc(editId);
+                const doc = await docRef.get();
+
+                if (doc.exists) {
+                    const data = doc.data();
+                    form.name.value = data.name || '';
+                    form.breed.value = data.breed || '';
+                    form.age.value = data.age || '';
+                    form.price.value = data.price || '';
+                    form['discount-price'].value = data.discountPrice || '';
+                    form.gender.value = data.gender || 'เมีย';
+                    form.color.value = data.color || '';
+                    form['eye-color'].value = data.eyeColor || '';
+                    form.vaccine.value = data.vaccine || '';
+                    form.status.value = data.status || 'available';
+                    form.description.value = data.description || '';
+                    currentImageUrls = data.imageUrls || [];
+
+                    // Display existing images
+                    const imagesContainer = document.getElementById('existing-images-container');
+                    const imagesGrid = document.getElementById('existing-images-grid');
+                    if(currentImageUrls.length > 0) {
+                        imagesContainer.style.display = 'block';
+                        currentImageUrls.forEach(url => {
+                            imagesGrid.innerHTML += `<img src="${url}" alt="Existing Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">`;
+                        });
+                    }
+                }
+            }
+
+            // --- Form Submission Logic (Create or Update) ---
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitButton = document.getElementById('submit-button');
+                submitButton.disabled = true;
+                submitButton.textContent = 'กำลังบันทึก...';
+
+                try {
+                    const imageFiles = document.getElementById('image_upload').files;
+                    let newImageUrls = [];
+                    const imgbbApiKey = '2c1b183962c1d06f8aecea08cbc78d11';
+
+                    if (imageFiles.length > 0) {
+                        const uploadPromises = Array.from(imageFiles).map(file => {
+                            const formData = new FormData();
+                            formData.append('key', imgbbApiKey);
+                            formData.append('image', file);
+                            return fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData })
+                                .then(response => response.json())
+                                .then(result => {
+                                    if (result.success) return result.data.url;
+                                    else throw new Error(result.error.message || 'ImgBB upload failed');
+                                });
+                        });
+                        newImageUrls = await Promise.all(uploadPromises);
+                    }
+
+                    const productData = {
+                        name: form.name.value,
+                        breed: form.breed.value,
+                        age: form.age.value,
+                        price: Number(form.price.value),
+                        discountPrice: form['discount-price'].value ? Number(form['discount-price'].value) : null,
+                        gender: form.gender.value,
+                        color: form.color.value,
+                        eyeColor: form['eye-color'].value,
+                        vaccine: form.vaccine.value,
+                        status: form.status.value,
+                        description: form.description.value,
+                        imageUrls: [...currentImageUrls, ...newImageUrls], // Combine old and new images
+                    };
+
+                    if (editId) {
+                        // Update existing document
+                        await db.collection('products').doc(editId).update(productData);
+                        alert('อัปเดตข้อมูลสำเร็จ!');
+                    } else {
+                        // Add new document with timestamp
+                        productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                        await db.collection('products').add(productData);
+
+                        alert('บันทึกข้อมูลน้องหมาสำเร็จ!');
+                    }
+                    window.location.href = 'admin.html';
+                } catch (error) {
+                    console.error("Error processing form:", error);
+                    alert(`เกิดข้อผิดพลาด: ${error.message}`);
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'บันทึกข้อมูล';
+                }
+            });
         });
     </script>
 </body>
