@@ -5,69 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- MODIFIED: Added Firestore SDK to allow data fetching on this page -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <!-- Main layout grid for the admin panel -->
     <div class="admin-layout">
-        <!-- Admin Sidebar for navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <!-- Admin Panel Logo -->
                 <div class="sidebar-logo">Admin<span>.</span></div>
-                <!-- Main Admin Navigation -->
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
-                        <!-- MODIFIED: Added id="nav-manage-dogs" -->
                         <li><a href="admin.html" class="active">จัดการน้องหมา</a></li>
                         <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
             </div>
-             <!-- Secondary navigation for viewing the live site and logging out -->
              <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
-                    <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
+                    <li><a href="#" class="logout-link">ออกจากระบบ</a></li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- Main content area for the admin panel -->
         <main class="admin-main">
-            <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
             
-            <!-- Header for desktop view -->
             <header class="desktop-header">
                 <h1>จัดการน้องหมา</h1>
                 <a href="add-item.html" class="button button-primary">เพิ่มน้องหมาตัวใหม่</a>
             </header>
 
-            <!-- Card containing the product list -->
             <div class="admin-card">
                  <h2>รายการทั้งหมด</h2>
-                 <!-- Table to display all products (dogs) -->
                  <table class="product-table">
                      <thead>
                          <tr>
-                            <th class="drag-header"></th><!-- Header for drag handle column -->
+                            <th class="drag-header"></th>
                             <th>ข้อมูลน้องหมา</th>
                             <th>สถานะ</th>
                             <th>ราคา</th>
                             <th>การกระทำ</th>
                         </tr>
                      </thead>
-                     <!-- This table body will be populated dynamically by script.js -->
                      <tbody id="product-table-body">
-                         <!-- Product rows will be inserted here -->
+                         <!-- Product rows will be inserted here by script.js -->
                      </tbody>
                  </table>
             </div>

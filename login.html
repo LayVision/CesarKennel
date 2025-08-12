@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แผงควบคุมสำหรับผู้ดูแล</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- Firebase App (Core) SDK -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <!-- Firebase Authentication SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
+
 <body>
-    <!-- Centered container for the login form -->
     <div class="login-container">
-        <!-- The login form itself -->
         <form id="login-form" class="login-form">
             <h2>ผู้ดูแลระบบ</h2>
             <div class="input-group">
@@ -28,11 +27,9 @@
             <p class="home-link"><a href="index.html">กลับสู่หน้าหลัก</a></p>
         </form>
     </div>
-    
-    <script>
-        // --- FIREBASE AUTHENTICATION SCRIPT ---
 
-        // 1. Your web app's Firebase configuration
+    <script>
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -42,27 +39,22 @@
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
 
-        // 2. Initialize Firebase
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(); 
+        const auth = firebase.auth();
 
-        // 3. Attaches an event listener to the form submission.
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault(); 
-            
+        // Login Form Event Listener
+        document.getElementById('login-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // 4. Sign in with Firebase Authentication
+            // Sign in with Firebase
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    console.log('Login successful!', userCredential.user);
-
-                    // --- NEW ---
                     // Set a flag in local storage so other pages know the user is an admin.
-                    // This allows the UI on other pages to update correctly.
                     localStorage.setItem('isAdminLoggedIn', 'true');
-                    
                     alert('เข้าสู่ระบบสำเร็จ!');
                     window.location.href = 'admin.html';
                 })
@@ -73,4 +65,5 @@
         });
     </script>
 </body>
+
 </html>

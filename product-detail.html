@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายละเอียดน้องหมา - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="style.css">
-    <!-- ADDED: Firebase SDKs for Auth and Firestore -->
+    <!-- Firebase SDKs for Auth and Firestore -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <!-- ... body content remains the same ... -->
      <div class="shop-layout">
         <aside class="sidebar" id="sidebar">
             <div>
@@ -40,6 +39,7 @@
                 <div class="detail-gallery">
                     <img src="" alt="รูปหลัก" id="mainImage" class="main-image">
                     <div class="detail-thumbnails" id="detail-thumbnails">
+                        <!-- Thumbnails will be inserted here by script.js -->
                     </div>
                 </div>
                 <div class="detail-info">
@@ -54,7 +54,6 @@
                         <li><strong>ตาสี:</strong><span id="detail-eye-color"></span></li>
                         <li><strong>วัคซีน:</strong><span id="detail-vaccine"></span></li>
                     </ul>
-
                     <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
                 </div>
             </div>

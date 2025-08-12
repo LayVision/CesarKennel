@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title will change dynamically -->
     <title>เพิ่มข้อมูลน้องหมา</title>
     <link rel="stylesheet" href="admin-style.css">
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -26,7 +26,7 @@
              <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
-                    <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
+                    <li><a href="#" class="logout-link">ออกจากระบบ</a></li>
                 </ul>
             </nav>
         </aside>
@@ -38,13 +38,11 @@
             </header>
 
             <header class="desktop-header">
-                <!-- Heading will change dynamically -->
                 <h1 id="form-heading">เพิ่มข้อมูลน้องหมา</h1>
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
             <form id="add-item-form" class="admin-card">
-                 <!-- Existing Images Display (for edit mode) -->
                  <div id="existing-images-container" style="display: none; margin-bottom: 24px;">
                     <h3>รูปภาพปัจจุบัน</h3>
                     <div id="existing-images-grid" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
@@ -186,7 +184,6 @@
                         // Add new document with timestamp
                         productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                         await db.collection('products').add(productData);
-
                         alert('บันทึกข้อมูลน้องหมาสำเร็จ!');
                     }
                     window.location.href = 'admin.html';
