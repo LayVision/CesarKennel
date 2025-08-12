@@ -118,7 +118,8 @@
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firestore.js";
+        // --- CORRECTED IMPORT PATH BELOW ---
+        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         // --- Firebase Initialization ---
         const firebaseConfig = {
@@ -172,7 +173,6 @@
 
             } catch (error) {
                 console.error("Error fetching products:", error);
-                // This error message now specifically mentions the index issue.
                 if (error.code === 'failed-precondition') {
                      productGrid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">
                         <b>ข้อผิดพลาด:</b> ต้องสร้าง Index ใน Firestore ก่อน โปรดเปิด Console (F12) เพื่อหาลิงก์สำหรับสร้าง Index
@@ -186,7 +186,6 @@
         // --- Helper Function to Create Product Card HTML (More Robust) ---
         const createProductCardHTML = (product, id) => {
             const isSold = product.status === 'sold';
-            // Use default values (e.g., 0, "") to prevent errors if data is missing
             const price = product.price || 0;
             const discountPrice = product.discountPrice || 0;
             const hasDiscount = discountPrice > 0 && discountPrice < price;
@@ -232,7 +231,7 @@
             const itemsPerPage = 6;
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
-                paginationContainer.innerHTML = ''; // Clear pagination if not needed
+                paginationContainer.innerHTML = '';
                 return;
             };
 
@@ -247,7 +246,6 @@
                 });
                 
                 updatePaginationButtons(page, totalPages);
-                // Only push state if the page is not the initial one to avoid duplicate history entries
                 if (history.state?.page !== page) {
                     const url = new URL(window.location);
                     url.searchParams.set('page', page);
@@ -295,6 +293,203 @@
 
         // --- Run on page load ---
         fetchAndDisplayProducts();
+    </script>
+</body>
+</html>```
+
+### 2. `product-detail.html` (Corrected)
+
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ข้อมูลน้องหมา - ปอมปอม บูทีค</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="shop-layout">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="sidebar-logo">PomPom<span>.</span></div>
+                <nav class="sidebar-nav">
+                    <h3>เมนู</h3>
+                    <ul>
+                        <li><a href="index.html">น้องหมาทั้งหมด</a></li>
+                        <li><a href="#">เพศผู้</a></li>
+                        <li><a href="#">เพศเมีย</a></li>
+                        <li><a href="#">เกี่ยวกับเรา</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                &copy; 2568 ปอมปอม บูทีค
+                <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
+            </div>
+        </aside>
+        
+        <main class="main-content" id="main-content">
+            <header class="mobile-header">
+                <div class="mobile-logo">PomPom<span>.</span></div>
+                <button class="mobile-menu-button" id="menu-toggle">☰</button>
+            </header>
+
+            <div class="product-detail-grid" id="product-detail-container">
+                <!-- Dynamic content appears here -->
+            </div>
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
+            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+            <div class="footer-contact">
+                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
+            </div>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook">FB</a>
+                <a href="#" aria-label="Instagram">IG</a>
+                <a href="#" aria-label="Line">LINE</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        // --- CORRECTED IMPORT PATH BELOW ---
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+            authDomain: "cesarkennel.firebaseapp.com",
+            projectId: "cesarkennel",
+            storageBucket: "cesarkennel.firebasestorage.app",
+            messagingSenderId: "512752480416",
+            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+        
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const authLink = document.getElementById('auth-link');
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                authLink.textContent = 'แผงควบคุม';
+                authLink.href = 'admin.html';
+            } else {
+                authLink.textContent = 'เข้าสู่ระบบผู้ดูแล';
+                authLink.href = 'login.html';
+            }
+        });
+        
+        const container = document.getElementById('product-detail-container');
+        const fetchProductDetails = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                container.innerHTML = '<h1>ไม่พบรหัสสินค้า</h1><p>โปรดกลับไปที่<a href="index.html">หน้าร้าน</a></p>';
+                return;
+            }
+
+            container.innerHTML = '<p style="text-align: center;">กำลังโหลดข้อมูล...</p>';
+
+            try {
+                const docRef = doc(db, 'products', productId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const product = docSnap.data();
+                    displayProductDetails(product);
+                } else {
+                    container.innerHTML = '<h1>404 - ไม่พบข้อมูล</h1><p>เราไม่พบน้องหมาที่คุณค้นหา <a href="index.html">กลับสู่หน้าร้าน</a></p>';
+                    document.title = "ไม่พบข้อมูล - ปอมปอม บูทีค";
+                }
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+                container.innerHTML = '<p style="color: red; text-align: center;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+            }
+        };
+
+        const displayProductDetails = (product) => {
+            document.title = `${product.name} - ปอมปอม บูทีค`;
+            
+            let buttonHTML = `<button class="add-to-cart-button">ติดต่อเพื่อจอง</button>`;
+            if (product.status === 'sold') {
+                buttonHTML = `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`;
+            }
+            
+            const price = product.price || 0;
+            const discountPrice = product.discountPrice || 0;
+            const hasDiscount = discountPrice > 0 && discountPrice < price;
+            let priceHTML = `<span class="discounted-price">${price.toLocaleString('th-TH')} บาท</span>`;
+            if (hasDiscount) {
+                priceHTML = `
+                    <span class="original-price">${price.toLocaleString('th-TH')}</span>
+                    <span class="discounted-price">${discountPrice.toLocaleString('th-TH')} บาท</span>
+                `;
+            }
+
+            let thumbnailsHTML = '';
+            const imageUrls = product.imageUrls || [];
+            if (imageUrls.length > 0) {
+                imageUrls.forEach((url, index) => {
+                    const thumbUrl = url.includes('?') ? `${url}&w=400` : `${url}?w=400`;
+                    thumbnailsHTML += `<img src="${thumbUrl}" alt="รูปย่อ ${index + 1}" class="${index === 0 ? 'active' : ''}">`;
+                });
+            }
+            const mainImageUrl = imageUrls.length > 0 ? imageUrls[0].replace('&w=400', '&w=800') : 'https://via.placeholder.com/800';
+
+            container.innerHTML = `
+                <div class="detail-gallery">
+                    <img src="${mainImageUrl}" alt="รูปหลักของ ${product.name}" id="mainImage" class="main-image">
+                    <div class="detail-thumbnails" id="thumbnail-container">
+                        ${thumbnailsHTML}
+                    </div>
+                </div>
+                <div class="detail-info">
+                    <h1>${product.name || 'ไม่มีชื่อ'}</h1>
+                    <div class="price">${priceHTML}</div>
+                    <p class="description">${product.description || 'ไม่มีคำอธิบายเพิ่มเติม'}</p>
+                    <ul class="details-list">
+                        <li><strong>สายพันธุ์:</strong><span>${product.breed || '-'}</span></li>
+                        <li><strong>อายุ:</strong><span>${product.age || '-'}</span></li>
+                        <li><strong>เพศ:</strong><span>${product.gender || '-'}</span></li>
+                        <li><strong>ตัวสี:</strong><span>${product.color || '-'}</span></li>
+                        <li><strong>ตาสี:</strong><span>${product.eyeColor || '-'}</span></li>
+                        <li><strong>วัคซีน:</strong><span>${product.vaccine || '-'}</span></li>
+                    </ul>
+                    ${buttonHTML}
+                </div>
+            `;
+            
+            initializeGalleryListeners();
+        };
+        
+        const initializeGalleryListeners = () => {
+            const mainImage = document.getElementById('mainImage');
+            const thumbnails = document.querySelectorAll('#thumbnail-container img');
+            
+            if (mainImage && thumbnails.length) {
+                thumbnails.forEach(thumb => {
+                    thumb.addEventListener('click', function() {
+                        const highResSrc = this.src.replace('&w=400', '&w=800');
+                        mainImage.src = highResSrc;
+                        mainImage.alt = this.alt.replace('รูปย่อ', 'รูปหลักของ');
+                        thumbnails.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            }
+        }
+
+        fetchProductDetails();
     </script>
 </body>
 </html>

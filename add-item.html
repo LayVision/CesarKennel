@@ -7,9 +7,7 @@
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <!-- Main layout for the admin interface -->
     <div class="admin-layout">
-        <!-- Sidebar for admin navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Admin<span>.</span></div>
@@ -29,24 +27,19 @@
             </nav>
         </aside>
 
-        <!-- Main content area for the form -->
         <main class="admin-main">
-             <!-- Header for mobile view -->
              <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <!-- Header for desktop view with a back button -->
             <header class="desktop-header">
                 <h1>เพิ่มข้อมูลน้องหมา</h1>
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
-            <!-- Main form for item data, enclosed in a card -->
             <form class="admin-card">
                 <h2>ข้อมูลทั่วไป</h2>
-                <!-- Grid layout for form fields -->
                 <div class="form-grid">
                     <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" required></div>
                     <div class="input-group"><label for="breed">สายพันธุ์</label><input type="text" id="breed" name="breed" value="ปอมเมอเรเนียน" required></div>
@@ -66,12 +59,10 @@
                         <label for="eye-color">ตาสี</label>
                         <input type="text" id="eye-color" name="eye-color">
                     </div>
-                    <!-- Vaccine information field -->
                     <div class="input-group">
                         <label for="vaccine">วัคซีน</label>
                         <input type="text" id="vaccine" name="vaccine">
                     </div>
-
                     <div class="input-group">
                         <label for="status">สถานะ</label>
                         <select id="status" name="status" required>
@@ -80,37 +71,33 @@
                             <option value="sold">ขายแล้ว</option>
                         </select>
                     </div>
-                    <!-- Full-width textarea for a detailed description -->
                     <div class="input-group full-width">
                         <label for="description">รายละเอียดเพิ่มเติม</label>
                         <textarea id="description" name="description" rows="4"></textarea>
                     </div>
                 </div>
 
-                <!-- Section for uploading images -->
                 <h2 class="form-section-header">รูปภาพ</h2>
                  <div class="input-group full-width">
                     <label for="image_upload">อัปโหลดรูปภาพใหม่ (รูปแรกจะเป็นรูปปก)</label>
                     <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*">
                 </div>
                 
-                <!-- Form submission button -->
                 <div class="form-actions">
                     <button type="submit" class="button button-primary">บันทึกข้อมูล</button>
                 </div>
             </form>
         </main>
     </div>
-    <!-- Link to the main JavaScript file -->
+    
     <script src="script.js"></script>
 
-    <!-- Main Firebase Logic for this page -->
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        // --- CORRECTED IMPORT PATH BELOW ---
         import { getFirestore, doc, getDoc, addDoc, collection, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // --- Firebase Initialization (ensures it only runs once) ---
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -125,15 +112,12 @@
         const auth = getAuth(app);
         const IMG_BB_API_KEY = '2c1b183962c1d06f8aecea08cbc78d11';
 
-        // --- Auth Guard: Redirect if not logged in ---
         onAuthStateChanged(auth, user => {
             if (!user) {
-                console.log("User not logged in. Redirecting...");
                 window.location.href = 'login.html';
             }
         });
 
-        // --- Logout Button Logic ---
         const logoutButton = document.getElementById('logout-button');
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
@@ -145,13 +129,11 @@
             });
         }
 
-        // --- Page-specific variables and elements ---
         const form = document.querySelector('form.admin-card');
         const pageTitle = document.querySelector('.desktop-header h1');
         const urlParams = new URLSearchParams(window.location.search);
         const itemId = urlParams.get('id');
 
-        // --- Function to populate the form if in "Edit" mode ---
         const populateForm = async (id) => {
             try {
                 const docRef = doc(db, 'products', id);
@@ -172,7 +154,6 @@
                     document.getElementById('status').value = data.status || 'available';
                     document.getElementById('description').value = data.description || '';
                 } else {
-                    console.error("Document not found!");
                     alert('ไม่พบข้อมูลน้องหมา');
                     window.location.href = 'admin.html';
                 }
@@ -182,12 +163,10 @@
             }
         };
         
-        // --- On Page Load: Check if we are editing an item ---
         if (itemId) {
             populateForm(itemId);
         }
 
-        // --- Form Submission: Handles both "Add" and "Edit" ---
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitButton = form.querySelector('button[type="submit"]');
@@ -204,8 +183,7 @@
                         const formData = new FormData();
                         formData.append('image', file);
                         const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, {
-                            method: 'POST',
-                            body: formData,
+                            method: 'POST', body: formData,
                         });
                         const result = await response.json();
                         if (result.success) {
@@ -246,9 +224,7 @@
                     await addDoc(collection(db, 'products'), productData);
                     alert('เพิ่มน้องหมาสำเร็จ!');
                 }
-
                 window.location.href = 'admin.html';
-
             } catch (error) {
                 console.error('Error saving product: ', error);
                 alert(`เกิดข้อผิดพลาด: ${error.message}`);

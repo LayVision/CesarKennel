@@ -7,14 +7,10 @@
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <!-- Main layout grid for the admin panel -->
     <div class="admin-layout">
-        <!-- Admin Sidebar for navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <!-- Admin Panel Logo -->
                 <div class="sidebar-logo">Admin<span>.</span></div>
-                <!-- Main Admin Navigation -->
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
@@ -23,7 +19,6 @@
                     </ul>
                 </nav>
             </div>
-             <!-- Secondary navigation for viewing the live site and logging out -->
              <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
@@ -32,55 +27,46 @@
             </nav>
         </aside>
 
-        <!-- Main content area for the admin panel -->
         <main class="admin-main">
-            <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
             
-            <!-- Header for desktop view -->
             <header class="desktop-header">
                 <h1>จัดการน้องหมา</h1>
                 <a href="add-item.html" class="button button-primary">เพิ่มน้องหมาตัวใหม่</a>
             </header>
 
-            <!-- Card containing the product list -->
             <div class="admin-card">
                  <h2>รายการทั้งหมด</h2>
-                 <!-- Table to display all products (dogs) -->
                  <table class="product-table">
                      <thead>
                          <tr>
-                            <th class="drag-header"></th><!-- Header for drag handle column -->
+                            <th class="drag-header"></th>
                             <th>ข้อมูลน้องหมา</th>
                             <th>สถานะ</th>
                             <th>ราคา</th>
                             <th>การกระทำ</th>
                         </tr>
                      </thead>
-                     <!-- Table body will be populated dynamically by the script below -->
                      <tbody id="product-table-body">
-                         <!-- Data will be loaded here by script -->
+                         <!-- Data will be loaded here -->
                      </tbody>
                  </table>
             </div>
         </main>
     </div>
 
-    <!-- JavaScript library for drag-and-drop table sorting -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <!-- Link to the main site JavaScript file (for menu toggle) -->
     <script src="script.js"></script>
 
-    <!-- Main Firebase Logic for this page -->
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        // --- CORRECTED IMPORT PATH BELOW ---
         import { getFirestore, collection, query, orderBy, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // --- Firebase Initialization (ensures it only runs once) ---
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -94,19 +80,14 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // --- Auth Guard & Page Logic ---
         onAuthStateChanged(auth, user => {
             if (user) {
-                // User is logged in, fetch and display products
                 fetchAndDisplayProducts();
             } else {
-                // User is not logged in, redirect to login page
-                console.log("User not logged in. Redirecting...");
                 window.location.href = 'login.html';
             }
         });
 
-        // --- Logout Button Logic ---
         const logoutButton = document.getElementById('logout-button');
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
@@ -118,28 +99,21 @@
             });
         }
 
-        // --- Helper function to get status badge HTML ---
         function getStatusBadge(status) {
             switch (status) {
-                case 'available':
-                    return '<span class="status-badge available">พร้อมขาย</span>';
-                case 'preordered':
-                    return '<span class="status-badge preordered">ติดจอง</span>';
-                case 'sold':
-                    return '<span class="status-badge sold">ขายแล้ว</span>';
-                default:
-                    return `<span class="status-badge">${status}</span>`;
+                case 'available': return '<span class="status-badge available">พร้อมขาย</span>';
+                case 'preordered': return '<span class="status-badge preordered">ติดจอง</span>';
+                case 'sold': return '<span class="status-badge sold">ขายแล้ว</span>';
+                default: return `<span class="status-badge">${status || ''}</span>`;
             }
         }
 
-        // --- Main function to fetch products and render the table ---
         const fetchAndDisplayProducts = async () => {
             const tableBody = document.getElementById('product-table-body');
-            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>'; // Loading indicator
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>';
 
             try {
                 const productsRef = collection(db, "products");
-                // Query to order products by creation date, newest first
                 const q = query(productsRef, orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
 
@@ -148,11 +122,11 @@
                     return;
                 }
 
-                tableBody.innerHTML = ''; // Clear loading indicator
+                tableBody.innerHTML = '';
                 querySnapshot.forEach((doc) => {
                     const product = doc.data();
                     const productId = doc.id;
-                    const price = product.price ? product.price.toLocaleString('th-TH') : '0';
+                    const price = (product.price || 0).toLocaleString('th-TH');
                     const details = `${product.breed || ''} (${product.gender || ''}, ${product.color || ''})`;
 
                     const row = `
@@ -160,9 +134,9 @@
                             <td><span class="drag-handle">☰</span></td>
                             <td data-label="ข้อมูล">
                                 <div class="product-info-cell">
-                                    <img src="${product.thumbnailUrl || 'https://via.placeholder.com/60'}" alt="${product.name}">
+                                    <img src="${product.thumbnailUrl || 'https://via.placeholder.com/60'}" alt="${product.name || ''}">
                                     <div>
-                                        <div class="name">${product.name}</div>
+                                        <div class="name">${product.name || 'ไม่มีชื่อ'}</div>
                                         <div class="details">${details}</div>
                                     </div>
                                 </div>
@@ -172,7 +146,7 @@
                             <td data-label="การกระทำ">
                                 <div class="action-buttons">
                                     <a href="add-item.html?id=${productId}" class="button edit-btn">แก้ไข</a>
-                                    <button class="button delete-btn" data-id="${productId}" data-name="${product.name}">ลบ</button>
+                                    <button class="button delete-btn" data-id="${productId}" data-name="${product.name || ''}">ลบ</button>
                                 </div>
                             </td>
                         </tr>
@@ -185,7 +159,6 @@
             }
         };
 
-        // --- Event Listener for Delete Buttons (using Event Delegation) ---
         const tableBody = document.getElementById('product-table-body');
         tableBody.addEventListener('click', async (e) => {
             if (e.target && e.target.classList.contains('delete-btn')) {
@@ -193,13 +166,12 @@
                 const productId = button.dataset.id;
                 const productName = button.dataset.name;
 
-                if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${productName}"? การกระทำนี้ไม่สามารถย้อนกลับได้`)) {
+                if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${productName}"?`)) {
                     try {
                         button.disabled = true;
                         button.textContent = 'กำลังลบ...';
                         await deleteDoc(doc(db, "products", productId));
                         button.closest('tr').remove();
-                        alert(`ลบ "${productName}" สำเร็จแล้ว`);
                     } catch (error) {
                         console.error("Error deleting document: ", error);
                         alert("เกิดข้อผิดพลาดในการลบข้อมูล");
