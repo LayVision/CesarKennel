@@ -86,7 +86,7 @@
 
             <!-- Grid container for all product cards. This will be populated by Firebase script. -->
             <div class="product-grid" id="product-grid">
-                <!-- Static cards removed. Content will be loaded dynamically. -->
+                <!-- Content will be loaded dynamically. -->
             </div>
 
             <!-- Container for pagination buttons, populated by script.js -->
@@ -198,8 +198,10 @@
             };
             const statusInfo = statusMap[product.status] || { class: 'available', text: 'พร้อมย้ายบ้าน' };
 
+            // **MODIFIED LINE**: The href now ALWAYS points to the detail page.
+            // The 'sold-item' class will still apply the grayscale filter from CSS.
             return `
-                <a href="${isSold ? '#' : `product-detail.html?id=${id}`}" class="product-card ${isSold ? 'sold-item' : ''}">
+                <a href="product-detail.html?id=${id}" class="product-card ${isSold ? 'sold-item' : ''}">
                     <div class="card-image-container">
                         <span class="card-status ${statusInfo.class}">${statusInfo.text}</span>
                         <img src="${product.thumbnailUrl || 'https://via.placeholder.com/400'}" alt="${product.name}">
@@ -212,7 +214,7 @@
                 </a>`;
         };
         
-        // --- PAGINATION LOGIC (MOVED HERE) ---
+        // --- PAGINATION LOGIC ---
         const initializePagination = () => {
             const paginationContainer = document.getElementById('pagination');
             if (!productGrid || !paginationContainer) return;
@@ -275,10 +277,8 @@
             displayPage(initialPage);
         };
 
-
         // --- Run on page load ---
         fetchAndDisplayProducts();
-
     </script>
 </body>
 </html>
