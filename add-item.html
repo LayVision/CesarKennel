@@ -15,7 +15,7 @@
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
-                        <li><a href="admin.html" class="active">จัดการน้องหมา</a></li>
+                        <li><a href="admin.html">จัดการน้องหมา</a></li>
                         <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
@@ -65,16 +65,13 @@
         </main>
     </div>
 
-    <!-- Firebase and Page Scripts -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    
     <script>
-        // Check if admin is logged in, redirect if not
-        if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
-            window.location.href = 'login.html';
-        }
-
+        // Define Firebase Config
         const firebaseConfig = {
           apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
           authDomain: "cesarkennel.firebaseapp.com",
@@ -84,8 +81,23 @@
           appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
         const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
+        // --- AUTH GUARD ---
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in, proceed to load form logic.
+                initializeForm();
+            } else {
+                // No user is signed in. Redirect.
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+    
+    <script src="script.js"></script>
+
+    <script>
+        const db = firebase.firestore();
         const form = document.getElementById('dog-form');
         const pageTitle = document.getElementById('page-title');
         const submitButton = document.getElementById('submit-button');
@@ -128,8 +140,11 @@
         }
         
         function displayExistingImages() {
-            if (existingImageUrls.length === 0) return;
-            existingImagesContainer.innerHTML = '<h4>รูปภาพปัจจุบัน</h4>';
+            if (existingImageUrls.length === 0) {
+                existingImagesContainer.innerHTML = '';
+                return;
+            };
+            existingImagesContainer.innerHTML = '<h4 style="margin-bottom: 12px;">รูปภาพปัจจุบัน (คลิก "X" เพื่อลบ)</h4>';
             const imageGrid = document.createElement('div');
             imageGrid.style.display = 'flex';
             imageGrid.style.gap = '10px';
@@ -140,18 +155,17 @@
                 imgWrapper.style.position = 'relative';
                 imgWrapper.innerHTML = `
                     <img src="${url}" alt="Existing image ${index + 1}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">
-                    <button type="button" class="delete-img-btn" data-index="${index}" style="position:absolute; top:2px; right:2px;">X</button>
+                    <button type="button" class="delete-img-btn" data-index="${index}" style="position:absolute; top:2px; right:2px; cursor:pointer; background:red; color:white; border:none; border-radius:50%; width:20px; height:20px; line-height:20px; text-align:center; padding:0;">X</button>
                 `;
                 imageGrid.appendChild(imgWrapper);
             });
             existingImagesContainer.appendChild(imageGrid);
             
-            // Add event listeners to delete buttons
             existingImagesContainer.querySelectorAll('.delete-img-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const indexToRemove = parseInt(e.target.dataset.index);
                     existingImageUrls.splice(indexToRemove, 1);
-                    displayExistingImages(); // Re-render the images
+                    displayExistingImages();
                 });
             });
         }
@@ -162,17 +176,17 @@
             submitButton.textContent = 'กำลังบันทึก...';
             
             try {
-                // 1. Upload new images
                 const imageFiles = document.getElementById('image_upload').files;
                 let newImageUrls = [];
                 if (imageFiles.length > 0) {
                     newImageUrls = await uploadMultipleImages(imageFiles);
                 }
                 
-                // Combine old and new image URLs
                 const allImageUrls = [...existingImageUrls, ...newImageUrls];
+                if (allImageUrls.length === 0) {
+                    throw new Error('กรุณาอัปโหลดรูปภาพอย่างน้อย 1 รูป');
+                }
 
-                // 2. Prepare data object
                 const dogData = {
                     name: document.getElementById('name').value,
                     breed: document.getElementById('breed').value,
@@ -188,15 +202,12 @@
                     imageUrls: allImageUrls
                 };
 
-                // 3. Save to Firebase
                 if (isEditMode) {
-                    // Update existing document
                     await db.collection("dogs").doc(dogId).update(dogData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
-                    // Add new document
                     const docCountSnapshot = await db.collection("dogs").get();
-                    dogData.order = docCountSnapshot.size; // Set order to be the last
+                    dogData.order = docCountSnapshot.size;
                     await db.collection("dogs").add(dogData);
                     alert('เพิ่มน้องหมาสำเร็จ!');
                 }
@@ -210,9 +221,6 @@
                 submitButton.textContent = isEditMode ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล';
             }
         });
-
-        // Initialize the form when the page loads
-        initializeForm();
     </script>
 </body>
 </html>

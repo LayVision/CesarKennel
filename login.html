@@ -10,27 +10,77 @@
     <div class="login-container">
         <form id="login-form" class="login-form">
             <h2>ผู้ดูแลระบบ</h2>
+            <!-- Element to show error messages -->
+            <p id="error-message" style="color: var(--accent-red); text-align: center; display: none; margin-bottom: 16px;"></p>
             <div class="input-group">
-                <label for="username">ชื่อผู้ใช้</label>
-                <input type="text" id="username" name="username" required>
+                <label for="email">อีเมล</label>
+                <input type="email" id="email" name="email" required>
             </div>
             <div class="input-group">
                 <label for="password">รหัสผ่าน</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="button button-primary">เข้าสู่ระบบ</button>
+            <button type="submit" id="login-button" class="button button-primary">เข้าสู่ระบบ</button>
             <p class="home-link"><a href="index.html">กลับสู่หน้าหลัก</a></p>
         </form>
     </div>
-    
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
     <script>
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            // This is a simulation.
-            // In a real application, you would send the data to a server for validation.
-            localStorage.setItem('isAdminLoggedIn', 'true');
-            alert('เข้าสู่ระบบสำเร็จ!');
-            window.location.href = 'admin.html';
+        // Your Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+          authDomain: "cesarkennel.firebaseapp.com",
+          projectId: "cesarkennel",
+          storageBucket: "cesarkennel.firebasestorage.app",
+          messagingSenderId: "512752480416",
+          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const errorMessage = document.getElementById('error-message');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Disable button and show loading text
+            loginButton.disabled = true;
+            loginButton.textContent = 'กำลังเข้าสู่ระบบ...';
+            errorMessage.style.display = 'none';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Sign in with Firebase Auth
+                await auth.signInWithEmailAndPassword(email, password);
+                // On success, Firebase automatically handles the session persistence.
+                // Redirect to the admin page.
+                window.location.href = 'admin.html';
+            } catch (error) {
+                // On failure, show an error message
+                console.error("Login Failed:", error.code, error.message);
+                
+                // Provide a more specific error message if possible
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    errorMessage.textContent = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+                } else {
+                    errorMessage.textContent = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
+                }
+                errorMessage.style.display = 'block';
+
+                // Re-enable the button so the user can try again
+                loginButton.disabled = false;
+                loginButton.textContent = 'เข้าสู่ระบบ';
+            }
         });
     </script>
 </body>

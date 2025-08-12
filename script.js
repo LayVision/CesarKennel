@@ -17,27 +17,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Admin Login/Logout Links ---
-    const authLink = document.getElementById('auth-link');
+    // --- Admin Logout Button ---
     const logoutButton = document.getElementById('logout-button');
-    const isAdmin = localStorage.getItem('isAdminLoggedIn') === 'true';
-
-    if (authLink) {
-        if(isAdmin) {
-            authLink.textContent = 'แผงควบคุม';
-            authLink.href = 'admin.html';
-        } else {
-            authLink.textContent = 'เข้าสู่ระบบผู้ดูแล';
-            authLink.href = 'login.html';
-        }
-    }
     
     if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('isAdminLoggedIn');
-            alert('คุณออกจากระบบแล้ว');
-            window.location.href = 'index.html';
+            
+            // We need to have Firebase initialized on the page to use auth
+            // This is done on admin.html, add-item.html, and settings.html
+            const auth = firebase.auth();
+            auth.signOut().then(() => {
+                // Sign-out successful.
+                alert('คุณออกจากระบบแล้ว');
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                // An error happened.
+                console.error("Logout Error:", error);
+                alert('เกิดข้อผิดพลาดในการออกจากระบบ');
+            });
         });
     }
 });

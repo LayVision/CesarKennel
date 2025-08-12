@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="shop-layout">
+        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
              <div>
                 <div class="sidebar-logo">PomPom<span>.</span></div>
@@ -15,6 +16,9 @@
                     <h3>เมนู</h3>
                     <ul>
                         <li><a href="index.html">น้องหมาทั้งหมด</a></li>
+                        <li><a href="#">เพศผู้</a></li>
+                        <li><a href="#">เพศเมีย</a></li>
+                        <li><a href="#">เกี่ยวกับเรา</a></li>
                     </ul>
                 </nav>
             </div>
@@ -23,7 +27,8 @@
                 <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
-        
+
+        <!-- Main Content -->
         <main class="main-content">
             <header class="mobile-header">
                 <div class="mobile-logo">PomPom<span>.</span></div>
@@ -35,13 +40,32 @@
                 <p>กำลังโหลดข้อมูล...</p>
             </div>
         </main>
-    </div>
+    </div> <!-- End of .shop-layout -->
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
+            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+            <div class="footer-contact">
+                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
+            </div>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook">FB</a>
+                <a href="#" aria-label="Instagram">IG</a>
+                <a href="#" aria-label="Line">LINE</a>
+            </div>
+        </div>
+    </footer>
+
 
     <!-- Firebase and Page Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="script.js"></script>
+
     <script>
+        // Define Firebase Config
         const firebaseConfig = {
           apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
           authDomain: "cesarkennel.firebaseapp.com",
@@ -53,22 +77,35 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // --- DYNAMIC AUTH LINK ---
+        firebase.auth().onAuthStateChanged(function(user) {
+            const authLink = document.getElementById('auth-link');
+            if (user) {
+                authLink.textContent = 'แผงควบคุม';
+                authLink.href = 'admin.html';
+            } else {
+                authLink.textContent = 'เข้าสู่ระบบผู้ดูแล';
+                authLink.href = 'login.html';
+            }
+        });
+
+        // --- PAGE LOGIC ---
         const detailContainer = document.getElementById('detail-container');
 
         function displayDogDetails(dog) {
             document.title = `${dog.name} - ปอมปอม บูทีค`;
 
-            const priceHtml = dog.discountPrice > 0
+            const priceHtml = dog.discountPrice && dog.discountPrice > 0
                 ? `<span class="original-price">${dog.price.toLocaleString()}</span> <span class="discounted-price">${dog.discountPrice.toLocaleString()} บาท</span>`
                 : `<span class="discounted-price">${dog.price.toLocaleString()} บาท</span>`;
 
-            const thumbnailsHtml = dog.imageUrls.map(url => 
-                `<img src="${url.replace('&w=800', '&w=400')}" alt="รูปย่อ">`
+            const thumbnailsHtml = dog.imageUrls.map(url =>
+                `<img src="${url.replace('&w=800', '&w=400')}" alt="รูปย่อของ ${dog.name}">`
             ).join('');
 
             detailContainer.innerHTML = `
                 <div class="detail-gallery">
-                    <img src="${dog.imageUrls[0]}" alt="รูปหลัก" id="mainImage" class="main-image">
+                    <img src="${dog.imageUrls[0].replace('&w=400', '&w=800')}" alt="รูปหลักของ ${dog.name}" id="mainImage" class="main-image">
                     <div class="detail-thumbnails">${thumbnailsHtml}</div>
                 </div>
                 <div class="detail-info">
@@ -85,11 +122,13 @@
                     </ul>
                     <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
                 </div>`;
-            
+
             // Add event listeners for the new thumbnails
             const mainImage = document.getElementById('mainImage');
             const thumbnails = detailContainer.querySelectorAll('.detail-thumbnails img');
-            thumbnails[0].classList.add('active'); // Activate first thumb
+            if (thumbnails.length > 0) {
+                thumbnails[0].classList.add('active'); // Activate first thumb
+            }
             thumbnails.forEach(thumb => {
                 thumb.addEventListener('click', function() {
                     mainImage.src = this.src.replace('&w=400', '&w=800');
@@ -124,6 +163,207 @@
         }
 
         fetchDogById();
+    </script>
+</body>
+</html>```
+
+### **2. `settings.html` (Complete with Firestore Logic)**
+
+This version connects the form to a `settings` collection in Firestore. It loads existing settings and saves any changes.
+
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตั้งค่าเว็บไซต์ - ปอมปอม บูทีค</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="sidebar-logo">Admin<span>.</span></div>
+                <nav class="sidebar-nav">
+                    <h3>เมนูหลัก</h3>
+                    <ul>
+                        <li><a href="admin.html">จัดการน้องหมา</a></li>
+                        <li><a href="settings.html" class="active">ตั้งค่าเว็บไซต์</a></li>
+                    </ul>
+                </nav>
+            </div>
+             <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" target="_blank">ดูหน้าร้าน</a></li>
+                    <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="mobile-header">
+                <div class="mobile-logo">Admin<span>.</span></div>
+                <button class="mobile-menu-button" id="menu-toggle">☰</button>
+            </header>
+
+            <header class="desktop-header">
+                <h1>ตั้งค่าเว็บไซต์</h1>
+            </header>
+
+            <form id="settings-form" class="admin-card">
+                <h2>ปรับแต่งหน้าแรก</h2>
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label for="marquee-text">ข้อความวิ่ง</label>
+                        <input type="text" id="marquee-text" name="marquee-text">
+                    </div>
+                </div>
+
+                <h2 class="form-section-header">ข้อมูลร้านค้า</h2>
+                <div class="form-grid">
+                   <div class="input-group"><label for="shop-name">ชื่อร้าน</label><input type="text" id="shop-name" name="shop-name"></div>
+                   <div class="input-group"><label for="logo-text">ข้อความโลโก้</label><input type="text" id="logo-text" name="logo-text"></div>
+                   <div class="input-group"><label for="contact-email">อีเมลติดต่อ</label><input type="email" id="contact-email" name="contact-email"></div>
+                   <div class="input-group"><label for="copyright-year">ปีลิขสิทธิ์</label><input type="text" id="copyright-year" name="copyright-year"></div>
+                   <div class="input-group full-width">
+                       <label for="shop-description">คำอธิบายร้านค้า (สำหรับ Header)</label>
+                       <textarea id="shop-description" name="shop-description" rows="3"></textarea>
+                   </div>
+                </div>
+
+                <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บและโซเชียลมีเดีย</h2>
+                <div class="form-grid">
+                   <div class="input-group full-width">
+                       <label for="footer-description">คำอธิบายสั้นๆ ท้ายเว็บ</label>
+                       <input type="text" id="footer-description" name="footer-description">
+                   </div>
+                   <div class="input-group">
+                       <label for="footer-phone">เบอร์โทรศัพท์</label>
+                       <input type="text" id="footer-phone" name="footer-phone">
+                   </div>
+                   <div class="input-group">
+                       <label for="footer-facebook">Facebook URL</label>
+                       <input type="url" id="footer-facebook" name="footer-facebook" placeholder="https://facebook.com/yourpage">
+                   </div>
+                    <div class="input-group">
+                       <label for="footer-instagram">Instagram URL</label>
+                       <input type="url" id="footer-instagram" name="footer-instagram" placeholder="https://instagram.com/yourprofile">
+                   </div>
+                    <div class="input-group">
+                       <label for="footer-line">LINE URL หรือ ID</label>
+                       <input type="text" id="footer-line" name="footer-line" placeholder="https://line.me/ti/p/~@yourid">
+                   </div>
+                   <div class="input-group">
+                        <label for="footer-messenger">Facebook Messenger URL</label>
+                        <input type="url" id="footer-messenger" name="footer-messenger" placeholder="https://m.me/yourpage">
+                    </div>
+                </div>
+
+                <div class="form-actions full-width">
+                   <button type="submit" id="save-button" class="button button-primary">บันทึกการตั้งค่าทั้งหมด</button>
+               </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // Define Firebase Config
+        const firebaseConfig = {
+          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+          authDomain: "cesarkennel.firebaseapp.com",
+          projectId: "cesarkennel",
+          storageBucket: "cesarkennel.firebasestorage.app",
+          messagingSenderId: "512752480416",
+          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+
+        // --- AUTH GUARD ---
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in, load the settings data.
+                loadSettings();
+            } else {
+                // No user is signed in. Redirect.
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+
+    <script src="script.js"></script>
+
+    <script>
+        const db = firebase.firestore();
+        const settingsForm = document.getElementById('settings-form');
+        const saveButton = document.getElementById('save-button');
+        // We use one specific document to store all settings
+        const settingsRef = db.collection('settings').doc('main_config');
+
+        // Function to load existing settings and populate the form
+        async function loadSettings() {
+            try {
+                const docSnap = await settingsRef.get();
+                if (docSnap.exists) {
+                    const settings = docSnap.data();
+                    // Loop through all keys in the settings data and fill the form
+                    for (const key in settings) {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = settings[key];
+                        }
+                    }
+                } else {
+                    console.log("No settings document found. Using default form values.");
+                }
+            } catch (error) {
+                console.error("Error loading settings:", error);
+                alert('เกิดข้อผิดพลาดในการโหลดการตั้งค่า');
+            }
+        }
+
+        // Event listener for form submission
+        settingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            saveButton.disabled = true;
+            saveButton.textContent = 'กำลังบันทึก...';
+
+            try {
+                // Create an object to hold all the settings
+                const settingsData = {
+                    'marquee-text': document.getElementById('marquee-text').value,
+                    'shop-name': document.getElementById('shop-name').value,
+                    'logo-text': document.getElementById('logo-text').value,
+                    'contact-email': document.getElementById('contact-email').value,
+                    'copyright-year': document.getElementById('copyright-year').value,
+                    'shop-description': document.getElementById('shop-description').value,
+                    'footer-description': document.getElementById('footer-description').value,
+                    'footer-phone': document.getElementById('footer-phone').value,
+                    'footer-facebook': document.getElementById('footer-facebook').value,
+                    'footer-instagram': document.getElementById('footer-instagram').value,
+                    'footer-line': document.getElementById('footer-line').value,
+                    'footer-messenger': document.getElementById('footer-messenger').value
+                };
+
+                // Use .set() to create the doc if it doesn't exist or overwrite it if it does.
+                await settingsRef.set(settingsData);
+
+                alert('บันทึกการตั้งค่าสำเร็จ!');
+            } catch (error) {
+                console.error("Error saving settings:", error);
+                alert('เกิดข้อผิดพลาดในการบันทึกการตั้งค่า');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = 'บันทึกการตั้งค่าทั้งหมด';
+            }
+        });
     </script>
 </body>
 </html>
