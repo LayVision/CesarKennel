@@ -3,91 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ปอมปอม บูทีค</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- ADDED: Firebase SDKs for Auth and Firestore -->
+    <title>ระบบจัดการ - ปอมปอม บูทีค</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <!-- MODIFIED: Added Firestore SDK to allow data fetching on this page -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <!-- ... body content remains the same ... -->
-    <div class="shop-layout">
+    <!-- Main layout grid for the admin panel -->
+    <div class="admin-layout">
+        <!-- Admin Sidebar for navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo">PomPom<span>.</span></div>
+                <!-- Admin Panel Logo -->
+                <div class="sidebar-logo">Admin<span>.</span></div>
+                <!-- Main Admin Navigation -->
                 <nav class="sidebar-nav">
-                    <h3>เมนู</h3>
+                    <h3>เมนูหลัก</h3>
                     <ul>
-                        <li><a href="index.html" class="active">น้องหมาทั้งหมด</a></li>
-                        <li><a href="#">เพศผู้</a></li>
-                        <li><a href="#">เพศเมีย</a></li>
-                        <li><a href="#">เกี่ยวกับเรา</a></li>
+                        <li><a href="admin.html" class="active">จัดการน้องหมา</a></li>
+                        <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
-                <div class="sidebar-filters">
-                    <h3>ตัวกรอง</h3>
-                    <div class="filter-group">
-                        <label for="filter-color">สี</label>
-                        <select id="filter-color" name="color">
-                            <option>ทั้งหมด</option>
-                            <option>ขาว</option>
-                            <option>น้ำตาล</option>
-                            <option>ดำ</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="filter-age">อายุ</label>
-                        <select id="filter-age" name="age">
-                            <option>ทั้งหมด</option>
-                            <option>2 เดือน</option>
-                            <option>3 เดือน</option>
-                            <option>4 เดือนขึ้นไป</option>
-                        </select>
-                    </div>
-                </div>
             </div>
-            <div class="sidebar-footer">
-                &copy; 2568 ปอมปอม บูทีค
-                <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
-            </div>
+             <!-- Secondary navigation for viewing the live site and logging out -->
+             <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html">ดูหน้าร้าน</a></li>
+                    <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
+                </ul>
+            </nav>
         </aside>
-        <main class="main-content">
+
+        <!-- Main content area for the admin panel -->
+        <main class="admin-main">
+            <!-- Header for mobile view -->
             <header class="mobile-header">
-                <div class="mobile-logo">PomPom<span>.</span></div>
+                <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
-            <section class="hero-section">
-                <div class="hero-image-container">
-                    <img src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
-                </div>
-                <div class="marquee-container">
-                    <p class="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
-                </div>
-            </section>
+            
+            <!-- Header for desktop view -->
             <header class="desktop-header">
-                <h1>เพื่อนคู่ใจแสนน่ารัก</h1>
-                <p>น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
+                <h1>จัดการน้องหมา</h1>
+                <a href="add-item.html" class="button button-primary">เพิ่มน้องหมาตัวใหม่</a>
             </header>
-            <div class="product-grid" id="product-grid">
+
+            <!-- Card containing the product list -->
+            <div class="admin-card">
+                 <h2>รายการทั้งหมด</h2>
+                 <!-- Table to display all products (dogs) -->
+                 <table class="product-table">
+                     <thead>
+                         <tr>
+                            <th class="drag-header"></th><!-- Header for drag handle column -->
+                            <th>ข้อมูลน้องหมา</th>
+                            <th>สถานะ</th>
+                            <th>ราคา</th>
+                            <th>การกระทำ</th>
+                        </tr>
+                     </thead>
+                     <!-- This table body will be populated dynamically by script.js -->
+                     <tbody id="product-table-body">
+                         <!-- Product rows will be inserted here -->
+                     </tbody>
+                 </table>
             </div>
-            <div class="pagination-container" id="pagination"></div>
         </main>
     </div>
-    <footer class="site-footer">
-        <div class="footer-content">
-            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
-            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
-            <div class="footer-contact">
-                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
-            </div>
-            <div class="social-links">
-                <a href="#" aria-label="Facebook">FB</a>
-                <a href="#" aria-label="Instagram">IG</a>
-                <a href="#" aria-label="Line">LINE</a>
-            </div>
-        </div>
-    </footer>
+
+    <!-- JavaScript library for drag-and-drop table sorting -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- Link to the main JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>

@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         firebase.initializeApp(firebaseConfig);
     }
     const auth = firebase.auth();
-    // Initialize Firestore only if the SDK is loaded
     const db = firebase.firestore ? firebase.firestore() : null;
 
     // --- Central Authentication Checker ---
@@ -71,9 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentPage === 'index.html' || currentPage === '') {
         fetchAndDisplayProducts();
     }
-    
     if (currentPage === 'product-detail.html') {
         fetchProductDetails();
+    }
+    // --- NEW: Run the fetch function for the admin page ---
+    if (currentPage === 'admin.html') {
+        fetchAndDisplayAdminProducts();
     }
 
     // --- Function to fetch and display products on the homepage ---
@@ -83,9 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!productGrid) return;
         
         try {
-            // Fetch products, ordered by creation date descending (newest first)
             const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
-            productGrid.innerHTML = ''; // Clear existing content
+            productGrid.innerHTML = ''; 
 
             if (snapshot.empty) {
                 productGrid.innerHTML = '<p>ยังไม่มีน้องหมาในระบบค่ะ</p>';
@@ -110,9 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('a');
                 card.href = `product-detail.html?id=${productId}`;
                 card.className = `product-card ${product.status === 'sold' ? 'sold-item' : ''}`;
+                const statusText = { available: 'พร้อมย้ายบ้าน', preordered: 'ติดจอง', sold: 'ขายแล้ว' };
                 card.innerHTML = `
                     <div class="card-image-container">
-                        <span class="card-status ${product.status}">${product.status === 'available' ? 'พร้อมย้ายบ้าน' : (product.status === 'preordered' ? 'ติดจอง' : 'ขายแล้ว')}</span>
+                        <span class="card-status ${product.status}">${statusText[product.status] || ''}</span>
                         <img src="${coverImage}" alt="${product.name}">
                     </div>
                     <div class="card-content">
@@ -133,6 +135,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- NEW: Function to fetch and display products on the ADMIN page ---
+    async function fetchAndDisplayAdminProducts() {
+        if (!db) return;
+        const tableBody = document.getElementById('product-table-body');
+        if (!tableBody) return;
+
+        try {
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`;
+            const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+            tableBody.innerHTML = ''; // Clear loading message
+
+            if (snapshot.empty) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>`;
+                return;
+            }
+
+            const statusMap = {
+                available: { text: 'พร้อมขาย', class: 'available' },
+                preordered: { text: 'ติดจอง', class: 'preordered' },
+                sold: { text: 'ขายแล้ว', class: 'sold' }
+            };
+
+            snapshot.forEach(doc => {
+                const product = doc.data();
+                const productId = doc.id;
+                const coverImage = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/100x100.png?text=No+Img';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="drag-handle">☰</span></td>
+                    <td data-label="ข้อมูล">
+                        <div class="product-info-cell">
+                            <img src="${coverImage}" alt="${product.name}">
+                            <div>
+                                <div class="name">${product.name}</div>
+                                <div class="details">${product.breed} (${product.gender}, ${product.color})</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td data-label="สถานะ">
+                        <span class="status-badge ${statusMap[product.status]?.class || ''}">${statusMap[product.status]?.text || product.status}</span>
+                    </td>
+                    <td data-label="ราคา">${product.price.toLocaleString('th-TH')} บาท</td>
+                    <td data-label="การกระทำ">
+                        <div class="action-buttons">
+                            <a href="add-item.html?id=${productId}" class="button edit-btn">แก้ไข</a>
+                            <button class="button delete-btn" data-id="${productId}">ลบ</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error("Error fetching admin products: ", error);
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+        }
+    }
+
+
     // --- Function to fetch and display a single product's details ---
     async function fetchProductDetails() {
         if (!db) return;
@@ -149,23 +211,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (doc.exists) {
                 const product = doc.data();
                 
-                // Set page title and main content
                 document.title = `${product.name} - ปอมปอม บูทีค`;
                 document.getElementById('detail-name').textContent = product.name;
                 document.getElementById('detail-description').textContent = product.description;
 
-                // Set Price
                 const priceEl = document.getElementById('detail-price');
                 if (product.discountPrice && product.discountPrice < product.price) {
-                    priceEl.innerHTML = `
-                        <span class="original-price">${product.price.toLocaleString('th-TH')}</span>
-                        <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>
-                    `;
+                    priceEl.innerHTML = `<span class="original-price">${product.price.toLocaleString('th-TH')}</span> <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>`;
                 } else {
                     priceEl.innerHTML = `${product.price.toLocaleString('th-TH')} บาท`;
                 }
 
-                // Set details list
                 document.getElementById('detail-breed').textContent = product.breed;
                 document.getElementById('detail-age').textContent = product.age;
                 document.getElementById('detail-gender').textContent = product.gender;
@@ -173,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('detail-eye-color').textContent = product.eyeColor;
                 document.getElementById('detail-vaccine').textContent = product.vaccine;
 
-                // Populate image gallery
                 const mainImage = document.getElementById('mainImage');
                 const thumbnailsContainer = document.getElementById('detail-thumbnails');
                 if (product.imageUrls && product.imageUrls.length > 0) {
@@ -189,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             mainImage.src = this.src;
                             thumbnailsContainer.querySelectorAll('img').forEach(t => t.classList.remove('active'));
                             this.classList.add('active');
-                        });
+});
                         thumbnailsContainer.appendChild(thumb);
                     });
                 } else {
