@@ -202,12 +202,34 @@ a { text-decoration: none; color: inherit; }
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
 }
+/* Gallery needs to be a positioning context for the status overlay */
+.detail-gallery {
+    position: relative;
+}
 /* Main image in the gallery */
 .detail-gallery .main-image {
     width: 100%;
     border-radius: var(--radius-md);
     margin-bottom: 16px;
 }
+
+/* --- NEW --- Status badge for the detail page */
+.detail-status {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    padding: 8px 16px;
+    font-size: 1em;
+    font-weight: 600;
+    border-radius: 20px;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+.detail-status.available { background-color: var(--accent-green); }
+.detail-status.preordered { background-color: var(--accent-yellow); color: var(--text-primary); }
+.detail-status.sold { background-color: var(--accent-gray); }
+
 /* Thumbnail images in the gallery */
 .detail-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .detail-thumbnails img {
@@ -253,6 +275,15 @@ a { text-decoration: none; color: inherit; }
     border: none; border-radius: 12px; transition: background-color 0.2s;
 }
 .add-to-cart-button:hover { background-color: #3B5BDB; }
+
+/* --- NEW --- Style for the disabled sold button */
+.add-to-cart-button.sold-button {
+    background-color: var(--accent-gray);
+    cursor: not-allowed;
+}
+.add-to-cart-button.sold-button:hover {
+    background-color: var(--accent-gray); /* Override hover effect */
+}
 
 
 /* ======== 8. RESPONSIVE DESIGN ======== */

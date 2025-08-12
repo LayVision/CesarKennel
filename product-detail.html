@@ -131,6 +131,25 @@
             // Set Page Title
             document.title = `${product.name} - ปอมปอม บูทีค`;
 
+            // --- Dynamic Content based on Status ---
+            const statusMap = {
+                available: { class: 'available', text: 'พร้อมย้ายบ้าน' },
+                preordered: { class: 'preordered', text: 'ติดจอง' },
+                sold: { class: 'sold', text: 'ขายแล้ว' }
+            };
+            const statusInfo = statusMap[product.status] || statusMap.available;
+            
+            // Status Banner HTML
+            const statusBannerHTML = `<span class="detail-status ${statusInfo.class}">${statusInfo.text}</span>`;
+            
+            // Button HTML
+            let buttonHTML;
+            if (product.status === 'sold') {
+                buttonHTML = `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`;
+            } else {
+                 buttonHTML = `<button class="add-to-cart-button">ติดต่อเพื่อจอง</button>`;
+            }
+            
             // Price HTML
             const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
             let priceHTML = `<span class="discounted-price">${product.price.toLocaleString('th-TH')} บาท</span>`;
@@ -145,28 +164,24 @@
             let thumbnailsHTML = '';
             if (product.imageUrls && product.imageUrls.length > 0) {
                 product.imageUrls.forEach((url, index) => {
-                    // Add &w=400 to get a smaller version for the thumbnail
                     const thumbUrl = url.includes('?') ? `${url}&w=400` : `${url}?w=400`;
                     thumbnailsHTML += `<img src="${thumbUrl}" alt="รูปย่อ ${index + 1}" class="${index === 0 ? 'active' : ''}">`;
                 });
             }
-            
-            // Main Image URL (use the first image, higher resolution)
             const mainImageUrl = (product.imageUrls && product.imageUrls.length > 0) ? 
                                   product.imageUrls[0].replace('&w=400', '&w=800') : 
                                   'https://via.placeholder.com/800';
 
 
-            // Full component HTML
+            // --- Final component HTML ---
             container.innerHTML = `
-                <!-- Image gallery section -->
                 <div class="detail-gallery">
+                    ${statusBannerHTML}
                     <img src="${mainImageUrl}" alt="รูปหลักของ ${product.name}" id="mainImage" class="main-image">
                     <div class="detail-thumbnails" id="thumbnail-container">
                         ${thumbnailsHTML}
                     </div>
                 </div>
-                <!-- Information section for the product -->
                 <div class="detail-info">
                     <h1>${product.name}</h1>
                     <div class="price">${priceHTML}</div>
@@ -180,12 +195,11 @@
                         <li><strong>ตาสี:</strong><span>${product.eyeColor || '-'}</span></li>
                         <li><strong>วัคซีน:</strong><span>${product.vaccine || '-'}</span></li>
                     </ul>
-
-                    <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
+                    ${buttonHTML}
                 </div>
             `;
-
-            // After HTML is rendered, initialize the gallery click listeners
+            
+            // Re-initialize the gallery click listeners now that the HTML is in the DOM
             initializeGalleryListeners();
         };
         
@@ -197,12 +211,9 @@
             if (mainImage && thumbnails.length) {
                 thumbnails.forEach(thumb => {
                     thumb.addEventListener('click', function() {
-                        // Get a higher resolution version of the thumbnail source for the main image
                         const highResSrc = this.src.replace('&w=400', '&w=800');
                         mainImage.src = highResSrc;
                         mainImage.alt = this.alt.replace('รูปย่อ', 'รูปหลักของ');
-                        
-                        // Update the 'active' class to highlight the selected thumbnail
                         thumbnails.forEach(t => t.classList.remove('active'));
                         this.classList.add('active');
                     });
