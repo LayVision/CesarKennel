@@ -130,17 +130,6 @@
         const displayProductDetails = (product) => {
             // Set Page Title
             document.title = `${product.name} - ปอมปอม บูทีค`;
-
-            // --- Dynamic Content based on Status ---
-            const statusMap = {
-                available: { class: 'available', text: 'พร้อมย้ายบ้าน' },
-                preordered: { class: 'preordered', text: 'ติดจอง' },
-                sold: { class: 'sold', text: 'ขายแล้ว' }
-            };
-            const statusInfo = statusMap[product.status] || statusMap.available;
-            
-            // Status Banner HTML
-            const statusBannerHTML = `<span class="detail-status ${statusInfo.class}">${statusInfo.text}</span>`;
             
             // Button HTML
             let buttonHTML;
@@ -172,11 +161,9 @@
                                   product.imageUrls[0].replace('&w=400', '&w=800') : 
                                   'https://via.placeholder.com/800';
 
-
-            // --- Final component HTML ---
+            // --- Final component HTML (No status banner here) ---
             container.innerHTML = `
                 <div class="detail-gallery">
-                    ${statusBannerHTML}
                     <img src="${mainImageUrl}" alt="รูปหลักของ ${product.name}" id="mainImage" class="main-image">
                     <div class="detail-thumbnails" id="thumbnail-container">
                         ${thumbnailsHTML}
@@ -199,7 +186,6 @@
                 </div>
             `;
             
-            // Re-initialize the gallery click listeners now that the HTML is in the DOM
             initializeGalleryListeners();
         };
         

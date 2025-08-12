@@ -198,8 +198,7 @@
             };
             const statusInfo = statusMap[product.status] || { class: 'available', text: 'พร้อมย้ายบ้าน' };
 
-            // **MODIFIED LINE**: The href now ALWAYS points to the detail page.
-            // The 'sold-item' class will still apply the grayscale filter from CSS.
+            // The link is always active, and the status badge is always shown on the card.
             return `
                 <a href="product-detail.html?id=${id}" class="product-card ${isSold ? 'sold-item' : ''}">
                     <div class="card-image-container">
@@ -221,7 +220,7 @@
 
             const itemsPerPage = 6;
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
-            if (allItems.length <= itemsPerPage) return; // No need for pagination
+            if (allItems.length <= itemsPerPage) return;
 
             const totalPages = Math.ceil(allItems.length / itemsPerPage);
 
@@ -240,7 +239,7 @@
             }
 
             function updatePaginationButtons(currentPage, totalPages) {
-                paginationContainer.innerHTML = ''; // Clear old buttons
+                paginationContainer.innerHTML = '';
 
                 const createButton = (text, page, isDisabled = false, isActive = false) => {
                     const btn = document.createElement('a');

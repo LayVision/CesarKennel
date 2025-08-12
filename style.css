@@ -2,25 +2,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
 
 /* ======== 1. ROOT & UNIVERSAL STYLES ======== */
-/* Defines global CSS variables for colors, fonts, and shadows for theme consistency. */
 :root {
-    --bg-canvas: #F8F9FA; /* Page background color */
-    --bg-main: #FFFFFF; /* Content background color (cards, sidebars) */
-    --border-color: #E9ECEF; /* Border color for elements */
-    --text-primary: #212529; /* Main text color */
-    --text-secondary: #6C757D; /* Lighter text color for details */
-    --accent-primary: #4C6EF5; /* Primary brand color (blue) */
-    --accent-green: #28A745; /* Color for "available" status */
-    --accent-yellow: #FFC107; /* Color for "preordered" status */
-    --accent-gray: #ADB5BD; /* Color for "sold" status */
-    --font-main: 'Kanit', sans-serif; /* Main font for the site */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04); /* Small box shadow */
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08); /* Medium box shadow */
-    --radius-md: 12px; /* Medium border radius */
-    --radius-lg: 16px; /* Large border radius */
+    --bg-canvas: #F8F9FA;
+    --bg-main: #FFFFFF;
+    --border-color: #E9ECEF;
+    --text-primary: #212529;
+    --text-secondary: #6C757D;
+    --accent-primary: #4C6EF5;
+    --accent-green: #28A745;
+    --accent-yellow: #FFC107;
+    --accent-gray: #ADB5BD;
+    --font-main: 'Kanit', sans-serif;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --radius-md: 12px;
+    --radius-lg: 16px;
 }
 
-/* Basic body styles and link reset */
 body {
     margin: 0;
     font-family: var(--font-main);
@@ -30,7 +28,6 @@ body {
 a { text-decoration: none; color: inherit; }
 
 /* ======== 2. MAIN SHOP LAYOUT ======== */
-/* Defines the main two-column grid for the shop (sidebar + main content) */
 .shop-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -38,12 +35,11 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 3. SIDEBAR STYLING ======== */
-/* Styles for the sidebar container */
 .sidebar {
     background-color: var(--bg-main);
     border-right: 1px solid var(--border-color);
     padding: 32px;
-    position: sticky; /* Keeps sidebar visible on scroll */
+    position: sticky;
     top: 0;
     height: 100vh;
     box-sizing: border-box;
@@ -51,7 +47,6 @@ a { text-decoration: none; color: inherit; }
     flex-direction: column;
     justify-content: space-between;
 }
-/* Sidebar logo style */
 .sidebar-logo {
     font-size: 1.8em;
     font-weight: 700;
@@ -60,7 +55,6 @@ a { text-decoration: none; color: inherit; }
 }
 .sidebar-logo span { color: var(--accent-primary); }
 
-/* Section headings within the sidebar */
 .sidebar-nav h3, .sidebar-filters h3 {
     font-size: 0.8em;
     font-weight: 600;
@@ -74,7 +68,6 @@ a { text-decoration: none; color: inherit; }
     padding: 0;
     margin: 0 0 40px 0;
 }
-/* Navigation links in the sidebar */
 .sidebar-nav a {
     display: block; padding: 12px; border-radius: 8px;
     font-weight: 500; transition: background-color 0.2s; font-size: 1.05em;
@@ -82,7 +75,6 @@ a { text-decoration: none; color: inherit; }
 .sidebar-nav a:hover { background-color: var(--bg-canvas); }
 .sidebar-nav a.active { background-color: var(--accent-primary); color: white; }
 
-/* Filter group styles */
 .filter-group { margin-bottom: 24px; }
 .filter-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; }
 .filter-group select, .filter-group input {
@@ -92,12 +84,10 @@ a { text-decoration: none; color: inherit; }
 .sidebar-footer a { color: var(--accent-primary); font-weight: 600; }
 
 /* ======== 4. MAIN CONTENT AREA ======== */
-/* Styles for the main content container */
 .main-content {
     padding: 40px;
     overflow-y: auto;
 }
-/* Desktop header styles */
 .desktop-header {
     margin-bottom: 40px;
     margin-top: 40px;
@@ -117,7 +107,6 @@ a { text-decoration: none; color: inherit; }
 }
 .hero-image-container img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Scrolling text banner styles */
 .marquee-container {
     width: 100%; background-color: var(--text-primary); color: white;
     padding: 12px 0; overflow: hidden; white-space: nowrap;
@@ -133,13 +122,11 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 6. PRODUCT GRID & CARDS ======== */
-/* Grid layout for product cards */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 32px;
 }
-/* Individual product card styling */
 .product-card {
     background: var(--bg-main); border: 1px solid var(--border-color);
     border-radius: var(--radius-lg); overflow: hidden;
@@ -147,11 +134,9 @@ a { text-decoration: none; color: inherit; }
 }
 .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
 
-/* Card image container and image styles */
 .card-image-container { position: relative; }
 .card-image-container img { width: 100%; height: 250px; object-fit: cover; display: block; }
 
-/* Status badge on the product card (e.g., "Available", "Sold") */
 .card-status {
     position: absolute; top: 16px; left: 16px; padding: 6px 12px;
     font-size: 0.8em; font-weight: 600; border-radius: 20px;
@@ -161,10 +146,8 @@ a { text-decoration: none; color: inherit; }
 .card-status.preordered { background-color: var(--accent-yellow); color: var(--text-primary); }
 .card-status.sold { background-color: var(--accent-gray); }
 
-/* Makes the image grayscale for sold items */
 .product-card.sold-item .card-image-container img { filter: grayscale(1); }
 
-/* Content section of the card */
 .card-content { padding: 20px; }
 .card-content h3 { font-size: 1.4em; font-weight: 700; margin: 0 0 8px 0; }
 .card-details {
@@ -178,7 +161,6 @@ a { text-decoration: none; color: inherit; }
     display: flex;
     align-items: baseline;
 }
-/* Price styles for discounts */
 .original-price {
     font-size: 0.75em;
     text-decoration: line-through;
@@ -192,7 +174,6 @@ a { text-decoration: none; color: inherit; }
 
 
 /* ======== 7. PRODUCT DETAIL PAGE STYLES ======== */
-/* Grid for the product detail page layout */
 .product-detail-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -202,35 +183,15 @@ a { text-decoration: none; color: inherit; }
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
 }
-/* Gallery needs to be a positioning context for the status overlay */
-.detail-gallery {
-    position: relative;
-}
-/* Main image in the gallery */
+/* REMOVED .detail-gallery { position: relative; } */
 .detail-gallery .main-image {
     width: 100%;
     border-radius: var(--radius-md);
     margin-bottom: 16px;
 }
 
-/* --- NEW --- Status badge for the detail page */
-.detail-status {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    padding: 8px 16px;
-    font-size: 1em;
-    font-weight: 600;
-    border-radius: 20px;
-    color: white;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    z-index: 10;
-}
-.detail-status.available { background-color: var(--accent-green); }
-.detail-status.preordered { background-color: var(--accent-yellow); color: var(--text-primary); }
-.detail-status.sold { background-color: var(--accent-gray); }
+/* REMOVED .detail-status block */
 
-/* Thumbnail images in the gallery */
 .detail-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .detail-thumbnails img {
     width: 100%;
@@ -243,7 +204,6 @@ a { text-decoration: none; color: inherit; }
 }
 .detail-thumbnails img.active, .detail-thumbnails img:hover { border-color: var(--accent-primary); }
 
-/* Product information section */
 .detail-info h1 { font-size: 3em; font-weight: 700; margin: 0; }
 .detail-info .price {
     font-size: 2em;
@@ -254,7 +214,7 @@ a { text-decoration: none; color: inherit; }
     align-items: baseline;
 }
 .detail-info .price .original-price {
-    font-size: 0.7em; /* Make it a bit smaller here */
+    font-size: 0.7em;
 }
 .detail-info .description { line-height: 1.8; color: var(--text-secondary); margin-bottom: 32px; font-size: 1.1em;}
 .details-list { list-style: none; padding: 0; margin: 32px 0; }
@@ -268,7 +228,6 @@ a { text-decoration: none; color: inherit; }
 .details-list li:first-child { border-top: 1px solid var(--border-color); }
 .details-list li strong { font-weight: 600; }
 
-/* Call-to-action button */
 .add-to-cart-button {
     display: block; width: 100%; padding: 18px; background-color: var(--accent-primary);
     color: white; text-align: center; font-size: 1.2em; font-weight: 600;
@@ -276,32 +235,28 @@ a { text-decoration: none; color: inherit; }
 }
 .add-to-cart-button:hover { background-color: #3B5BDB; }
 
-/* --- NEW --- Style for the disabled sold button */
 .add-to-cart-button.sold-button {
     background-color: var(--accent-gray);
     cursor: not-allowed;
 }
 .add-to-cart-button.sold-button:hover {
-    background-color: var(--accent-gray); /* Override hover effect */
+    background-color: var(--accent-gray);
 }
 
 
 /* ======== 8. RESPONSIVE DESIGN ======== */
-.mobile-header, .mobile-menu-button { display: none; } /* Hidden on desktop */
+.mobile-header, .mobile-menu-button { display: none; }
 
-/* Styles for tablets and smaller screens */
 @media (max-width: 1024px) {
-    .shop-layout { grid-template-columns: 1fr; min-height: auto; } /* Single column layout */
-    /* Sidebar becomes a slide-in menu */
+    .shop-layout { grid-template-columns: 1fr; min-height: auto; }
     .sidebar {
         position: fixed; left: -100%; top: 0; z-index: 200; height: 100%;
         transition: left 0.3s ease-in-out; box-shadow: var(--shadow-md); width: 280px;
     }
-    .sidebar.open { left: 0; } /* Class to show the sidebar */
+    .sidebar.open { left: 0; }
     
     .main-content { padding: 24px; }
     
-    /* Mobile header becomes visible */
     .mobile-header {
         display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
     }
@@ -317,7 +272,6 @@ a { text-decoration: none; color: inherit; }
     .hero-section { margin-top: 0; }
     .hero-image-container { height: 250px; }
     
-    /* Product detail grid stacks vertically on mobile */
     .product-detail-grid { 
         grid-template-columns: 1fr; 
         padding: 24px;
@@ -327,7 +281,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 9. PAGINATION ======== */
-/* Container for pagination links */
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -336,7 +289,6 @@ a { text-decoration: none; color: inherit; }
     gap: 8px;
     margin-top: 48px;
 }
-/* Individual pagination button styling */
 .page-btn {
     display: inline-block;
     border: 1px solid var(--border-color);
@@ -370,9 +322,8 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ======== 10. SITE FOOTER ======== */
-/* Main footer styling */
 .site-footer {
-    grid-column: 1 / -1; /* Spans full width of the layout */
+    grid-column: 1 / -1;
     background-color: var(--text-primary);
     color: #E9ECEF;
     padding: 40px 24px;
@@ -395,7 +346,6 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 24px;
 }
 .footer-contact span { margin: 0 8px; }
-/* Social media links styling */
 .social-links {
     display: flex;
     justify-content: center;
