@@ -39,7 +39,7 @@
             </header>
 
             <div class="admin-card">
-                 <h2>รายการทั้งหมด</h2>
+                 <h2>รายการทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
                  <table class="product-table">
                      <thead>
                          <tr>
@@ -64,8 +64,7 @@
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        // --- CORRECTED IMPORT PATH BELOW ---
-        import { getFirestore, collection, query, orderBy, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, getDocs, doc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
@@ -95,7 +94,7 @@
                 signOut(auth).then(() => {
                     alert('คุณออกจากระบบแล้ว');
                     window.location.href = 'index.html';
-                }).catch(error => console.error("Logout Error:", error));
+                });
             });
         }
 
@@ -114,7 +113,8 @@
 
             try {
                 const productsRef = collection(db, "products");
-                const q = query(productsRef, orderBy("createdAt", "desc"));
+                // **UPDATED QUERY**: Now sorts by the manual order
+                const q = query(productsRef, orderBy("orderPosition", "asc"));
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
@@ -128,9 +128,10 @@
                     const productId = doc.id;
                     const price = (product.price || 0).toLocaleString('th-TH');
                     const details = `${product.breed || ''} (${product.gender || ''}, ${product.color || ''})`;
-
+                    
+                    // **UPDATED ROW**: Added data-id attribute to the <tr> element
                     const row = `
-                        <tr>
+                        <tr data-id="${productId}">
                             <td><span class="drag-handle">☰</span></td>
                             <td data-label="ข้อมูล">
                                 <div class="product-info-cell">
@@ -153,10 +154,49 @@
                     `;
                     tableBody.innerHTML += row;
                 });
+                
+                // Initialize SortableJS after rows are rendered
+                initializeSorting(tableBody);
+
             } catch (error) {
                 console.error("Error fetching products: ", error);
                 tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
+        };
+
+        // **NEW FUNCTION**: Saves the new order to Firestore
+        const saveNewOrder = async (tableRows) => {
+            const batch = writeBatch(db);
+            
+            Array.from(tableRows).forEach((row, index) => {
+                const productId = row.dataset.id;
+                if (productId) {
+                    const docRef = doc(db, "products", productId);
+                    batch.update(docRef, { orderPosition: index });
+                }
+            });
+
+            try {
+                await batch.commit();
+                console.log("New order saved successfully.");
+            } catch (error) {
+                console.error("Error saving new order: ", error);
+                alert("เกิดข้อผิดพลาดในการบันทึกลำดับใหม่!");
+            }
+        };
+
+        // **NEW FUNCTION**: Initializes the SortableJS library
+        const initializeSorting = (tableBody) => {
+             new Sortable(tableBody, {
+                handle: '.drag-handle',
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: (evt) => {
+                    // When the user is done dragging, save the new order.
+                    const rows = evt.target.children;
+                    saveNewOrder(rows);
+                },
+            });
         };
 
         const tableBody = document.getElementById('product-table-body');
