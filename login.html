@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แผงควบคุมสำหรับผู้ดูแล</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <div class="login-container">
+        <form id="login-form" class="login-form">
+            <h2>ผู้ดูแลระบบ</h2>
+            <div class="input-group">
+                <label for="username">ชื่อผู้ใช้</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">รหัสผ่าน</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="button button-primary">เข้าสู่ระบบ</button>
+            <p class="home-link"><a href="index.html">กลับสู่หน้าหลัก</a></p>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // This is a simulation.
+            // In a real application, you would send the data to a server for validation.
+            localStorage.setItem('isAdminLoggedIn', 'true');
+            alert('เข้าสู่ระบบสำเร็จ!');
+            window.location.href = 'admin.html';
+        });
+    </script>
+</body>
+</html>
