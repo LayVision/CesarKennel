@@ -70,7 +70,20 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchProductDetails();
     }
     if (currentPageName === 'admin.html') {
+        // 1. Initial load of products when the page is first visited.
         fetchAndDisplayAdminProducts();
+
+        // 2. NEW: Add a specific handler for the 'Manage Dogs' link.
+        const manageDogsLink = document.getElementById('nav-manage-dogs');
+        if (manageDogsLink) {
+            manageDogsLink.addEventListener('click', (e) => {
+                // Prevent the browser from trying to reload the page.
+                e.preventDefault(); 
+                
+                // Manually re-run the function to fetch and display the product list.
+                fetchAndDisplayAdminProducts(); 
+            });
+        }
     }
     
     // --- Homepage Product Display Function ---
