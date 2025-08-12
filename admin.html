@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- Firebase SDKs to enable auth services on this page for logout -->
+    <!-- MODIFIED: Added Firestore SDK to allow data fetching on this page -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <!-- Main layout grid for the admin panel -->
@@ -63,10 +64,9 @@
                             <th>การกระทำ</th>
                         </tr>
                      </thead>
-                     <!-- REMOVED: All hardcoded <tr> example rows have been deleted. -->
-                     <!-- This table body will be populated dynamically with data from Firebase. -->
+                     <!-- This table body will be populated dynamically by script.js -->
                      <tbody id="product-table-body">
-                         
+                         <!-- Product rows will be inserted here -->
                      </tbody>
                  </table>
             </div>
