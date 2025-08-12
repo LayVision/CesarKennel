@@ -14,6 +14,7 @@
             max-height: 200px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
+            object-fit: cover;
         }
     </style>
 </head>
@@ -67,9 +68,13 @@
                 <h2 class="form-section-header">ข้อมูลร้านค้า</h2>
                 <div class="form-grid">
                    <div class="input-group"><label for="shopName">ชื่อร้าน</label><input type="text" id="shopName" name="shopName"></div>
-                   <div class="input-group"><label for="logoText">ข้อความโลโก้</label><input type="text" id="logoText" name="logoText"></div>
+                   <div class="input-group"><label for="logoText">ข้อความโลโก้ (สำหรับหน้าร้าน)</label><input type="text" id="logoText" name="logoText"></div>
                    <div class="input-group"><label for="contactEmail">อีเมลติดต่อ</label><input type="email" id="contactEmail" name="contactEmail"></div>
                    <div class="input-group"><label for="copyrightYear">ปีลิขสิทธิ์</label><input type="text" id="copyrightYear" name="copyrightYear"></div>
+                   <div class="input-group full-width">
+                       <label for="shop-description">คำอธิบายร้านค้า (สำหรับ Header หน้าร้าน)</label>
+                       <textarea id="shop-description" name="shop-description" rows="3"></textarea>
+                   </div>
                 </div>
 
                 <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บและโซเชียลมีเดีย</h2>
@@ -146,7 +151,8 @@
                     document.getElementById('shopName').value = settings.shopName || '';
                     document.getElementById('logoText').value = settings.logoText || '';
                     document.getElementById('contactEmail').value = settings.contactEmail || '';
-                    document.getElementById('copyrightYear').value = settings.copyrightYear || '';
+                    document.getElementById('copyrightYear').value = settings.copyrightYear || new Date().getFullYear();
+                    document.getElementById('shop-description').value = settings.shopDescription || '';
                     document.getElementById('footerDescription').value = settings.footerDescription || '';
                     document.getElementById('footerPhone').value = settings.footerPhone || '';
                     document.getElementById('footerFacebook').value = settings.footerFacebook || '';
@@ -184,6 +190,7 @@
                     logoText: document.getElementById('logoText').value,
                     contactEmail: document.getElementById('contactEmail').value,
                     copyrightYear: document.getElementById('copyrightYear').value,
+                    shopDescription: document.getElementById('shop-description').value,
                     footerDescription: document.getElementById('footerDescription').value,
                     footerPhone: document.getElementById('footerPhone').value,
                     footerFacebook: document.getElementById('footerFacebook').value,
@@ -196,7 +203,8 @@
 
                 alert('บันทึกการตั้งค่าสำเร็จ!');
                 if (newImageUrl) {
-                    location.reload();
+                    previewContainer.innerHTML = `<img id="cover-image-preview" src="${newImageUrl}" alt="Cover Image Preview">`;
+                    currentCoverImageUrl = newImageUrl;
                 }
 
             } catch (error) {

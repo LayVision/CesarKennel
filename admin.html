@@ -88,9 +88,15 @@
             row.setAttribute('data-id', docId);
 
             let statusText = 'พร้อมขาย';
+            let statusClass = dogData.status;
+            if (dogData.status === 'available') statusText = 'พร้อมย้ายบ้าน';
             if (dogData.status === 'preordered') statusText = 'ติดจอง';
             if (dogData.status === 'sold') statusText = 'ขายแล้ว';
             
+            const priceText = dogData.discountPrice > 0 
+                ? `<span style="text-decoration: line-through; color: #999;">${dogData.price.toLocaleString()}</span> ${dogData.discountPrice.toLocaleString()} บาท`
+                : `${dogData.price.toLocaleString()} บาท`;
+
             row.innerHTML = `
                 <td><span class="drag-handle">☰</span></td>
                 <td data-label="ข้อมูล">
@@ -102,8 +108,8 @@
                         </div>
                     </div>
                 </td>
-                <td data-label="สถานะ"><span class="status-badge ${dogData.status}">${statusText}</span></td>
-                <td data-label="ราคา">${dogData.price.toLocaleString()} บาท</td>
+                <td data-label="สถานะ"><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td data-label="ราคา">${priceText}</td>
                 <td data-label="การกระทำ">
                     <div class="action-buttons">
                         <a href="add-item.html?id=${docId}" class="button edit-btn">แก้ไข</a>
@@ -138,7 +144,7 @@
                 button.addEventListener('click', async (e) => {
                     const docId = e.target.dataset.id;
                     const dogName = e.target.dataset.name;
-                    if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${dogName}"?`)) {
+                    if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${dogName}"? การกระทำนี้ไม่สามารถย้อนกลับได้`)) {
                         try {
                             await db.collection("dogs").doc(docId).delete();
                             alert('ลบข้อมูลสำเร็จ!');
@@ -171,6 +177,7 @@
                     
                     try {
                         await batch.commit();
+                        // No alert needed for a smooth UX
                     } catch (error) {
                         console.error('Error updating order:', error);
                         alert('เกิดข้อผิดพลาดในการบันทึกลำดับ');

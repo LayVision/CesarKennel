@@ -7,19 +7,20 @@
     <link rel="stylesheet" href="admin-style.css">
     <style>
         #existing-images-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
+            margin-top: 8px;
         }
         .img-preview-wrapper {
             position: relative;
         }
         .img-preview-wrapper img {
-            width: 100px;
+            width: 100%;
             height: 100px;
             object-fit: cover;
             border-radius: 8px;
+            display: block;
         }
         .delete-img-btn {
             position: absolute;
@@ -36,19 +37,20 @@
             line-height: 20px;
             cursor: pointer;
             padding: 0;
+            font-family: sans-serif;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
     <div class="admin-layout">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
              <div>
                 <div class="sidebar-logo"><span class="logo-text-placeholder">Admin</span><span>.</span></div>
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
-                        <li><a href="admin.html">จัดการน้องหมา</a></li>
+                        <li><a href="admin.html" class="active">จัดการน้องหมา</a></li>
                         <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
@@ -61,8 +63,11 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="admin-main">
+            <header class="mobile-header">
+                <div class="mobile-logo">Admin<span>.</span></div>
+                <button class="mobile-menu-button" id="menu-toggle">☰</button>
+            </header>
             <header class="desktop-header">
                 <h1 id="page-title">เพิ่มข้อมูลน้องหมา</h1>
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
@@ -163,6 +168,9 @@
                     console.error("Error fetching dog data:", error);
                     alert('ไม่สามารถโหลดข้อมูลสำหรับแก้ไขได้');
                 }
+            } else {
+                 pageTitle.textContent = 'เพิ่มข้อมูลน้องหมา';
+                 submitButton.textContent = 'บันทึกข้อมูล';
             }
         }
         
@@ -170,7 +178,10 @@
             existingImagesContainer.innerHTML = '';
             if (existingImageUrls.length === 0) return;
             
-            existingImagesContainer.innerHTML = '<h4>รูปภาพปัจจุบัน</h4>';
+            const label = document.createElement('label');
+            label.textContent = 'รูปภาพปัจจุบัน (คลิก X เพื่อลบ)';
+            existingImagesContainer.appendChild(label);
+            
             const imageGrid = document.createElement('div');
             imageGrid.id = 'existing-images-grid';
             
@@ -179,7 +190,7 @@
                 imgWrapper.className = 'img-preview-wrapper';
                 imgWrapper.innerHTML = `
                     <img src="${url}" alt="Existing image ${index + 1}">
-                    <button type="button" class="delete-img-btn" data-index="${index}">X</button>
+                    <button type="button" class="delete-img-btn" data-index="${index}">&times;</button>
                 `;
                 imageGrid.appendChild(imgWrapper);
             });
@@ -231,8 +242,7 @@
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
                     const docCountSnapshot = await db.collection("dogs").get();
-                    dogData.order = docCountSnapshot.size;
-                    dogData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    dogData.order = docCountSnapshot.size; // Set order for new items
                     await db.collection("dogs").add(dogData);
                     alert('เพิ่มน้องหมาสำเร็จ!');
                 }
@@ -242,10 +252,15 @@
             } catch (error) {
                 console.error("Error saving dog data:", error);
                 alert(`เกิดข้อผิดพลาด: ${error.message}`);
-            } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = isEditMode ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล';
             }
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+             firebase.auth().onAuthStateChanged(user => {
+                if(!user) window.location.href = 'login.html';
+            });
         });
     </script>
 </body>

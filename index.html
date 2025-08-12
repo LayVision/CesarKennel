@@ -48,16 +48,16 @@
 
             <section class="hero-section">
                 <div class="hero-image-container">
-                    <img id="hero-image" src="https://via.placeholder.com/1260x400.png?text=Loading..." alt="Cover Image">
+                    <img id="hero-image" src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
                 </div>
                 <div class="marquee-container">
-                    <p class="marquee-text" id="marquee-text"></p>
+                    <p class="marquee-text" id="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
 
             <header class="desktop-header">
                 <h1>เพื่อนคู่ใจแสนน่ารัก</h1>
-                <p>น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
+                <p id="shop-description">น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
             </header>
 
             <div class="product-grid" id="product-grid">
@@ -70,8 +70,8 @@
 
     <footer class="site-footer">
         <div class="footer-content">
-            <h3 class="footer-logo" id="footer-shop-name"></h3>
-            <p class="footer-description" id="footer-description"></p>
+            <h3 class="footer-logo" id="footer-shop-name">ปอมปอม บูทีค</h3>
+            <p class="footer-description" id="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
             <div class="footer-contact" id="footer-contact-details"></div>
             <div class="social-links">
                 <a href="#" aria-label="Facebook" id="social-fb" class="hidden">FB</a>
@@ -114,7 +114,6 @@
         // --- PAGE LOGIC ---
         const db = firebase.firestore();
         const productGrid = document.getElementById('product-grid');
-        const paginationContainer = document.getElementById('pagination');
         const colorFilter = document.getElementById('filter-color');
         const ageFilter = document.getElementById('filter-age');
 
@@ -129,7 +128,7 @@
             
             const priceHtml = dogData.discountPrice && dogData.discountPrice > 0
                 ? `<span class="original-price">${dogData.price.toLocaleString()}</span> <span class="discounted-price">${dogData.discountPrice.toLocaleString()} บาท</span>`
-                : `<span class="discounted-price">${dogData.price.toLocaleString()} บาท</span>`;
+                : `<div class="card-price">${dogData.price.toLocaleString()} บาท</div>`;
 
             card.innerHTML = `
                 <div class="card-image-container">
@@ -176,7 +175,7 @@
                     });
                 }
                 
-                populateFilterOptions(params);
+                await populateFilterOptions(params);
                 updateActiveNav();
 
             } catch (error) {
@@ -186,10 +185,10 @@
         }
         
         async function populateFilterOptions(params) {
-            const color = params.get('color');
-            const age = params.get('age');
+            const selectedColor = params.get('color');
+            const selectedAge = params.get('age');
             
-            const allDogsSnapshot = await db.collection("dogs").get();
+            const allDogsSnapshot = await db.collection("dogs").where("status", "!=", "sold").get();
             const uniqueColors = new Set();
             const uniqueAges = new Set();
             allDogsSnapshot.forEach(doc => {
@@ -203,7 +202,7 @@
                 const option = document.createElement('option');
                 option.value = c;
                 option.textContent = c;
-                if (c === color) option.selected = true;
+                if (c === selectedColor) option.selected = true;
                 colorFilter.appendChild(option);
             });
 
@@ -212,7 +211,7 @@
                 const option = document.createElement('option');
                 option.value = a;
                 option.textContent = a;
-                if (a === age) option.selected = true;
+                if (a === selectedAge) option.selected = true;
                 ageFilter.appendChild(option);
             });
         }
@@ -233,6 +232,12 @@
                     params.delete('age');
                 }
                 
+                // Preserve gender filter if it exists
+                const genderParam = new URLSearchParams(window.location.search).get('gender');
+                if(genderParam) {
+                    params.set('gender', genderParam);
+                }
+
                 window.location.search = params.toString();
             };
 
@@ -243,7 +248,7 @@
         function updateActiveNav() {
             document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
             const genderParam = new URLSearchParams(window.location.search).get('gender');
-
+            
             if (!genderParam) {
                 document.getElementById('nav-all')?.classList.add('active');
             } else if (genderParam === 'ผู้') {
@@ -253,7 +258,6 @@
             }
         }
 
-        // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             fetchAndDisplayDogs(urlParams);

@@ -25,8 +25,8 @@
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
-                <p class="copyright-text">&copy; 2568 ปอมปอม บูทีค</p>
+                <a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a>
+                <p class="copyright-text"></p>
             </div>
         </aside>
 
@@ -37,7 +37,7 @@
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <div class="product-detail-grid" id="detail-container">
+            <div id="detail-container" class="product-detail-grid">
                 <p>กำลังโหลดข้อมูล...</p>
             </div>
         </main>
@@ -45,15 +45,13 @@
 
     <footer class="site-footer">
         <div class="footer-content">
-            <h3 class="footer-logo" id="footer-logo">ปอมปอม บูทีค</h3>
-            <p class="footer-description" id="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
-            <div class="footer-contact" id="footer-contact-details">
-                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
-            </div>
+            <h3 class="footer-logo" id="footer-shop-name"></h3>
+            <p class="footer-description" id="footer-description"></p>
+            <div class="footer-contact" id="footer-contact-details"></div>
             <div class="social-links">
-                <a href="#" aria-label="Facebook" id="social-fb">FB</a>
-                <a href="#" aria-label="Instagram" id="social-ig">IG</a>
-                <a href="#" aria-label="Line" id="social-line">LINE</a>
+                <a href="#" aria-label="Facebook" id="social-fb" class="hidden">FB</a>
+                <a href="#" aria-label="Instagram" id="social-ig" class="hidden">IG</a>
+                <a href="#" aria-label="Line" id="social-line" class="hidden">LINE</a>
             </div>
         </div>
     </footer>
@@ -66,28 +64,96 @@
 
     <script>
         const firebaseConfig = {
-            // ... (config is unchanged)
+          apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+          authDomain: "cesarkennel.firebaseapp.com",
+          projectId: "cesarkennel",
+          storageBucket: "cesarkennel.firebasestorage.app",
+          messagingSenderId: "512752480416",
+          appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- DYNAMIC AUTH LINK ---
-        firebase.auth().onAuthStateChanged(function (user) {
-            // ... (function is unchanged)
-        });
-
-        // --- PAGE LOGIC ---
         const detailContainer = document.getElementById('detail-container');
 
         function displayDogDetails(dog) {
-            // ... (function is unchanged)
+            document.title = `${dog.name} - ปอมปอม บูทีค`;
+            
+            const priceHtml = dog.discountPrice && dog.discountPrice > 0
+                ? `<span class="original-price">${dog.price.toLocaleString()}</span> <span class="discounted-price">${dog.discountPrice.toLocaleString()} บาท</span>`
+                : `<span class="discounted-price">${dog.price.toLocaleString()} บาท</span>`;
+
+            const thumbnailsHtml = dog.imageUrls.map((url, index) =>
+                `<img src="${url}" alt="รูปย่อ ${index + 1}" class="${index === 0 ? 'active' : ''}">`
+            ).join('');
+
+            detailContainer.innerHTML = `
+                <div class="detail-gallery">
+                    <img src="${dog.imageUrls[0]}" alt="รูปหลัก" id="mainImage" class="main-image">
+                    <div class="detail-thumbnails" id="detail-thumbnails">
+                        ${thumbnailsHtml}
+                    </div>
+                </div>
+                <div class="detail-info">
+                    <h1>${dog.name}</h1>
+                    <div class="price">${priceHtml}</div>
+                    <p class="description">${dog.description || ''}</p>
+                    
+                    <ul class="details-list">
+                        <li><strong>สายพันธุ์:</strong><span>${dog.breed}</span></li>
+                        <li><strong>อายุ:</strong><span>${dog.age}</span></li>
+                        <li><strong>เพศ:</strong><span>${dog.gender}</span></li>
+                        <li><strong>ตัวสี:</strong><span>${dog.color}</span></li>
+                        <li><strong>ตาสี:</strong><span>${dog.eyeColor || '-'}</span></li>
+                        <li><strong>วัคซีน:</strong><span>${dog.vaccine || '-'}</span></li>
+                    </ul>
+
+                    <button class="add-to-cart-button">ติดต่อเพื่อจอง</button>
+                </div>
+            `;
+            
+            setupGalleryListeners();
+        }
+
+        function setupGalleryListeners() {
+            const mainImage = document.getElementById('mainImage');
+            const thumbnails = document.querySelectorAll('#detail-thumbnails img');
+            if (mainImage && thumbnails.length) {
+                thumbnails.forEach(thumb => {
+                    thumb.addEventListener('click', function() {
+                        mainImage.src = this.src;
+                        thumbnails.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            }
         }
 
         async function fetchDogById() {
-            // ... (function is unchanged)
+            const urlParams = new URLSearchParams(window.location.search);
+            const dogId = urlParams.get('id');
+
+            if (!dogId) {
+                detailContainer.innerHTML = "<p>ไม่พบข้อมูลน้องหมา กรุณาระบุ ID ที่ถูกต้อง</p>";
+                return;
+            }
+
+            try {
+                const docRef = db.collection('dogs').doc(dogId);
+                const docSnap = await docRef.get();
+
+                if (docSnap.exists) {
+                    displayDogDetails(docSnap.data());
+                } else {
+                    detailContainer.innerHTML = `<p>ไม่พบข้อมูลน้องหมาสำหรับ ID: ${dogId}</p>`;
+                }
+            } catch (error) {
+                console.error("Error fetching dog details:", error);
+                detailContainer.innerHTML = "<p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>";
+            }
         }
 
-        fetchDogById();
+        document.addEventListener('DOMContentLoaded', fetchDogById);
     </script>
 </body>
 </html>

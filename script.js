@@ -15,7 +15,7 @@ async function applyGlobalSettings() {
         }
         const settings = docSnap.data();
 
-        // 1. Logo Text (All pages)
+        // 1. Logo Text
         const isUserOnAdminPage = window.location.pathname.includes('admin') || window.location.pathname.includes('settings') || window.location.pathname.includes('add-item');
         const defaultLogo = isUserOnAdminPage ? 'Admin' : 'PomPom';
         const logoText = settings.logoText || defaultLogo;
@@ -23,7 +23,7 @@ async function applyGlobalSettings() {
             el.textContent = logoText;
         });
         
-        // 2. Copyright Text (Public pages)
+        // 2. Copyright Text
         const copyrightElements = document.querySelectorAll('.copyright-text');
         if (copyrightElements.length > 0) {
             const year = settings.copyrightYear || new Date().getFullYear();
@@ -33,7 +33,10 @@ async function applyGlobalSettings() {
             });
         }
         
-        // 3. Main Site Footer (Public pages)
+        // 3. Public Page Headers & Footers
+        const shopDesc = document.getElementById('shop-description');
+        if (shopDesc && settings.shopDescription) shopDesc.textContent = settings.shopDescription;
+
         const footerShopName = document.getElementById('footer-shop-name');
         if (footerShopName && settings.shopName) footerShopName.textContent = settings.shopName;
 
@@ -49,26 +52,28 @@ async function applyGlobalSettings() {
             footerContact.innerHTML = contactHTML;
         }
 
-        // 4. Social Media Links (Public pages)
-        const fbLink = document.getElementById('social-fb');
-        if (fbLink) {
-            settings.footerFacebook ? (fbLink.href = settings.footerFacebook, fbLink.classList.remove('hidden')) : fbLink.classList.add('hidden');
+        // 4. Social Media Links
+        const socialLinks = {
+            'social-fb': settings.footerFacebook,
+            'social-ig': settings.footerInstagram,
+            'social-line': settings.footerLine
+        };
+        for(const [id, url] of Object.entries(socialLinks)) {
+            const linkEl = document.getElementById(id);
+            if(linkEl) {
+                if(url) {
+                    linkEl.href = url;
+                    linkEl.classList.remove('hidden');
+                } else {
+                    linkEl.classList.add('hidden');
+                }
+            }
         }
 
-        const igLink = document.getElementById('social-ig');
-        if (igLink) {
-            settings.footerInstagram ? (igLink.href = settings.footerInstagram, igLink.classList.remove('hidden')) : igLink.classList.add('hidden');
-        }
-        
-        const lineLink = document.getElementById('social-line');
-        if (lineLink) {
-             settings.footerLine ? (lineLink.href = settings.footerLine, lineLink.classList.remove('hidden')) : lineLink.classList.add('hidden');
-        }
-
-        // 5. Homepage specifics (index.html only)
-        const coverImage = document.getElementById('hero-image');
-        if (coverImage && settings.coverImageUrl) {
-            coverImage.src = settings.coverImageUrl;
+        // 5. Homepage Specifics
+        const heroImage = document.getElementById('hero-image');
+        if (heroImage && settings.coverImageUrl) {
+            heroImage.src = settings.coverImageUrl;
         }
 
         const marqueeText = document.getElementById('marquee-text');
@@ -83,7 +88,7 @@ async function applyGlobalSettings() {
 
 // --- SHARED UTILITY FUNCTIONS ---
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Mobile Menu Toggle for BOTH frontend and admin ---
+    // Mobile Menu Toggle
     const menuButton = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
 
@@ -99,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Admin Logout Button ---
+    // Admin Logout Button
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
@@ -116,17 +121,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Apply settings after page load ---
+    // Apply global settings on all pages
     if (typeof firebase !== 'undefined') {
-        applyGlobalSettings();
-    } else {
-        setTimeout(applyGlobalSettings, 500);
+        firebase.auth().onAuthStateChanged(() => {
+             applyGlobalSettings();
+        });
     }
 });
 
-// --- ImgBB IMAGE UPLOAD FUNCTIONS ---
+// --- ImgBB IMAGE UPLOAD HELPER FUNCTIONS ---
 async function uploadImageToImgBB(imageFile) {
-    const apiKey = '2c1b183962c1d06f8aecea08cbc78d11'; // Your ImgBB API key
+    const apiKey = '2c1b183962c1d06f8aecea08cbc78d11'; // ImgBB API Key
     const formData = new FormData();
     formData.append('image', imageFile);
 
@@ -137,7 +142,8 @@ async function uploadImageToImgBB(imageFile) {
         });
         const data = await response.json();
         if (data.success) {
-            return data.data.url;
+            // Return the URL for the medium-sized, web-friendly version
+            return data.data.medium?.url || data.data.url;
         } else {
             throw new Error(`ImgBB upload failed: ${data.error?.message || 'Unknown error'}`);
         }
@@ -149,6 +155,15 @@ async function uploadImageToImgBB(imageFile) {
 
 async function uploadMultipleImages(imageFiles) {
     const uploadPromises = Array.from(imageFiles).map(file => uploadImageToImgBB(file));
-    const imageUrls = await Promise.all(uploadPromises);
-    return imageUrls;
-}
+    // Use Promise.allSettled to continue even if one upload fails
+    const results = await Promise.allSettled(uploadPromises);
+    const successfulUrls = results
+        .filter(result => result.status === 'fulfilled')
+        .map(result => result.value);
+    
+    if (results.some(r => r.status === 'rejected')) {
+        console.warn("Some images failed to upload.");
+    }
+
+    return successfulUrls;
+}```

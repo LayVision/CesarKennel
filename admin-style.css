@@ -95,6 +95,9 @@ a { text-decoration: none; color: inherit; }
     cursor: pointer;
     transition: all 0.2s;
     font-size: 1em;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 .button-primary { background-color: var(--accent-primary); color: white; }
 .button-primary:hover { background-color: #3B5BDB; }
@@ -122,6 +125,9 @@ a { text-decoration: none; color: inherit; }
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 22px;
+}
+.input-group {
+    margin-bottom: 0; /* remove default margin */
 }
 .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9em; }
 .input-group input, .input-group textarea, .input-group select {
@@ -161,9 +167,11 @@ a { text-decoration: none; color: inherit; }
 .status-badge.preordered { background-color: #FFF3BF; color: #C59300; }
 .status-badge.sold { background-color: #E9ECEF; color: #495057; }
 
+.action-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .action-buttons a, .action-buttons button {
     font-size: 0.9em; padding: 6px 12px; border-radius: 6px;
-    margin-right: 8px; border: 1px solid transparent;
+    border: 1px solid transparent;
+    margin-right: 0; /* remove old margin */
 }
 .action-buttons .edit-btn { background-color: #E7F5FF; color: #1971C2; }
 .action-buttons .delete-btn { background-color: #FFF5F5; color: var(--accent-red); }
@@ -224,6 +232,7 @@ a { text-decoration: none; color: inherit; }
     margin-top: 8px;
 }
 .login-form .home-link {
+    display: block;
     text-align: center;
     margin-top: 24px;
     font-size: 0.9em;
@@ -284,14 +293,15 @@ a { text-decoration: none; color: inherit; }
         border-bottom: 1px solid var(--border-color);
     }
     .product-table tr td:first-child {
-        display: none;
+        display: none; /* Hide drag handle on mobile */
     }
     .product-table tr td:last-child { border-bottom: none; }
     .product-table td::before {
         content: attr(data-label);
         font-weight: 600;
-        color: var(--text-secondary);
+        color: var(--text-primary); /* Changed to primary for better readability */
         margin-right: 16px;
     }
     .product-info-cell { flex-direction: row; }
+    .action-buttons { justify-content: flex-end; }
 }
