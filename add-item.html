@@ -233,11 +233,16 @@
                 };
 
                 if (isEditMode) {
+                    // Only update data, don't change createdAt or order
                     await db.collection("dogs").doc(dogId).update(dogData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
+                    // This is a NEW dog
+                    // Get current number of dogs for the manual order
                     const docCountSnapshot = await db.collection("dogs").get();
-                    dogData.order = docCountSnapshot.size;
+                    dogData.order = docCountSnapshot.size; 
+                    // Add the server timestamp for "newest first" sorting
+                    dogData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection("dogs").add(dogData);
                     alert('เพิ่มน้องหมาสำเร็จ!');
                 }
