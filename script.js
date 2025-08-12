@@ -35,85 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // NOTE: All login/logout logic has been removed from this file.
-    // It is now handled directly on the relevant pages (login.html, add-item.html, etc.)
-    // using Firebase Authentication SDKs.
-
-    // --- URL-BASED PAGINATION LOGIC ---
-    const productGrid = document.getElementById('product-grid');
-    const paginationContainer = document.getElementById('pagination');
-
-    if (productGrid && paginationContainer) {
-        const itemsPerPage = 6;
-        const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
-        const totalPages = Math.ceil(allItems.length / itemsPerPage);
-
-        function displayPage(page) {
-            page = Math.max(1, Math.min(page, totalPages));
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            allItems.forEach(item => item.style.display = 'none');
-            allItems.slice(startIndex, endIndex).forEach(item => item.style.display = 'block');
-            
-            paginationContainer.innerHTML = '';
-            if (totalPages <= 1) return;
-
-            const prevButton = document.createElement('a');
-            prevButton.classList.add('page-btn');
-            prevButton.textContent = 'ก่อนหน้า';
-            prevButton.href = `?page=${page - 1}`;
-            if (page === 1) { prevButton.classList.add('disabled'); }
-            paginationContainer.appendChild(prevButton);
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('a');
-                pageButton.classList.add('page-btn');
-                pageButton.textContent = i;
-                pageButton.href = (i === 1) ? window.location.pathname.split('?')[0] : `?page=${i}`;
-                if (i === page) { pageButton.classList.add('active'); }
-                paginationContainer.appendChild(pageButton);
-            }
-
-            const nextButton = document.createElement('a');
-            nextButton.classList.add('page-btn');
-            nextButton.textContent = 'ถัดไป';
-            nextButton.href = `?page=${page + 1}`;
-             if (page === totalPages) { nextButton.classList.add('disabled'); }
-            paginationContainer.appendChild(nextButton);
-        }
-
-        function handleNavigation(e) {
-            const target = e.target.closest('.page-btn');
-            if (!target || target.classList.contains('active') || target.classList.contains('disabled')) {
-                e.preventDefault(); return;
-            }
-            e.preventDefault();
-            const url = new URL(target.href);
-            const page = parseInt(url.searchParams.get('page')) || 1;
-            history.pushState({page: page}, '', target.href);
-            displayPage(page);
-        }
-
-        paginationContainer.addEventListener('click', handleNavigation);
-        
-        window.addEventListener('popstate', (e) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const page = parseInt(urlParams.get('page')) || 1;
-            displayPage(page);
-        });
-
-        const initialUrlParams = new URLSearchParams(window.location.search);
-        const initialPage = parseInt(initialUrlParams.get('page')) || 1;
-        displayPage(initialPage);
-    }
-
     // --- DRAG & DROP SORTING FOR ADMIN TABLE ---
+    // Note: This requires the SortableJS library to be loaded on the page.
     const tableBody = document.getElementById('product-table-body');
-    if (tableBody) {
+    if (tableBody && typeof Sortable !== 'undefined') {
         new Sortable(tableBody, {
-            handle: '.drag-handle',
-            animation: 150,
-            ghostClass: 'sortable-ghost',
+            handle: '.drag-handle', // Specifies which element triggers the drag.
+            animation: 150, // Animation speed in ms.
+            ghostClass: 'sortable-ghost', // CSS class for the placeholder element.
         });
     }
+
+    // NOTE: Pagination logic has been moved to index.html to work with dynamic content.
+    // NOTE: All login/logout logic is handled directly on the relevant pages using Firebase SDKs.
 });
