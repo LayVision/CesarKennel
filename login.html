@@ -17,7 +17,7 @@
         <form id="login-form" class="login-form">
             <h2>ผู้ดูแลระบบ</h2>
             <div class="input-group">
-                <label for="username">อีเมล</label> <!-- Changed from "ชื่อผู้ใช้" to "อีเมล" for clarity -->
+                <label for="username">อีเมล</label>
                 <input type="email" id="username" name="username" required>
             </div>
             <div class="input-group">
@@ -43,32 +43,30 @@
         };
 
         // 2. Initialize Firebase
-        // This sets up the connection to your Firebase project.
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(); // Get the auth service
+        const auth = firebase.auth(); 
 
         // 3. Attaches an event listener to the form submission.
         document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevents the form from a default submission.
+            event.preventDefault(); 
             
-            // Get user's email and password from the form fields.
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             // 4. Sign in with Firebase Authentication
-            // This sends the credentials to Firebase for validation.
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // This block runs if the login is successful.
                     console.log('Login successful!', userCredential.user);
-                    alert('เข้าสู่ระบบสำเร็จ!');
+
+                    // --- NEW ---
+                    // Set a flag in local storage so other pages know the user is an admin.
+                    // This allows the UI on other pages to update correctly.
+                    localStorage.setItem('isAdminLoggedIn', 'true');
                     
-                    // Redirects the user to the main admin page.
+                    alert('เข้าสู่ระบบสำเร็จ!');
                     window.location.href = 'admin.html';
                 })
                 .catch((error) => {
-                    // This block runs if the login fails.
-                    // It provides an error message for the user.
                     console.error('Login failed:', error);
                     alert(`เกิดข้อผิดพลาดในการเข้าสู่ระบบ: ${error.message}`);
                 });
