@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เพิ่ม/แก้ไข ข้อมูลน้องหมา</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- ADDED: Firebase SDKs for Auth, Firestore, and Storage -->
+    <!-- MODIFIED: Removed Firebase Storage, kept Auth and Firestore -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
     <!-- Main layout for the admin interface -->
@@ -28,7 +27,6 @@
             </div>
              <nav class="sidebar-nav">
                 <ul>
-                    <!-- MODIFIED: Removed target="_blank" -->
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
                 </ul>
@@ -49,7 +47,6 @@
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
-            <!-- MODIFIED: Gave form an ID and removed the 'action' attribute -->
             <form id="add-item-form" class="admin-card">
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
@@ -101,10 +98,10 @@
         </main>
     </div>
     
-    <!-- Link to the main script file -->
+    <!-- Link to the main script file for general UI (menu, logout, etc.) -->
     <script src="script.js"></script>
 
-    <!-- NEW: Dedicated script to handle form submission logic -->
+    <!-- Script to handle this specific form's submission -->
     <script>
         // --- Firebase Initialization ---
         const firebaseConfig = {
@@ -119,7 +116,6 @@
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.firestore();
-        const storage = firebase.storage();
 
         // --- Form Submission Logic ---
         const form = document.getElementById('add-item-form');
@@ -130,19 +126,38 @@
             submitButton.textContent = 'กำลังบันทึก...';
 
             try {
-                // 1. Upload Images to Firebase Storage
+                // --- NEW: Upload Images to ImgBB ---
                 const imageFiles = document.getElementById('image_upload').files;
                 const imageUrls = [];
+                const imgbbApiKey = '2c1b183962c1d06f8aecea08cbc78d11';
 
                 if (imageFiles.length > 0) {
+                    // Create an array of upload promises
                     const uploadPromises = Array.from(imageFiles).map(file => {
-                        const storageRef = storage.ref(`products/${Date.now()}-${file.name}`);
-                        return storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL());
+                        const formData = new FormData();
+                        formData.append('key', imgbbApiKey);
+                        formData.append('image', file);
+
+                        // Return the fetch promise
+                        return fetch('https://api.imgbb.com/1/upload', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                return result.data.url; // Return the image URL on success
+                            } else {
+                                throw new Error(result.error.message || 'ImgBB upload failed');
+                            }
+                        });
                     });
-                    imageUrls.push(...await Promise.all(uploadPromises));
+                    // Wait for all uploads to complete
+                    const uploadedUrls = await Promise.all(uploadPromises);
+                    imageUrls.push(...uploadedUrls);
                 }
 
-                // 2. Prepare Product Data Object
+                // --- Prepare Product Data (No changes here) ---
                 const productData = {
                     name: form.name.value,
                     breed: form.breed.value,
@@ -155,19 +170,18 @@
                     vaccine: form.vaccine.value,
                     status: form.status.value,
                     description: form.description.value,
-                    imageUrls: imageUrls,
-                    // Add a timestamp for sorting by newest
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                    imageUrls: imageUrls, // Use the URLs from ImgBB
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                // 3. Save to Firestore
+                // --- Save to Firestore (No changes here) ---
                 await db.collection('products').add(productData);
 
                 alert('บันทึกข้อมูลน้องหมาสำเร็จ!');
                 window.location.href = 'admin.html';
 
             } catch (error) {
-                console.error("Error adding document: ", error);
+                console.error("Error processing form: ", error);
                 alert(`เกิดข้อผิดพลาด: ${error.message}`);
                 submitButton.disabled = false;
                 submitButton.textContent = 'บันทึกข้อมูล';
