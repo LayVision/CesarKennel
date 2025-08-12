@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="admin-style.css">
-    <!-- ADDED: Firebase SDKs to enable auth services on this page for logout -->
+    <!-- Firebase SDKs to enable auth services on this page for logout -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
@@ -63,62 +63,10 @@
                             <th>การกระทำ</th>
                         </tr>
                      </thead>
-                     <!-- Table body where product rows are listed. ID allows for drag-and-drop functionality -->
+                     <!-- REMOVED: All hardcoded <tr> example rows have been deleted. -->
+                     <!-- This table body will be populated dynamically with data from Firebase. -->
                      <tbody id="product-table-body">
-                         <!-- Example Row 1 -->
-                         <tr>
-                             <td><span class="drag-handle">☰</span></td> <!-- Drag handle for sorting -->
-                             <td data-label="ข้อมูล">
-                                 <div class="product-info-cell">
-                                     <img src="https://images.pexels.com/photos/1458925/pexels-photo-1458925.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Dog">
-                                     <div><div class="name">น้องโมจิ</div><div class="details">ปอมเมอเรเนียน (เมีย, ขาว)</div></div>
-                                 </div>
-                             </td>
-                             <td data-label="สถานะ"><span class="status-badge preordered">ติดจอง</span></td>
-                             <td data-label="ราคา">28,000 บาท</td>
-                             <td data-label="การกระทำ">
-                                 <div class="action-buttons">
-                                     <a href="add-item.html" class="button edit-btn">แก้ไข</a>
-                                     <button class="button delete-btn">ลบ</button>
-                                 </div>
-                             </td>
-                         </tr>
-                         <!-- Example Row 2 -->
-                         <tr>
-                             <td><span class="drag-handle">☰</span></td>
-                             <td data-label="ข้อมูล">
-                                <div class="product-info-cell">
-                                    <img src="https://images.pexels.com/photos/2023384/pexels-photo-2023384.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Dog">
-                                    <div><div class="name">น้องบราวนี่</div><div class="details">ปอมเมอเรเนียน (ผู้, น้ำตาล)</div></div>
-                                </div>
-                            </td>
-                             <td data-label="สถานะ"><span class="status-badge sold">ขายแล้ว</span></td>
-                             <td data-label="ราคา">26,000 บาท</td>
-                             <td data-label="การกระทำ">
-                                 <div class="action-buttons">
-                                     <a href="add-item.html" class="button edit-btn">แก้ไข</a>
-                                     <button class="button delete-btn">ลบ</button>
-                                 </div>
-                             </td>
-                         </tr>
-                         <!-- Example Row 3 -->
-                         <tr>
-                            <td><span class="drag-handle">☰</span></td>
-                            <td data-label="ข้อมูล">
-                                <div class="product-info-cell">
-                                    <img src="https://images.pexels.com/photos/1619690/pexels-photo-1619690.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Dog">
-                                    <div><div class="name">น้องปุยฝ้าย</div><div class="details">ปอมเมอเรเนียน (เมีย, ขาว)</div></div>
-                                </div>
-                            </td>
-                            <td data-label="สถานะ"><span class="status-badge available">พร้อมขาย</span></td>
-                            <td data-label="ราคา">22,000 บาท</td>
-                            <td data-label="การกระทำ">
-                                <div class="action-buttons">
-                                    <a href="add-item.html" class="button edit-btn">แก้ไข</a>
-                                    <button class="button delete-btn">ลบ</button>
-                                </div>
-                            </td>
-                        </tr>
+                         
                      </tbody>
                  </table>
             </div>
