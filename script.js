@@ -64,6 +64,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- NEW: Prevent Unnecessary Page Reloads on Active Nav Links ---
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        // If the link's destination is the same as the page we're currently on...
+        if (link.href === window.location.href) {
+            // ...add a click listener to prevent the default reload action.
+            link.addEventListener('click', e => e.preventDefault());
+        }
+    });
+
+
     // --- DYNAMIC CONTENT LOADER ---
     const currentPage = window.location.pathname.split('/').pop();
 
@@ -73,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentPage === 'product-detail.html') {
         fetchProductDetails();
     }
-    // --- NEW: Run the fetch function for the admin page ---
     if (currentPage === 'admin.html') {
         fetchAndDisplayAdminProducts();
     }
@@ -100,10 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 let priceHTML = '';
                 if (product.discountPrice && product.discountPrice < product.price) {
-                    priceHTML = `
-                        <span class="original-price">${product.price.toLocaleString('th-TH')}</span>
-                        <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>
-                    `;
+                    priceHTML = `<span class="original-price">${product.price.toLocaleString('th-TH')}</span> <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>`;
                 } else {
                     priceHTML = `${product.price.toLocaleString('th-TH')} บาท`;
                 }
@@ -119,10 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="card-content">
                         <h3>${product.name}</h3>
-                        <div class="card-details">
-                            <span>${product.gender}</span>
-                            <span>${product.age}</span>
-                        </div>
+                        <div class="card-details"><span>${product.gender}</span><span>${product.age}</span></div>
                         <div class="card-price">${priceHTML}</div>
                     </div>
                 `;
@@ -135,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NEW: Function to fetch and display products on the ADMIN page ---
+    // --- Function to fetch and display products on the ADMIN page ---
     async function fetchAndDisplayAdminProducts() {
         if (!db) return;
         const tableBody = document.getElementById('product-table-body');
@@ -144,18 +147,14 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`;
             const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
-            tableBody.innerHTML = ''; // Clear loading message
+            tableBody.innerHTML = '';
 
             if (snapshot.empty) {
                 tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>`;
                 return;
             }
 
-            const statusMap = {
-                available: { text: 'พร้อมขาย', class: 'available' },
-                preordered: { text: 'ติดจอง', class: 'preordered' },
-                sold: { text: 'ขายแล้ว', class: 'sold' }
-            };
+            const statusMap = { available: { text: 'พร้อมขาย', class: 'available' }, preordered: { text: 'ติดจอง', class: 'preordered' }, sold: { text: 'ขายแล้ว', class: 'sold' } };
 
             snapshot.forEach(doc => {
                 const product = doc.data();
@@ -165,28 +164,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><span class="drag-handle">☰</span></td>
-                    <td data-label="ข้อมูล">
-                        <div class="product-info-cell">
-                            <img src="${coverImage}" alt="${product.name}">
-                            <div>
-                                <div class="name">${product.name}</div>
-                                <div class="details">${product.breed} (${product.gender}, ${product.color})</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td data-label="สถานะ">
-                        <span class="status-badge ${statusMap[product.status]?.class || ''}">${statusMap[product.status]?.text || product.status}</span>
-                    </td>
+                    <td data-label="ข้อมูล"><div class="product-info-cell"><img src="${coverImage}" alt="${product.name}"><div><div class="name">${product.name}</div><div class="details">${product.breed} (${product.gender}, ${product.color})</div></div></div></td>
+                    <td data-label="สถานะ"><span class="status-badge ${statusMap[product.status]?.class || ''}">${statusMap[product.status]?.text || product.status}</span></td>
                     <td data-label="ราคา">${product.price.toLocaleString('th-TH')} บาท</td>
-                    <td data-label="การกระทำ">
-                        <div class="action-buttons">
-                            <a href="add-item.html?id=${productId}" class="button edit-btn">แก้ไข</a>
-                            <button class="button delete-btn" data-id="${productId}">ลบ</button>
-                        </div>
-                    </td>
+                    <td data-label="การกระทำ"><div class="action-buttons"><a href="add-item.html?id=${productId}" class="button edit-btn">แก้ไข</a><button class="button delete-btn" data-id="${productId}">ลบ</button></div></td>
                 `;
                 tableBody.appendChild(row);
             });
+            
+            // --- ADDED: Re-initialize SortableJS after data is loaded ---
+            // This ensures the drag and drop functionality works on the dynamic rows.
+            if (typeof Sortable !== 'undefined') {
+                 new Sortable(tableBody, {
+                    handle: '.drag-handle',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                });
+            }
 
         } catch (error) {
             console.error("Error fetching admin products: ", error);
@@ -244,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             mainImage.src = this.src;
                             thumbnailsContainer.querySelectorAll('img').forEach(t => t.classList.remove('active'));
                             this.classList.add('active');
-});
+                        });
                         thumbnailsContainer.appendChild(thumb);
                     });
                 } else {
