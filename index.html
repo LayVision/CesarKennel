@@ -25,21 +25,17 @@
                     <h3>ตัวกรอง</h3>
                     <div class="filter-group">
                         <label for="filter-color">สี</label>
-                        <select id="filter-color" name="color">
-                            <!-- Options populated dynamically -->
-                        </select>
+                        <select id="filter-color" name="color"></select>
                     </div>
                     <div class="filter-group">
                         <label for="filter-age">อายุ</label>
-                        <select id="filter-age" name="age">
-                            <!-- Options populated dynamically -->
-                        </select>
+                        <select id="filter-age" name="age"></select>
                     </div>
                 </div>
             </div>
             <div class="sidebar-footer">
                 <a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a>
-                <p class="copyright-text">&copy; 2568 ปอมปอม บูทีค</p>
+                <p class="copyright-text"></p>
             </div>
         </aside>
         
@@ -52,10 +48,10 @@
 
             <section class="hero-section">
                 <div class="hero-image-container">
-                    <img id="hero-image" src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
+                    <img id="hero-image" src="https://via.placeholder.com/1260x400.png?text=Loading..." alt="Cover Image">
                 </div>
                 <div class="marquee-container">
-                    <p class="marquee-text" id="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
+                    <p class="marquee-text" id="marquee-text"></p>
                 </div>
             </section>
 
@@ -74,11 +70,9 @@
 
     <footer class="site-footer">
         <div class="footer-content">
-            <h3 class="footer-logo" id="footer-logo">ปอมปอม บูทีค</h3>
-            <p class="footer-description" id="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
-            <div class="footer-contact" id="footer-contact-details">
-                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
-            </div>
+            <h3 class="footer-logo" id="footer-shop-name"></h3>
+            <p class="footer-description" id="footer-description"></p>
+            <div class="footer-contact" id="footer-contact-details"></div>
             <div class="social-links">
                 <a href="#" aria-label="Facebook" id="social-fb" class="hidden">FB</a>
                 <a href="#" aria-label="Instagram" id="social-ig" class="hidden">IG</a>
@@ -158,7 +152,6 @@
             productGrid.innerHTML = '<p>กำลังโหลดข้อมูลน้องหมา...</p>';
             let query = db.collection("dogs");
 
-            // --- Apply Filters based on URL parameters ---
             const gender = params.get('gender');
             if (gender) query = query.where('gender', '==', gender);
 
@@ -184,7 +177,7 @@
                 }
                 
                 populateFilterOptions(params);
-                updateActiveNav(gender);
+                updateActiveNav();
 
             } catch (error) {
                 console.error("Error fetching dogs: ", error);
@@ -247,7 +240,7 @@
             ageFilter.addEventListener('change', handleFilterChange);
         }
         
-        function updateActiveNav(activeGender) {
+        function updateActiveNav() {
             document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
             const genderParam = new URLSearchParams(window.location.search).get('gender');
 

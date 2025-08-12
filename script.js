@@ -1,7 +1,6 @@
 // --- FUNCTION TO APPLY GLOBAL SETTINGS FROM FIRESTORE ---
 async function applyGlobalSettings() {
-    // This function needs firebase to be initialized on the page.
-    if (typeof firebase === 'undefined') {
+    if (typeof firebase === 'undefined' || typeof firebase.firestore === 'undefined') {
         console.warn("Firebase not ready for applyGlobalSettings.");
         return;
     }
@@ -16,49 +15,41 @@ async function applyGlobalSettings() {
         }
         const settings = docSnap.data();
 
-        // 1. Cover Image (index.html only)
-        const coverImage = document.getElementById('hero-image');
-        if (coverImage && settings.coverImageUrl) {
-            coverImage.src = settings.coverImageUrl;
-        }
-
-        // 2. Marquee Text (index.html only)
-        const marqueeText = document.getElementById('marquee-text');
-        if (marqueeText && settings.marqueeText) {
-            marqueeText.textContent = settings.marqueeText;
-        }
-
-        // 3. Logo Text (all pages)
+        // 1. Logo Text (All pages)
+        const isUserOnAdminPage = window.location.pathname.includes('admin') || window.location.pathname.includes('settings') || window.location.pathname.includes('add-item');
+        const defaultLogo = isUserOnAdminPage ? 'Admin' : 'PomPom';
+        const logoText = settings.logoText || defaultLogo;
         document.querySelectorAll('.logo-text-placeholder').forEach(el => {
-            if (settings.logoText) {
-                el.textContent = settings.logoText;
-            }
+            el.textContent = logoText;
         });
         
-        // 4. Footer & Copyright Text (public pages)
+        // 2. Copyright Text (Public pages)
         const copyrightElements = document.querySelectorAll('.copyright-text');
-        if (copyrightElements.length > 0 && settings.copyrightYear && settings.shopName) {
+        if (copyrightElements.length > 0) {
+            const year = settings.copyrightYear || new Date().getFullYear();
+            const name = settings.shopName || 'ปอมปอม บูทีค';
             copyrightElements.forEach(el => {
-                el.innerHTML = `&copy; ${settings.copyrightYear} ${settings.shopName}`;
+                el.innerHTML = `&copy; ${year} ${name}`;
             });
         }
         
-        const footerLogo = document.getElementById('footer-logo');
-        if(footerLogo && settings.shopName) {
-            footerLogo.textContent = settings.shopName;
-        }
-        
+        // 3. Main Site Footer (Public pages)
+        const footerShopName = document.getElementById('footer-shop-name');
+        if (footerShopName && settings.shopName) footerShopName.textContent = settings.shopName;
+
         const footerDesc = document.getElementById('footer-description');
-        if(footerDesc && settings.footerDescription) {
-            footerDesc.textContent = settings.footerDescription;
-        }
+        if (footerDesc && settings.footerDescription) footerDesc.textContent = settings.footerDescription;
 
         const footerContact = document.getElementById('footer-contact-details');
-        if(footerContact && settings.footerPhone && settings.contactEmail) {
-            footerContact.innerHTML = `<span>โทร: ${settings.footerPhone}</span> | <span>อีเมล: ${settings.contactEmail}</span>`;
+        if (footerContact) {
+            let contactHTML = '';
+            if (settings.footerPhone) contactHTML += `<span>โทร: ${settings.footerPhone}</span>`;
+            if (settings.footerPhone && settings.contactEmail) contactHTML += ' | ';
+            if (settings.contactEmail) contactHTML += `<span>อีเมล: ${settings.contactEmail}</span>`;
+            footerContact.innerHTML = contactHTML;
         }
 
-        // 5. Social Media Links (public pages)
+        // 4. Social Media Links (Public pages)
         const fbLink = document.getElementById('social-fb');
         if (fbLink) {
             settings.footerFacebook ? (fbLink.href = settings.footerFacebook, fbLink.classList.remove('hidden')) : fbLink.classList.add('hidden');
@@ -74,11 +65,21 @@ async function applyGlobalSettings() {
              settings.footerLine ? (lineLink.href = settings.footerLine, lineLink.classList.remove('hidden')) : lineLink.classList.add('hidden');
         }
 
+        // 5. Homepage specifics (index.html only)
+        const coverImage = document.getElementById('hero-image');
+        if (coverImage && settings.coverImageUrl) {
+            coverImage.src = settings.coverImageUrl;
+        }
+
+        const marqueeText = document.getElementById('marquee-text');
+        if (marqueeText && settings.marqueeText) {
+            marqueeText.textContent = settings.marqueeText;
+        }
+
     } catch (error) {
         console.error("Error applying global settings:", error);
     }
 }
-
 
 // --- SHARED UTILITY FUNCTIONS ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -116,21 +117,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Apply settings after page load ---
-    // We check for firebase because this script might load before the SDKs on some pages
-    // and Firebase needs to be initialized.
     if (typeof firebase !== 'undefined') {
         applyGlobalSettings();
     } else {
-        // If firebase isn't ready, wait a bit and try again.
         setTimeout(applyGlobalSettings, 500);
     }
 });
 
-
 // --- ImgBB IMAGE UPLOAD FUNCTIONS ---
-// This function uploads a single image file and returns the URL.
 async function uploadImageToImgBB(imageFile) {
-    const apiKey = '2c1b183962c1d06f8aecea08cbc78d11'; // Replace with your ImgBB API key
+    const apiKey = '2c1b183962c1d06f8aecea08cbc78d11'; // Your ImgBB API key
     const formData = new FormData();
     formData.append('image', imageFile);
 
@@ -141,22 +137,18 @@ async function uploadImageToImgBB(imageFile) {
         });
         const data = await response.json();
         if (data.success) {
-            // Returns the URL of the medium-sized thumbnail for faster loading
-            return data.data.medium?.url || data.data.url;
+            return data.data.url;
         } else {
             throw new Error(`ImgBB upload failed: ${data.error?.message || 'Unknown error'}`);
         }
     } catch (error) {
         console.error('Error uploading to ImgBB:', error);
-        throw error; // Re-throw the error to be caught by the calling function
+        throw error;
     }
 }
 
-// This function takes an array of files and uploads all of them.
 async function uploadMultipleImages(imageFiles) {
-    // Create an array of upload promises
     const uploadPromises = Array.from(imageFiles).map(file => uploadImageToImgBB(file));
-    // Wait for all promises to resolve
     const imageUrls = await Promise.all(uploadPromises);
     return imageUrls;
 }
