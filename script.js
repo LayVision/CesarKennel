@@ -61,18 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CORRECTED: Prevent Page Reload on Active Nav Link ---
-    const currentPageName = window.location.pathname.split('/').pop();
-    document.querySelectorAll('.sidebar-nav a.active').forEach(link => {
-        const linkPageName = new URL(link.href).pathname.split('/').pop();
-        if (linkPageName === currentPageName) {
-            link.addEventListener('click', e => {
-                e.preventDefault(); // This will now correctly prevent the reload.
-            });
-        }
-    });
-
     // --- DYNAMIC CONTENT LOADER ---
+    const currentPageName = window.location.pathname.split('/').pop();
     if (currentPageName === 'index.html' || currentPageName === '') {
         fetchAndDisplayProducts();
     }
