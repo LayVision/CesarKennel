@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการ - ปอมปอม บูทีค</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
+
 <body>
     <div class="admin-layout">
         <aside class="sidebar" id="sidebar">
@@ -19,7 +21,7 @@
                     </ul>
                 </nav>
             </div>
-             <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
@@ -32,28 +34,28 @@
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
-            
+
             <header class="desktop-header">
                 <h1>จัดการน้องหมา</h1>
                 <a href="add-item.html" class="button button-primary">เพิ่มน้องหมาตัวใหม่</a>
             </header>
 
             <div class="admin-card">
-                 <h2>รายการทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
-                 <table class="product-table">
-                     <thead>
-                         <tr>
+                <h2>รายการทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
+                <table class="product-table">
+                    <thead>
+                        <tr>
                             <th class="drag-header"></th>
                             <th>ข้อมูลน้องหมา</th>
                             <th>สถานะ</th>
                             <th>ราคา</th>
                             <th>การกระทำ</th>
                         </tr>
-                     </thead>
-                     <tbody id="product-table-body">
-                         <!-- Data will be loaded here -->
-                     </tbody>
-                 </table>
+                    </thead>
+                    <tbody id="product-table-body">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
             </div>
         </main>
     </div>
@@ -75,6 +77,41 @@
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
         
+        const addOrderToOldItems = async () => {
+            console.log("Running one-time update script to add 'orderPosition'...");
+            const productsRef = collection(db, "products");
+            const q = query(productsRef, orderBy("createdAt", "asc"));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                console.log("No products found to update.");
+                return;
+            }
+            const batch = writeBatch(db);
+            let updates = 0;
+            querySnapshot.docs.forEach((doc, index) => {
+                const product = doc.data();
+                if (product.orderPosition === undefined) {
+                    const docRef = doc.ref;
+                    batch.update(docRef, { orderPosition: index });
+                    updates++;
+                    console.log(`Will update ${product.name} with orderPosition: ${index}`);
+                }
+            });
+            if (updates > 0) {
+                try {
+                    await batch.commit();
+                    alert(`${updates} item(s) have been successfully updated with a default order. Please refresh the page.`);
+                    console.log("Batch update successful!");
+                } catch (error) {
+                    console.error("Error committing batch update:", error);
+                    alert("An error occurred while updating old items. Check the console.");
+                }
+            } else {
+                alert("All items already have an order position. No update needed.");
+                console.log("No items needed updating.");
+            }
+        };
+
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
@@ -113,7 +150,6 @@
 
             try {
                 const productsRef = collection(db, "products");
-                // **UPDATED QUERY**: Now sorts by the manual order
                 const q = query(productsRef, orderBy("orderPosition", "asc"));
                 const querySnapshot = await getDocs(q);
 
@@ -128,8 +164,7 @@
                     const productId = doc.id;
                     const price = (product.price || 0).toLocaleString('th-TH');
                     const details = `${product.breed || ''} (${product.gender || ''}, ${product.color || ''})`;
-                    
-                    // **UPDATED ROW**: Added data-id attribute to the <tr> element
+
                     const row = `
                         <tr data-id="${productId}">
                             <td><span class="drag-handle">☰</span></td>
@@ -154,8 +189,7 @@
                     `;
                     tableBody.innerHTML += row;
                 });
-                
-                // Initialize SortableJS after rows are rendered
+
                 initializeSorting(tableBody);
 
             } catch (error) {
@@ -164,14 +198,18 @@
             }
         };
 
-        // **NEW FUNCTION**: Saves the new order to Firestore
         const saveNewOrder = async (tableRows) => {
+            const tableBody = document.getElementById('product-table-body');
+            if (tableBody) tableBody.style.opacity = '0.5'; // Dim table to indicate saving
+
             const batch = writeBatch(db);
-            
+
             Array.from(tableRows).forEach((row, index) => {
                 const productId = row.dataset.id;
                 if (productId) {
                     const docRef = doc(db, "products", productId);
+                    // The new position is its index in the sorted list (0, 1, 2, ...).
+                    // This re-normalizes the order positions.
                     batch.update(docRef, { orderPosition: index });
                 }
             });
@@ -182,12 +220,13 @@
             } catch (error) {
                 console.error("Error saving new order: ", error);
                 alert("เกิดข้อผิดพลาดในการบันทึกลำดับใหม่!");
+            } finally {
+                if (tableBody) tableBody.style.opacity = '1'; // Restore table opacity
             }
         };
 
-        // **NEW FUNCTION**: Initializes the SortableJS library
         const initializeSorting = (tableBody) => {
-             new Sortable(tableBody, {
+            new Sortable(tableBody, {
                 handle: '.drag-handle',
                 animation: 150,
                 ghostClass: 'sortable-ghost',
@@ -223,4 +262,5 @@
         });
     </script>
 </body>
+
 </html>

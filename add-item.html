@@ -196,12 +196,14 @@
                     await updateDoc(docRef, productData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
-                    // **NEW LOGIC**: Find the last position and add the new item at the end
-                    const q = query(collection(db, "products"), orderBy("orderPosition", "desc"), limit(1));
+                    // **MODIFIED LOGIC**: Find the first position (lowest number) and add the new item before it.
+                    const q = query(collection(db, "products"), orderBy("orderPosition", "asc"), limit(1));
                     const querySnapshot = await getDocs(q);
-                    const lastPosition = querySnapshot.empty ? -1 : querySnapshot.docs[0].data().orderPosition;
+                    // If there are items, get the top item's position. Otherwise, start at 0.
+                    const firstPosition = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().orderPosition;
+                    // Set the new item's position to be one less than the current top item.
+                    productData.orderPosition = (firstPosition || 0) - 1;
                     
-                    productData.orderPosition = (lastPosition || 0) + 1;
                     productData.imageUrls = imageUrls;
                     productData.thumbnailUrl = imageUrls.length > 0 ? imageUrls[0] : '';
                     productData.createdAt = serverTimestamp();
