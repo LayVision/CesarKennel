@@ -163,25 +163,32 @@ a { text-decoration: none; color: inherit; }
 .action-buttons .edit-btn { background-color: #E7F5FF; color: #1971C2; }
 .action-buttons .delete-btn { background-color: #FFF5F5; color: var(--accent-red); }
 
-.drag-header {
-    width: 40px;
+/* NEW: Styles for the reorder buttons */
+.reorder-cell {
+    width: 90px;
     text-align: center;
 }
-.drag-handle {
-    cursor: grab;
-    color: var(--text-secondary);
-    font-size: 1.2em;
-    padding: 4px 8px;
-    text-align: center;
-    display: inline-block;
-    width: 100%;
+.reorder-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
 }
-.sortable-ghost {
-    background-color: #e7f5ff;
-    opacity: 0.8;
+.reorder-buttons .button {
+    padding: 6px 10px;
+    font-size: 1em;
+    line-height: 1;
+    background-color: var(--bg-canvas);
+    border: 1px solid var(--border-color);
 }
-.sortable-ghost td {
-    border-bottom-color: var(--accent-primary);
+.reorder-buttons .button:hover {
+    border-color: var(--text-secondary);
+}
+.reorder-buttons .button:disabled {
+    background-color: var(--bg-canvas);
+    border-color: var(--border-color);
+    color: var(--border-color);
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
 
@@ -270,48 +277,13 @@ a { text-decoration: none; color: inherit; }
     .product-table thead { display: none; }
     .product-table tbody, .product-table tr, .product-table td { display: block; width: 100%; box-sizing: border-box; }
     
-    /* --- START OF DEFINITIVE MOBILE DRAG-HANDLE FIX --- */
-    
-    /* 1. The card container. Add padding on the right to create a "gutter" for the handle. */
     .product-table tr {
         border: 1px solid var(--border-color);
         border-radius: var(--radius-lg);
         margin-bottom: 16px;
         padding: 16px;
-        padding-right: 60px; /* KEY CHANGE: Creates a 60px safe zone on the right */
-        position: relative;
     }
     
-    /* 2. Position the drag handle's container in the top right, inside the new gutter */
-    .product-table tr td:first-child {
-        display: block;
-        position: absolute;
-        top: 50%; /* Center vertically */
-        right: 12px; /* Position within the gutter */
-        transform: translateY(-50%); /* Fine-tune vertical centering */
-        padding: 0;
-        border: none;
-        z-index: 5;
-        width: auto; /* Let the handle define its own width */
-    }
-
-    /* 3. Hide the "data-label" for the drag handle cell */
-    .product-table tr td:first-child::before {
-        content: none;
-    }
-
-    /* 4. Style the handle itself to be a larger, touch-friendly button */
-    .product-table tr td:first-child .drag-handle {
-        font-size: 1.5em;
-        padding: 8px; /* Make it a bit bigger for touch */
-        background-color: var(--bg-canvas);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        display: block;
-    }
-    
-    /* --- END OF DEFINITIVE MOBILE DRAG-HANDLE FIX --- */
-
     .product-table td {
         padding: 12px 0;
         display: flex;

@@ -41,11 +41,12 @@
             </header>
 
             <div class="admin-card">
-                <h2>รายการทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
+                <h2>รายการทั้งหมด</h2>
                 <table class="product-table">
                     <thead>
                         <tr>
-                            <th class="drag-header"></th>
+                            <!-- MODIFIED: New header for reorder buttons -->
+                            <th class="reorder-cell">จัดลำดับ</th>
                             <th>ข้อมูลน้องหมา</th>
                             <th>สถานะ</th>
                             <th>ราคา</th>
@@ -60,7 +61,7 @@
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- REMOVED SortableJS library -->
     <script src="script.js"></script>
 
     <script type="module">
@@ -77,41 +78,6 @@
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
         
-        const addOrderToOldItems = async () => {
-            console.log("Running one-time update script to add 'orderPosition'...");
-            const productsRef = collection(db, "products");
-            const q = query(productsRef, orderBy("createdAt", "asc"));
-            const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) {
-                console.log("No products found to update.");
-                return;
-            }
-            const batch = writeBatch(db);
-            let updates = 0;
-            querySnapshot.docs.forEach((doc, index) => {
-                const product = doc.data();
-                if (product.orderPosition === undefined) {
-                    const docRef = doc.ref;
-                    batch.update(docRef, { orderPosition: index });
-                    updates++;
-                    console.log(`Will update ${product.name} with orderPosition: ${index}`);
-                }
-            });
-            if (updates > 0) {
-                try {
-                    await batch.commit();
-                    alert(`${updates} item(s) have been successfully updated with a default order. Please refresh the page.`);
-                    console.log("Batch update successful!");
-                } catch (error) {
-                    console.error("Error committing batch update:", error);
-                    alert("An error occurred while updating old items. Check the console.");
-                }
-            } else {
-                alert("All items already have an order position. No update needed.");
-                console.log("No items needed updating.");
-            }
-        };
-
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
@@ -124,16 +90,13 @@
             }
         });
 
-        const logoutButton = document.getElementById('logout-button');
-        if (logoutButton) {
-            logoutButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                signOut(auth).then(() => {
-                    alert('คุณออกจากระบบแล้ว');
-                    window.location.href = 'index.html';
-                });
+        document.getElementById('logout-button')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                alert('คุณออกจากระบบแล้ว');
+                window.location.href = 'index.html';
             });
-        }
+        });
 
         function getStatusBadge(status) {
             switch (status) {
@@ -165,9 +128,15 @@
                     const price = (product.price || 0).toLocaleString('th-TH');
                     const details = `${product.breed || ''} (${product.gender || ''}, ${product.color || ''})`;
 
+                    // MODIFIED: Row template with reorder buttons
                     const row = `
                         <tr data-id="${productId}">
-                            <td><span class="drag-handle">☰</span></td>
+                            <td class="reorder-cell" data-label="จัดลำดับ">
+                                <div class="reorder-buttons">
+                                    <button class="button move-up-btn" title="เลื่อนขึ้น">▲</button>
+                                    <button class="button move-down-btn" title="เลื่อนลง">▼</button>
+                                </div>
+                            </td>
                             <td data-label="ข้อมูล">
                                 <div class="product-info-cell">
                                     <img src="${product.thumbnailUrl || 'https://via.placeholder.com/60'}" alt="${product.name || ''}">
@@ -190,7 +159,8 @@
                     tableBody.innerHTML += row;
                 });
 
-                initializeSorting(tableBody);
+                // NEW: Update button states after rendering
+                updateArrowButtonsState();
 
             } catch (error) {
                 console.error("Error fetching products: ", error);
@@ -198,18 +168,29 @@
             }
         };
 
-        const saveNewOrder = async (tableRows) => {
+        // NEW: Function to disable/enable arrow buttons
+        const updateArrowButtonsState = () => {
+            const rows = document.querySelectorAll('#product-table-body tr');
+            rows.forEach((row, index) => {
+                const upButton = row.querySelector('.move-up-btn');
+                const downButton = row.querySelector('.move-down-btn');
+                if (upButton) upButton.disabled = (index === 0);
+                if (downButton) downButton.disabled = (index === rows.length - 1);
+            });
+        };
+
+        // MODIFIED: This function is now only for saving, not for drag-drop
+        const saveNewOrder = async () => {
             const tableBody = document.getElementById('product-table-body');
-            if (tableBody) tableBody.style.opacity = '0.5'; // Dim table to indicate saving
+            tableBody.style.opacity = '0.5'; // Visual feedback
 
             const batch = writeBatch(db);
+            const rows = tableBody.children;
 
-            Array.from(tableRows).forEach((row, index) => {
+            Array.from(rows).forEach((row, index) => {
                 const productId = row.dataset.id;
                 if (productId) {
                     const docRef = doc(db, "products", productId);
-                    // The new position is its index in the sorted list (0, 1, 2, ...).
-                    // This re-normalizes the order positions.
                     batch.update(docRef, { orderPosition: index });
                 }
             });
@@ -221,27 +202,41 @@
                 console.error("Error saving new order: ", error);
                 alert("เกิดข้อผิดพลาดในการบันทึกลำดับใหม่!");
             } finally {
-                if (tableBody) tableBody.style.opacity = '1'; // Restore table opacity
+                tableBody.style.opacity = '1';
             }
         };
 
-        const initializeSorting = (tableBody) => {
-            new Sortable(tableBody, {
-                handle: '.drag-handle',
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                onEnd: (evt) => {
-                    // When the user is done dragging, save the new order.
-                    const rows = evt.target.children;
-                    saveNewOrder(rows);
-                },
-            });
-        };
-
+        // MODIFIED: Main event listener for all actions
         const tableBody = document.getElementById('product-table-body');
         tableBody.addEventListener('click', async (e) => {
-            if (e.target && e.target.classList.contains('delete-btn')) {
-                const button = e.target;
+            const button = e.target.closest('button');
+            if (!button) return;
+
+            const currentRow = button.closest('tr');
+            if (!currentRow) return;
+
+            // Handle Move Up
+            if (button.classList.contains('move-up-btn')) {
+                const prevRow = currentRow.previousElementSibling;
+                if (prevRow) {
+                    prevRow.before(currentRow); // Move row in the DOM
+                    updateArrowButtonsState(); // Update button states
+                    await saveNewOrder(); // Save the new order
+                }
+            }
+
+            // Handle Move Down
+            if (button.classList.contains('move-down-btn')) {
+                const nextRow = currentRow.nextElementSibling;
+                if (nextRow) {
+                    nextRow.after(currentRow); // Move row in the DOM
+                    updateArrowButtonsState(); // Update button states
+                    await saveNewOrder(); // Save the new order
+                }
+            }
+
+            // Handle Delete
+            if (button.classList.contains('delete-btn')) {
                 const productId = button.dataset.id;
                 const productName = button.dataset.name;
 
@@ -250,7 +245,8 @@
                         button.disabled = true;
                         button.textContent = 'กำลังลบ...';
                         await deleteDoc(doc(db, "products", productId));
-                        button.closest('tr').remove();
+                        currentRow.remove();
+                        updateArrowButtonsState(); // Update states in case first/last item was deleted
                     } catch (error) {
                         console.error("Error deleting document: ", error);
                         alert("เกิดข้อผิดพลาดในการลบข้อมูล");
