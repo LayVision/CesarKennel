@@ -12,6 +12,7 @@
     --accent-green: #28A745;
     --accent-yellow: #FFC107;
     --accent-gray: #ADB5BD;
+    --accent-red: #FA5252; /* Added for sold status */
     --font-main: 'Kanit', sans-serif;
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
@@ -145,7 +146,8 @@ a { text-decoration: none; color: inherit; }
 }
 .card-status.available { background-color: var(--accent-green); }
 .card-status.preordered { background-color: var(--accent-yellow); color: var(--text-primary); }
-.card-status.sold { background-color: var(--accent-gray); }
+/* --- MODIFIED RULE --- */
+.card-status.sold { background-color: var(--accent-red); }
 
 .product-card.sold-item .card-image-container img { filter: grayscale(1); }
 
@@ -298,12 +300,6 @@ a { text-decoration: none; color: inherit; }
     }
     .detail-info h1 { font-size: 2.2em; }
     .detail-info .price { font-size: 1.8em; }
-
-    /*
-     * KEY CHANGE: The rule that forced the details list back to a single column
-     * on mobile has been REMOVED. It will now remain as a two-column grid
-     * on all screen sizes.
-    */
 }
 
 /* ======== 9. PAGINATION ======== */
