@@ -174,7 +174,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 
-/* ======== 7. PRODUCT DETAIL PAGE STYLES (MODIFIED) ======== */
+/* ======== 7. PRODUCT DETAIL PAGE STYLES ======== */
 .product-detail-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -227,29 +227,26 @@ a { text-decoration: none; color: inherit; }
 }
 .detail-info .description { line-height: 1.8; color: var(--text-secondary); margin-bottom: 32px; font-size: 1.1em;}
 
-/* --- START OF 2-COLUMN DETAILS LIST --- */
 .details-list {
     list-style: none;
     padding: 0;
     margin: 32px 0;
-    display: grid; /* Use grid for columns */
-    grid-template-columns: 1fr 1fr; /* Create two equal columns */
-    gap: 0 24px; /* Add 24px gap between columns, 0px between rows */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
     border-top: 1px solid var(--border-color);
 }
 .details-list li {
     display: flex;
     justify-content: space-between;
-    padding: 12px 0; /* Reduced padding for a more compact look */
+    padding: 12px 0;
     border-bottom: 1px solid var(--border-color);
-    font-size: 1em; /* Slightly smaller font for compactness */
+    font-size: 1em;
 }
 .details-list li:first-child, .details-list li:nth-child(2) {
-    /* Remove the top border from the first two items since the container has it */
     border-top: none; 
 }
 .details-list li strong { font-weight: 600; }
-/* --- END OF 2-COLUMN DETAILS LIST --- */
 
 .add-to-cart-button {
     display: block; width: 100%; padding: 18px; background-color: var(--accent-primary);
@@ -302,13 +299,11 @@ a { text-decoration: none; color: inherit; }
     .detail-info h1 { font-size: 2.2em; }
     .detail-info .price { font-size: 1.8em; }
 
-    /* On mobile, revert the details list back to a single column */
-    .details-list {
-        grid-template-columns: 1fr;
-    }
-    .details-list li:nth-child(2) {
-        border-top: 1px solid var(--border-color); /* Add border back for mobile */
-    }
+    /*
+     * KEY CHANGE: The rule that forced the details list back to a single column
+     * on mobile has been REMOVED. It will now remain as a two-column grid
+     * on all screen sizes.
+    */
 }
 
 /* ======== 9. PAGINATION ======== */
