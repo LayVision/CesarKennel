@@ -35,10 +35,12 @@
 
             <section class="hero-section">
                 <div class="hero-image-container">
-                    <img src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
+                    <!-- ADDED ID to the image -->
+                    <img id="hero-image" src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
                 </div>
                 <div class="marquee-container">
-                    <p class="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
+                    <!-- ADDED ID to the marquee text -->
+                    <p id="marquee-text-display" class="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
 
@@ -73,7 +75,7 @@
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
@@ -99,13 +101,31 @@
             }
         });
 
+        // NEW: Function to load site settings
+        const loadSiteSettings = async () => {
+            const settingsRef = doc(db, "settings", "siteConfig");
+            const docSnap = await getDoc(settingsRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const heroImage = document.getElementById('hero-image');
+                const marqueeText = document.getElementById('marquee-text-display');
+
+                if (data.coverImageUrl && heroImage) {
+                    heroImage.src = data.coverImageUrl;
+                }
+                if (data.marqueeText && marqueeText) {
+                    marqueeText.textContent = data.marqueeText;
+                }
+            }
+        };
+
         const productGrid = document.getElementById('product-grid');
         const fetchAndDisplayProducts = async () => {
             productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">กำลังโหลดน้องหมา...</p>';
 
             try {
                 const productsRef = collection(db, "products");
-                // **UPDATED QUERY**: Now fetches using the manual order position
                 const q = query(productsRef, orderBy("orderPosition", "asc"));
                 const querySnapshot = await getDocs(q);
 
@@ -241,6 +261,8 @@
             displayPage(initialPage);
         };
 
+        // Run all startup functions
+        loadSiteSettings();
         fetchAndDisplayProducts();
     </script>
 </body>
