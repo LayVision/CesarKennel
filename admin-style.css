@@ -9,7 +9,8 @@
     --text-primary: #212529;
     --text-secondary: #6C757D;
     --accent-primary: #4C6EF5;
-    --accent-red: #FA5252; /* For delete/logout actions */
+    --accent-red: #FA5252;
+    /* For delete/logout actions */
     --font-main: 'Kanit', sans-serif;
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
     --radius-md: 12px;
@@ -22,7 +23,11 @@ body {
     background-color: var(--bg-canvas);
     color: var(--text-primary);
 }
-a { text-decoration: none; color: inherit; }
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
 /* ======== 2. ADMIN LAYOUT ======== */
 .admin-layout {
@@ -44,13 +49,17 @@ a { text-decoration: none; color: inherit; }
     flex-direction: column;
     justify-content: space-between;
 }
+
 .sidebar-logo {
     font-size: 1.8em;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 40px;
 }
-.sidebar-logo span { color: var(--accent-primary); }
+
+.sidebar-logo span {
+    color: var(--accent-primary);
+}
 
 .sidebar-nav h3 {
     font-size: 0.8em;
@@ -60,7 +69,13 @@ a { text-decoration: none; color: inherit; }
     color: var(--text-secondary);
     margin: 0 0 16px 0;
 }
-.sidebar-nav ul { list-style: none; padding: 0; margin: 0 0 32px 0; }
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px 0;
+}
+
 .sidebar-nav a {
     display: flex;
     align-items: center;
@@ -71,13 +86,28 @@ a { text-decoration: none; color: inherit; }
     font-size: 1.05em;
     transition: all 0.2s;
 }
-.sidebar-nav a:hover { background-color: var(--bg-canvas); }
-.sidebar-nav a.active { background-color: var(--accent-primary); color: white; }
-.sidebar-nav a.logout-link { color: var(--accent-red); }
-.sidebar-nav a.logout-link:hover { background-color: #FFE3E3; }
+
+.sidebar-nav a:hover {
+    background-color: var(--bg-canvas);
+}
+
+.sidebar-nav a.active {
+    background-color: var(--accent-primary);
+    color: white;
+}
+
+.sidebar-nav a.logout-link {
+    color: var(--accent-red);
+}
+
+.sidebar-nav a.logout-link:hover {
+    background-color: #FFE3E3;
+}
 
 /* ======== 4. ADMIN MAIN CONTENT ======== */
-.admin-main { padding: 40px; }
+.admin-main {
+    padding: 40px;
+}
 
 .desktop-header {
     display: flex;
@@ -85,7 +115,13 @@ a { text-decoration: none; color: inherit; }
     align-items: center;
     margin-bottom: 40px;
 }
-.desktop-header h1 { font-size: 2.2em; font-weight: 700; margin: 0; }
+
+.desktop-header h1 {
+    font-size: 2.2em;
+    font-weight: 700;
+    margin: 0;
+}
+
 .button {
     padding: 10px 20px;
     border: none;
@@ -96,10 +132,25 @@ a { text-decoration: none; color: inherit; }
     transition: all 0.2s;
     font-size: 1em;
 }
-.button-primary { background-color: var(--accent-primary); color: white; }
-.button-primary:hover { background-color: #3B5BDB; }
-.button-secondary { background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); }
-.button-secondary:hover { background-color: var(--bg-canvas); }
+
+.button-primary {
+    background-color: var(--accent-primary);
+    color: white;
+}
+
+.button-primary:hover {
+    background-color: #3B5BDB;
+}
+
+.button-secondary {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.button-secondary:hover {
+    background-color: var(--bg-canvas);
+}
 
 /* ======== 5. ADMIN CARDS & FORMS ======== */
 .admin-card {
@@ -109,17 +160,36 @@ a { text-decoration: none; color: inherit; }
     padding: 32px;
     margin-bottom: 32px;
 }
-.admin-card h2 { margin-top: 0; font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;}
+
+.admin-card h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
 .form-section-header {
     margin-top: 40px;
 }
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 22px;
 }
-.input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9em; }
-.input-group input, .input-group textarea, .input-group select {
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--border-color);
@@ -129,44 +199,122 @@ a { text-decoration: none; color: inherit; }
     background-color: var(--bg-canvas);
     box-sizing: border-box;
 }
-.input-group input[type="file"] { padding: 8px; }
-.input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+
+.input-group input[type="file"] {
+    padding: 8px;
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
     outline: none;
     border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.2);
     background-color: var(--bg-main);
 }
-.form-grid .full-width { grid-column: 1 / -1; }
-.form-actions { margin-top: 32px; }
+
+.form-grid .full-width {
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+    margin-top: 32px;
+}
 
 
 /* ======== 6. PRODUCT LIST TABLE ======== */
-.product-table { width: 100%; border-collapse: collapse; }
-.product-table th, .product-table td { text-align: left; padding: 16px; border-bottom: 1px solid var(--border-color); vertical-align: middle;}
-.product-table thead { color: var(--text-secondary); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px;}
-.product-table tbody tr:last-child td { border-bottom: none; }
-
-.product-info-cell { display: flex; align-items: center; gap: 16px; }
-.product-info-cell img { width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-md); }
-.product-info-cell .name { font-weight: 600; }
-.product-info-cell .details { font-size: 0.9em; color: var(--text-secondary); }
-
-.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
-.status-badge.available { background-color: #D3F9D8; color: #2B8A3E; }
-.status-badge.preordered { background-color: #FFF3BF; color: #C59300; }
-.status-badge.sold { background-color: #E9ECEF; color: #495057; }
-
-.action-buttons a, .action-buttons button {
-    font-size: 0.9em; padding: 6px 12px; border-radius: 6px;
-    margin-right: 8px; border: 1px solid transparent;
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
 }
-.action-buttons .edit-btn { background-color: #E7F5FF; color: #1971C2; }
-.action-buttons .delete-btn { background-color: #FFF5F5; color: var(--accent-red); }
+
+.product-table th,
+.product-table td {
+    text-align: left;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.product-table thead {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.product-info-cell {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.product-info-cell img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+}
+
+.product-info-cell .name {
+    font-weight: 600;
+}
+
+.product-info-cell .details {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.status-badge.available {
+    background-color: #D3F9D8;
+    color: #2B8A3E;
+}
+
+.status-badge.preordered {
+    background-color: #FFF3BF;
+    color: #C59300;
+}
+
+.status-badge.sold {
+    background-color: #E9ECEF;
+    color: #495057;
+}
+
+.action-buttons a,
+.action-buttons button {
+    font-size: 0.9em;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-right: 8px;
+    border: 1px solid transparent;
+}
+
+.action-buttons .edit-btn {
+    background-color: #E7F5FF;
+    color: #1971C2;
+}
+
+.action-buttons .delete-btn {
+    background-color: #FFF5F5;
+    color: var(--accent-red);
+}
 
 .drag-header {
     width: 40px;
     text-align: center;
 }
+
 .drag-handle {
     cursor: grab;
     color: var(--text-secondary);
@@ -176,10 +324,12 @@ a { text-decoration: none; color: inherit; }
     display: inline-block;
     width: 100%;
 }
+
 .sortable-ghost {
     background-color: #e7f5ff;
     opacity: 0.8;
 }
+
 .sortable-ghost td {
     border-bottom-color: var(--accent-primary);
 }
@@ -194,6 +344,7 @@ a { text-decoration: none; color: inherit; }
     padding: 24px;
     box-sizing: border-box;
 }
+
 .login-form {
     width: 100%;
     max-width: 420px;
@@ -203,36 +354,46 @@ a { text-decoration: none; color: inherit; }
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
 }
+
 .login-form h2 {
     text-align: center;
     margin-top: 0;
     margin-bottom: 32px;
     font-size: 1.8em;
 }
+
 .login-form .input-group {
     margin-bottom: 24px;
 }
+
 .login-form .button {
     width: 100%;
     padding: 14px;
     font-size: 1.1em;
     margin-top: 8px;
 }
+
 .login-form .home-link {
     text-align: center;
     margin-top: 24px;
     font-size: 0.9em;
 }
+
 .login-form .home-link a {
     color: var(--accent-primary);
     font-weight: 500;
 }
 
 /* ======== 8. RESPONSIVE ADMIN ======== */
-.mobile-header { display: none; }
+.mobile-header {
+    display: none;
+}
+
 @media (max-width: 1024px) {
-    .admin-layout { grid-template-columns: 1fr; }
-    
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+
     .sidebar {
         position: fixed;
         left: -100%;
@@ -240,21 +401,34 @@ a { text-decoration: none; color: inherit; }
         z-index: 200;
         height: 100%;
         transition: left 0.3s ease-in-out;
-        box-shadow: 0 0 40px rgba(0,0,0,0.1);
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
         width: 280px;
     }
-    .sidebar.open { left: 0; }
-    
-    .desktop-header { display: none; }
-    
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .desktop-header {
+        display: none;
+    }
+
     .mobile-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 24px;
     }
-    .mobile-logo { font-size: 1.5em; font-weight: 700; }
-    .mobile-logo span { color: var(--accent-primary); }
+
+    .mobile-logo {
+        font-size: 1.5em;
+        font-weight: 700;
+    }
+
+    .mobile-logo span {
+        color: var(--accent-primary);
+    }
+
     .mobile-menu-button {
         display: block;
         font-size: 1.5rem;
@@ -263,36 +437,54 @@ a { text-decoration: none; color: inherit; }
         cursor: pointer;
         padding: 0;
     }
-    
-    .admin-main { padding: 24px; }
-    
-    .product-table { display: block; }
-    .product-table thead { display: none; }
-    .product-table tbody, .product-table tr, .product-table td { display: block; width: 100%; box-sizing: border-box; }
-    
+
+    .admin-main {
+        padding: 24px;
+    }
+
+    .product-table {
+        display: block;
+    }
+
+    .product-table thead {
+        display: none;
+    }
+
+    .product-table tbody,
+    .product-table tr,
+    .product-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
     /* --- START OF DEFINITIVE MOBILE DRAG-HANDLE FIX --- */
-    
+
     /* 1. The card container. Add padding on the right to create a "gutter" for the handle. */
     .product-table tr {
         border: 1px solid var(--border-color);
         border-radius: var(--radius-lg);
         margin-bottom: 16px;
         padding: 16px;
-        padding-right: 60px; /* KEY CHANGE: Creates a 60px safe zone on the right */
+        padding-right: 60px;
+        /* KEY CHANGE: Creates a 60px safe zone on the right */
         position: relative;
     }
-    
+
     /* 2. Position the drag handle's container in the top right, inside the new gutter */
     .product-table tr td:first-child {
         display: block;
         position: absolute;
-        top: 50%; /* Center vertically */
-        right: 12px; /* Position within the gutter */
-        transform: translateY(-50%); /* Fine-tune vertical centering */
+        top: 16px;
+        /* KEY CHANGE: Align with the card's top padding */
+        right: 12px;
+        /* Position within the gutter */
+        /* transform: translateY(-50%); REMOVED */
         padding: 0;
         border: none;
         z-index: 5;
-        width: auto; /* Let the handle define its own width */
+        width: auto;
+        /* Let the handle define its own width */
     }
 
     /* 3. Hide the "data-label" for the drag handle cell */
@@ -303,13 +495,14 @@ a { text-decoration: none; color: inherit; }
     /* 4. Style the handle itself to be a larger, touch-friendly button */
     .product-table tr td:first-child .drag-handle {
         font-size: 1.5em;
-        padding: 8px; /* Make it a bit bigger for touch */
+        padding: 8px;
+        /* Make it a bit bigger for touch */
         background-color: var(--bg-canvas);
         border: 1px solid var(--border-color);
         border-radius: 8px;
         display: block;
     }
-    
+
     /* --- END OF DEFINITIVE MOBILE DRAG-HANDLE FIX --- */
 
     .product-table td {
@@ -320,16 +513,21 @@ a { text-decoration: none; color: inherit; }
         border: none;
         border-bottom: 1px solid var(--border-color);
     }
-    
-    .product-table tr td:last-child { border-bottom: none; }
-    
+
+    .product-table tr td:last-child {
+        border-bottom: none;
+    }
+
     .product-table td::before {
         content: attr(data-label);
         font-weight: 600;
         color: var(--text-secondary);
         margin-right: 16px;
     }
-    .product-info-cell { flex-direction: row; }
+
+    .product-info-cell {
+        flex-direction: row;
+    }
 }
 
 /* ======== 9. IMAGE UPLOAD PREVIEW ======== */
