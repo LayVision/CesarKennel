@@ -270,48 +270,47 @@ a { text-decoration: none; color: inherit; }
     .product-table thead { display: none; }
     .product-table tbody, .product-table tr, .product-table td { display: block; width: 100%; box-sizing: border-box; }
     
+    /* --- START OF DEFINITIVE MOBILE DRAG-HANDLE FIX --- */
+    
+    /* 1. The card container. Add padding on the right to create a "gutter" for the handle. */
     .product-table tr {
         border: 1px solid var(--border-color);
         border-radius: var(--radius-lg);
         margin-bottom: 16px;
         padding: 16px;
+        padding-right: 60px; /* KEY CHANGE: Creates a 60px safe zone on the right */
         position: relative;
     }
     
-    /* --- START OF MOBILE DRAG-HANDLE FIX --- */
-    
-    /* Position the drag handle's container in the top right */
+    /* 2. Position the drag handle's container in the top right, inside the new gutter */
     .product-table tr td:first-child {
         display: block;
         position: absolute;
-        top: 16px; /* Align with the card's padding */
-        right: 16px; /* Align with the card's padding */
+        top: 50%; /* Center vertically */
+        right: 12px; /* Position within the gutter */
+        transform: translateY(-50%); /* Fine-tune vertical centering */
         padding: 0;
         border: none;
         z-index: 5;
+        width: auto; /* Let the handle define its own width */
     }
 
-    /* Hide the "data-label" for the drag handle cell */
+    /* 3. Hide the "data-label" for the drag handle cell */
     .product-table tr td:first-child::before {
         content: none;
     }
 
-    /* Style the handle itself to be a larger, touch-friendly button */
+    /* 4. Style the handle itself to be a larger, touch-friendly button */
     .product-table tr td:first-child .drag-handle {
         font-size: 1.5em;
-        padding: 4px 8px;
+        padding: 8px; /* Make it a bit bigger for touch */
         background-color: var(--bg-canvas);
         border: 1px solid var(--border-color);
         border-radius: 8px;
-    }
-
-    /* This is the KEY CHANGE: Add padding to the right of all OTHER cells */
-    .product-table td:not(:first-child) {
-        /* Creates a 50px space on the right for the handle to sit in */
-        padding-right: 50px !important; 
+        display: block;
     }
     
-    /* --- END OF MOBILE DRAG-HANDLE FIX --- */
+    /* --- END OF DEFINITIVE MOBILE DRAG-HANDLE FIX --- */
 
     .product-table td {
         padding: 12px 0;
