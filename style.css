@@ -185,21 +185,19 @@ a { text-decoration: none; color: inherit; }
     border: 1px solid var(--border-color);
 }
 
-/* NEW: Container for the main image to enforce a consistent size */
 .detail-gallery .main-image-container {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Creates a square container, preventing layout shifts */
+    aspect-ratio: 1 / 1;
     border-radius: var(--radius-md);
     margin-bottom: 16px;
     overflow: hidden;
-    background-color: var(--bg-canvas); /* Shows a background while image loads */
+    background-color: var(--bg-canvas);
 }
 
-/* MODIFIED: The image itself now fills the container without distortion */
 .detail-gallery .main-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the area, cropping if necessary */
+    object-fit: cover;
     display: block;
 }
 
@@ -228,16 +226,30 @@ a { text-decoration: none; color: inherit; }
     font-size: 0.7em;
 }
 .detail-info .description { line-height: 1.8; color: var(--text-secondary); margin-bottom: 32px; font-size: 1.1em;}
-.details-list { list-style: none; padding: 0; margin: 32px 0; }
+
+/* --- START OF 2-COLUMN DETAILS LIST --- */
+.details-list {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0;
+    display: grid; /* Use grid for columns */
+    grid-template-columns: 1fr 1fr; /* Create two equal columns */
+    gap: 0 24px; /* Add 24px gap between columns, 0px between rows */
+    border-top: 1px solid var(--border-color);
+}
 .details-list li {
     display: flex;
     justify-content: space-between;
-    padding: 16px 0;
+    padding: 12px 0; /* Reduced padding for a more compact look */
     border-bottom: 1px solid var(--border-color);
-    font-size: 1.1em;
+    font-size: 1em; /* Slightly smaller font for compactness */
 }
-.details-list li:first-child { border-top: 1px solid var(--border-color); }
+.details-list li:first-child, .details-list li:nth-child(2) {
+    /* Remove the top border from the first two items since the container has it */
+    border-top: none; 
+}
 .details-list li strong { font-weight: 600; }
+/* --- END OF 2-COLUMN DETAILS LIST --- */
 
 .add-to-cart-button {
     display: block; width: 100%; padding: 18px; background-color: var(--accent-primary);
@@ -289,6 +301,14 @@ a { text-decoration: none; color: inherit; }
     }
     .detail-info h1 { font-size: 2.2em; }
     .detail-info .price { font-size: 1.8em; }
+
+    /* On mobile, revert the details list back to a single column */
+    .details-list {
+        grid-template-columns: 1fr;
+    }
+    .details-list li:nth-child(2) {
+        border-top: 1px solid var(--border-color); /* Add border back for mobile */
+    }
 }
 
 /* ======== 9. PAGINATION ======== */
