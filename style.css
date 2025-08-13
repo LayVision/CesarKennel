@@ -141,7 +141,7 @@ a { text-decoration: none; color: inherit; }
     position: absolute; top: 16px; left: 16px; padding: 6px 12px;
     font-size: 0.8em; font-weight: 600; border-radius: 20px;
     color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    z-index: 10; /* <-- ADDED THIS LINE */
+    z-index: 10;
 }
 .card-status.available { background-color: var(--accent-green); }
 .card-status.preordered { background-color: var(--accent-yellow); color: var(--text-primary); }
@@ -174,7 +174,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 
-/* ======== 7. PRODUCT DETAIL PAGE STYLES ======== */
+/* ======== 7. PRODUCT DETAIL PAGE STYLES (MODIFIED) ======== */
 .product-detail-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -184,11 +184,25 @@ a { text-decoration: none; color: inherit; }
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
 }
-.detail-gallery .main-image {
+
+/* NEW: Container for the main image to enforce a consistent size */
+.detail-gallery .main-image-container {
     width: 100%;
+    aspect-ratio: 1 / 1; /* Creates a square container, preventing layout shifts */
     border-radius: var(--radius-md);
     margin-bottom: 16px;
+    overflow: hidden;
+    background-color: var(--bg-canvas); /* Shows a background while image loads */
 }
+
+/* MODIFIED: The image itself now fills the container without distortion */
+.detail-gallery .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the area, cropping if necessary */
+    display: block;
+}
+
 .detail-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .detail-thumbnails img {
     width: 100%;

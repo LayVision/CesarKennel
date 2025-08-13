@@ -161,10 +161,12 @@
                                   product.imageUrls[0].replace('&w=400', '&w=800') : 
                                   'https://via.placeholder.com/800';
 
-            // --- Final component HTML (No status banner here) ---
+            // --- MODIFIED: Final component HTML now includes the image container ---
             container.innerHTML = `
                 <div class="detail-gallery">
-                    <img src="${mainImageUrl}" alt="รูปหลักของ ${product.name}" id="mainImage" class="main-image">
+                    <div class="main-image-container">
+                        <img src="${mainImageUrl}" alt="รูปหลักของ ${product.name}" id="mainImage" class="main-image">
+                    </div>
                     <div class="detail-thumbnails" id="thumbnail-container">
                         ${thumbnailsHTML}
                     </div>
