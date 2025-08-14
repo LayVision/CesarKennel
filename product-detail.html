@@ -148,27 +148,33 @@
                 `;
             }
 
-            // Image Gallery HTML
-            let thumbnailsHTML = '';
-            if (product.imageUrls && product.imageUrls.length > 0) {
-                product.imageUrls.forEach((url, index) => {
-                    const thumbUrl = url.includes('?') ? `${url}&w=400` : `${url}?w=400`;
-                    thumbnailsHTML += `<img src="${thumbUrl}" alt="รูปย่อ ${index + 1}" class="${index === 0 ? 'active' : ''}">`;
-                });
-            }
-            const mainImageUrl = (product.imageUrls && product.imageUrls.length > 0) ? 
-                                  product.imageUrls[0].replace('&w=400', '&w=800') : 
-                                  'https://via.placeholder.com/800';
+            // MODIFIED: Image Gallery HTML (Now a Slider)
+            let slidesHTML = '';
+            const imageUrls = product.imageUrls && product.imageUrls.length > 0 
+                ? product.imageUrls 
+                : ['https://via.placeholder.com/800']; // Fallback image
 
-            container.innerHTML = `
-                <div class="detail-gallery">
-                    <div class="main-image-container">
-                        <img src="${mainImageUrl}" alt="รูปหลักของ ${product.name}" id="mainImage" class="main-image">
+            imageUrls.forEach(url => {
+                slidesHTML += `
+                    <div class="gallery-slide">
+                        <img src="${url}" alt="รูปของ ${product.name}">
                     </div>
-                    <div class="detail-thumbnails" id="thumbnail-container">
-                        ${thumbnailsHTML}
+                `;
+            });
+
+            const galleryHTML = `
+                <div class="gallery-slider">
+                    <div class="gallery-track" id="product-gallery-track">
+                        ${slidesHTML}
                     </div>
+                    <button class="gallery-arrow prev" id="product-gallery-prev">&#10094;</button>
+                    <button class="gallery-arrow next" id="product-gallery-next">&#10095;</button>
                 </div>
+            `;
+
+            // Final combined HTML for the grid
+            container.innerHTML = `
+                ${galleryHTML}
                 <div class="detail-info">
                     <h1>${product.name}</h1>
                     <div class="price">${priceHTML}</div>
@@ -186,26 +192,67 @@
                 </div>
             `;
             
-            initializeGalleryListeners();
+            // Initialize the new gallery slider
+            initializeProductGallery();
         };
         
-        // --- Function to make the image gallery interactive ---
-        const initializeGalleryListeners = () => {
-            const mainImage = document.getElementById('mainImage');
-            const thumbnails = document.querySelectorAll('#thumbnail-container img');
-            
-            if (mainImage && thumbnails.length) {
-                thumbnails.forEach(thumb => {
-                    thumb.addEventListener('click', function() {
-                        const highResSrc = this.src.replace('&w=400', '&w=800');
-                        mainImage.src = highResSrc;
-                        mainImage.alt = this.alt.replace('รูปย่อ', 'รูปหลักของ');
-                        thumbnails.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                    });
-                });
+        // --- NEW: Function to make the product image gallery an interactive slider ---
+        const initializeProductGallery = () => {
+            const track = document.getElementById('product-gallery-track');
+            const prevButton = document.getElementById('product-gallery-prev');
+            const nextButton = document.getElementById('product-gallery-next');
+            if (!track || !prevButton || !nextButton) return;
+
+            const slides = Array.from(track.children);
+            if (slides.length <= 1) {
+                prevButton.style.display = 'none';
+                nextButton.style.display = 'none';
+                return; // No need for a slider if there's only one image
             }
-        }
+
+            let currentIndex = 0;
+            let autoSlideInterval;
+
+            const setSlidePosition = (index) => {
+                const slideWidth = slides[0].getBoundingClientRect().width;
+                track.style.transform = `translateX(-${slideWidth * index}px)`;
+            };
+
+            const advanceSlide = (direction = 1) => {
+                currentIndex = (currentIndex + direction + slides.length) % slides.length;
+                setSlidePosition(currentIndex);
+            };
+            
+            const startAutoSlide = () => {
+                stopAutoSlide(); // Clear any existing timer
+                autoSlideInterval = setInterval(() => advanceSlide(1), 5000); // 5-second interval
+            };
+            
+            const stopAutoSlide = () => {
+                clearInterval(autoSlideInterval);
+            };
+
+            nextButton.addEventListener('click', () => {
+                advanceSlide(1);
+                startAutoSlide(); // Reset timer on manual click
+            });
+
+            prevButton.addEventListener('click', () => {
+                advanceSlide(-1);
+                startAutoSlide(); // Reset timer on manual click
+            });
+            
+            // Recalculate dimensions on window resize
+            window.addEventListener('resize', () => {
+                track.style.transition = 'none'; // Disable transition during resize
+                setSlidePosition(currentIndex);
+                // Use a timeout to re-enable transition after resize is complete
+                setTimeout(() => { track.style.transition = 'transform 0.5s ease-in-out'; }, 50);
+            });
+
+            startAutoSlide(); // Start the slideshow automatically
+        };
+
 
         // --- Run everything on page load ---
         fetchProductDetails();
