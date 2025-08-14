@@ -72,7 +72,6 @@
                 </div>
             </section>
             
-            <!-- MOVED: Gallery Slider Section -->
             <section id="gallery-section" class="gallery-section" style="display: none;">
                 <h2>แกลเลอรี่</h2>
                 <p class="gallery-subtitle">พบกับน้องหมาน่ารักจากฟาร์มของเราได้ที่นี่</p>
@@ -213,10 +212,10 @@
                 const aboutSection = document.getElementById('about-section');
                 if (data.aboutHeadline && data.aboutParagraph && data.aboutImageUrl1 && data.aboutImageUrl2) {
                     document.getElementById('about-headline-display').textContent = data.aboutHeadline;
-                    document.getElementById('about-paragraph-display').innerHTML = data.aboutParagraph.replace(/\n/g, '<br>'); // Support line breaks
+                    document.getElementById('about-paragraph-display').textContent = data.aboutParagraph;
                     document.getElementById('about-image-1-display').src = data.aboutImageUrl1;
                     document.getElementById('about-image-2-display').src = data.aboutImageUrl2;
-                    aboutSection.style.display = 'grid';
+                    aboutSection.style.display = 'grid'; // Use grid to activate the layout
                 }
 
                 // Gallery Section
@@ -273,53 +272,6 @@
         };
         
         const initializePagination = () => { /* ... Pagination logic remains unchanged ... */ };
-        
-        // --- This part of the pagination logic is now self-contained, no need to show it again if unchanged ---
-        // But for completeness, I will include it.
-        const paginationContainer = document.getElementById('pagination');
-        function initializePagination() {
-            if (!productGrid || !paginationContainer) return;
-            const itemsPerPage = 8;
-            const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
-            if (allItems.length <= itemsPerPage) {
-                paginationContainer.innerHTML = '';
-                return;
-            };
-            const totalPages = Math.ceil(allItems.length / itemsPerPage);
-            const urlParams = new URLSearchParams(window.location.search);
-            const initialPage = parseInt(urlParams.get('page')) || 1;
-            displayPage(initialPage, allItems, itemsPerPage, totalPages);
-        }
-        function displayPage(page, allItems, itemsPerPage, totalPages) {
-            page = Math.max(1, Math.min(page, totalPages));
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            allItems.forEach((item, index) => {
-                item.style.display = (index >= startIndex && index < endIndex) ? 'block' : 'none';
-            });
-            updatePaginationButtons(page, totalPages);
-        }
-        function updatePaginationButtons(currentPage, totalPages) {
-            paginationContainer.innerHTML = '';
-            const urlParams = new URLSearchParams(window.location.search);
-            const createButton = (text, page, isDisabled = false, isActive = false) => {
-                const btn = document.createElement('a');
-                btn.classList.add('page-btn');
-                btn.textContent = text;
-                if (isDisabled) btn.classList.add('disabled');
-                if (isActive) btn.classList.add('active');
-                if (!isDisabled) {
-                    urlParams.set('page', page);
-                    btn.href = `?${urlParams.toString()}`;
-                }
-                return btn;
-            };
-            paginationContainer.appendChild(createButton('ก่อนหน้า', currentPage - 1, currentPage === 1));
-            for (let i = 1; i <= totalPages; i++) {
-                paginationContainer.appendChild(createButton(i, i, false, i === currentPage));
-            }
-            paginationContainer.appendChild(createButton('ถัดไป', currentPage + 1, currentPage === totalPages));
-        }
 
         loadSiteSettings();
         fetchAndDisplayProducts();

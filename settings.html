@@ -154,7 +154,6 @@
         let currentAboutImage1Url = null;
         let currentAboutImage2Url = null;
         let croppedBlob = null;
-        let cropper = null;
         
         // --- Utility Functions ---
         const uploadImageAsBase64 = (file) => {
@@ -203,40 +202,6 @@
         });
         new Sortable(galleryPreviewContainer, { animation: 150, handle: '.drag-handle', ghostClass: 'sortable-ghost' });
 
-        // --- Cropper Logic ---
-        const cropModal = document.getElementById('crop-modal');
-        const imageToCrop = document.getElementById('image-to-crop');
-        const cropBtn = document.getElementById('crop-btn');
-        const cancelCropBtn = document.getElementById('cancel-crop-btn');
-        coverImageInput.addEventListener('change', (e) => {
-            const files = e.target.files;
-            if (files && files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    imageToCrop.src = event.target.result;
-                    cropModal.style.display = 'flex';
-                    if (cropper) cropper.destroy();
-                    cropper = new Cropper(imageToCrop, { aspectRatio: 16 / 9, viewMode: 1, background: false });
-                };
-                reader.readAsDataURL(files[0]);
-            }
-        });
-        cropBtn.addEventListener('click', () => {
-            if (cropper) {
-                cropper.getCroppedCanvas({ width: 1280, height: 720 }).toBlob((blob) => {
-                    croppedBlob = blob;
-                    alert('ตัดรูปภาพเรียบร้อย! กด "บันทึกการตั้งค่าทั้งหมด" เพื่อยืนยัน');
-                    closeCropModal();
-                }, 'image/jpeg');
-            }
-        });
-        cancelCropBtn.addEventListener('click', closeCropModal);
-        function closeCropModal() {
-            cropModal.style.display = 'none';
-            if (cropper) { cropper.destroy(); cropper = null; }
-            coverImageInput.value = '';
-        }
-
         // --- Load & Save ---
         const loadCurrentSettings = async () => {
             const docSnap = await getDoc(settingsRef);
@@ -258,6 +223,7 @@
                 }
             }
         };
+        loadCurrentSettings();
         
         settingsForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -301,8 +267,6 @@
                 submitButton.textContent = 'บันทึกการตั้งค่าทั้งหมด';
             }
         });
-
-        loadCurrentSettings();
     </script>
 </body>
 </html>
