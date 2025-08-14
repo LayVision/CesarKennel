@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ซีซาร์ เคนเนล - ฟาร์มสุนัขคุณภาพ</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div class="shop-layout">
         <aside class="sidebar" id="sidebar">
@@ -28,7 +26,7 @@
                 <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
-
+        
         <main class="main-content">
             <header class="mobile-header">
                 <div class="mobile-logo">Cesar<span>.</span></div>
@@ -38,7 +36,7 @@
             <section class="hero-section">
                 <div class="hero-image-container">
                     <img id="hero-image" src="cesar-kennel-logo.png" alt="Cesar Kennel Logo">
-
+                    
                     <div class="hero-text-overlay">
                         <h1>CESAR KENNEL</h1>
                         <p>ฟาร์มไซบีเรียนฮัสกี้เชียงใหม่</p>
@@ -47,8 +45,7 @@
                     </div>
                 </div>
                 <div class="marquee-container">
-                    <p id="marquee-text-display" class="marquee-text">✨ สุนัขสุขภาพดี เกรดพรีเมียม
-                        พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
+                    <p id="marquee-text-display" class="marquee-text">✨ สุนัขสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
 
@@ -81,8 +78,7 @@
                 <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@cesarkennel.com</span>
             </div>
             <div class="social-links">
-                <a href="#" aria-label="Facebook">FB</a> <a href="#" aria-label="Instagram">IG</a> <a href="#"
-                    aria-label="Line">LINE</a>
+                <a href="#" aria-label="Facebook">FB</a> <a href="#" aria-label="Instagram">IG</a> <a href="#" aria-label="Line">LINE</a>
             </div>
         </div>
     </footer>
@@ -102,11 +98,11 @@
             messagingSenderId: "512752480416",
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
-
+        
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
-
+        
         const authLink = document.getElementById('auth-link');
         onAuthStateChanged(auth, user => {
             if (user) {
@@ -128,6 +124,34 @@
             });
         };
 
+        // --- NEW: Function to load and trigger the TikTok embed script ---
+        function loadAndRenderTikTok() {
+            // Check if the TikTok script is already loaded and ready
+            if (window.tiktok && typeof window.tiktok.embed.render === 'function') {
+                window.tiktok.embed.render();
+                return;
+            }
+
+            // If not, find or create the script tag
+            let script = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
+            if (!script) {
+                script = document.createElement('script');
+                script.src = 'https://www.tiktok.com/embed.js';
+                script.async = true;
+                document.body.appendChild(script);
+                
+                // When the new script loads, it will automatically render.
+                // If it was already on the page but not ready, we add an onload
+                // handler to be safe.
+                script.onload = () => {
+                    if (window.tiktok && typeof window.tiktok.embed.render === 'function') {
+                         window.tiktok.embed.render();
+                    }
+                };
+            }
+        }
+
+
         const loadSiteSettings = async () => {
             const settingsRef = doc(db, "settings", "siteConfig");
             const docSnap = await getDoc(settingsRef);
@@ -141,39 +165,36 @@
 
                 if (data.coverImageUrl && heroImage) heroImage.src = data.coverImageUrl;
                 if (data.marqueeText && marqueeText) marqueeText.textContent = data.marqueeText;
-
-                // --- MODIFIED: TikTok URL processing logic ---
+                
                 const urls = [data.tiktokUrl1, data.tiktokUrl2, data.tiktokUrl3].filter(Boolean);
 
                 if (urls.length > 0 && tiktokGrid) {
-                    tiktokGrid.innerHTML = ''; // Clear previous
-
-                    const fetchPromises = urls.map(url =>
+                    tiktokGrid.innerHTML = ''; 
+                    
+                    const fetchPromises = urls.map(url => 
                         fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`)
-                            .then(res => {
-                                if (!res.ok) throw new Error(`Failed to fetch oEmbed for ${url}`);
-                                return res.json();
-                            })
+                            .then(res => res.ok ? res.json() : Promise.reject(`oEmbed fetch failed for ${url}`))
                             .catch(err => {
                                 console.error(err);
-                                return null; // Return null on error to not break Promise.all
+                                return null;
                             })
                     );
 
                     const results = await Promise.all(fetchPromises);
-
+                    
                     results.forEach(result => {
                         if (result && result.html) {
-                            const wrapper = document.createElement('div');
-                            wrapper.className = 'tiktok-embed-wrapper';
-                            wrapper.innerHTML = result.html;
-                            tiktokGrid.appendChild(wrapper);
+                             const wrapper = document.createElement('div');
+                             wrapper.className = 'tiktok-embed-wrapper';
+                             wrapper.innerHTML = result.html;
+                             tiktokGrid.appendChild(wrapper);
                         }
                     });
 
-                    // Only show the section if there's at least one video
                     if (tiktokGrid.childElementCount > 0) {
-                        if (tiktokSection) tiktokSection.style.display = 'block';
+                        if(tiktokSection) tiktokSection.style.display = 'block';
+                        // --- MODIFIED: Trigger the TikTok script render function ---
+                        loadAndRenderTikTok();
                     }
                 }
             }
@@ -182,7 +203,7 @@
         const productGrid = document.getElementById('product-grid');
         const fetchAndDisplayProducts = async () => {
             productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">กำลังโหลดข้อมูลสุนัข...</p>';
-
+            
             const urlParams = new URLSearchParams(window.location.search);
             const genderFilter = urlParams.get('gender');
             updateActiveMenu(genderFilter || 'all');
@@ -201,7 +222,7 @@
                     productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">ตอนนี้ยังไม่มีสุนัขตรงตามเงื่อนไขค่ะ</p>';
                     return;
                 }
-
+                
                 productGrid.innerHTML = '';
                 querySnapshot.forEach(doc => {
                     const product = doc.data();
@@ -214,11 +235,11 @@
             } catch (error) {
                 console.error("Error fetching products:", error);
                 if (error.code === 'failed-precondition') {
-                    productGrid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">
+                     productGrid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">
                         <b>ข้อผิดพลาด:</b> ต้องสร้าง Index ใน Firestore ก่อน โปรดเปิด Console (F12) เพื่อหาลิงก์สำหรับสร้าง Index ใหม่สำหรับ 'gender' และ 'orderPosition'
                      </p>`;
                 } else {
-                    productGrid.innerHTML = '<p style="color: red; text-align: center; grid-column: 1 / -1;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+                     productGrid.innerHTML = '<p style="color: red; text-align: center; grid-column: 1 / -1;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
                 }
             }
         };
@@ -258,7 +279,7 @@
                     </div>
                 </a>`;
         };
-
+        
         const initializePagination = () => {
             const paginationContainer = document.getElementById('pagination');
             if (!productGrid || !paginationContainer) return;
@@ -308,5 +329,4 @@
         fetchAndDisplayProducts();
     </script>
 </body>
-
 </html>
