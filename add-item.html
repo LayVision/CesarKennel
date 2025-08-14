@@ -282,11 +282,16 @@
                     await updateDoc(docRef, productData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
-                    const q = query(collection(db, "products"), orderBy("orderPosition", "desc"), limit(1));
+                    // --- MODIFIED LOGIC ---
+                    // Find the item with the LOWEST orderPosition to place the new one BEFORE it.
+                    const q = query(collection(db, "products"), orderBy("orderPosition", "asc"), limit(1));
                     const querySnapshot = await getDocs(q);
-                    const lastPosition = querySnapshot.empty ? -1 : querySnapshot.docs[0].data().orderPosition;
-                    productData.orderPosition = (lastPosition ?? -1) + 1;
+                    const firstPosition = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().orderPosition;
+                    
+                    // Assign a new position that is one less than the current first position.
+                    productData.orderPosition = (firstPosition || 0) - 1; 
                     productData.createdAt = serverTimestamp();
+                    
                     await addDoc(collection(db, 'products'), productData);
                     alert('เพิ่มสุนัขสำเร็จ!');
                 }
