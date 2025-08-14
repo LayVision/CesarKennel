@@ -37,7 +37,6 @@
                 <div class="hero-image-container">
                     <img id="hero-image" src="cesar-kennel-logo.png" alt="Cesar Kennel Logo">
                     
-                    <!-- NEW: Text Overlay -->
                     <div class="hero-text-overlay">
                         <h1>CESAR KENNEL</h1>
                         <p>ฟาร์มไซบีเรียนฮัสกี้เชียงใหม่</p>
@@ -116,7 +115,6 @@
                 const heroImage = document.getElementById('hero-image');
                 const marqueeText = document.getElementById('marquee-text-display');
 
-                // If cover image is set in admin, it will override the logo
                 if (data.coverImageUrl && heroImage) {
                     heroImage.src = data.coverImageUrl;
                 }
@@ -204,7 +202,8 @@
             const paginationContainer = document.getElementById('pagination');
             if (!productGrid || !paginationContainer) return;
 
-            const itemsPerPage = 6;
+            // MODIFIED: Set items per page to 8 (4 columns x 2 rows)
+            const itemsPerPage = 8;
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
                 paginationContainer.innerHTML = '';
