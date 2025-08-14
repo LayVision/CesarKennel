@@ -1,428 +1,199 @@
-/* --- ADMIN MODERN BLACK & WHITE THEME --- */
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการสุนัข - แผงควบคุม</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="sidebar-logo">Admin<span>.</span></div>
+                <nav class="sidebar-nav">
+                    <h3>เมนูหลัก</h3>
+                    <ul>
+                        <li><a href="admin.html" class="active">จัดการสุนัข</a></li>
+                        <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
+                    </ul>
+                </nav>
+            </div>
+             <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html">ดูหน้าร้าน</a></li>
+                    <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-/* ======== 1. ROOT & UNIVERSAL STYLES ======== */
-:root {
-    /* New Modern Dark Palette */
-    --bg-canvas: #000000;    /* Pure black canvas */
-    --bg-main: #121212;      /* Near-black for main elements */
-    --border-color: #2e2e2e;  /* Subtle gray for borders */
-    --text-primary: #FFFFFF;    /* Pure white for high contrast */
-    --text-secondary: #b3b3b3;  /* Light gray for secondary info */
-    --accent-primary: #007BFF;  /* Vibrant blue accent */
-    --accent-red: #FF4136;     /* A clear, vibrant red for delete/logout */
-    
-    --font-main: 'Kanit', sans-serif;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --radius-md: 12px;
-    --radius-lg: 16px;
-}
+        <main class="admin-main">
+             <header class="mobile-header">
+                <div class="mobile-logo">Admin<span>.</span></div>
+                <button class="mobile-menu-button" id="menu-toggle">☰</button>
+            </header>
 
-body {
-    margin: 0;
-    font-family: var(--font-main);
-    background-color: var(--bg-canvas);
-    color: var(--text-primary);
-}
-a { text-decoration: none; color: inherit; }
+            <header class="desktop-header">
+                <h1>จัดการสุนัข</h1>
+                <a href="add-item.html" class="button button-primary">+ เพิ่มสุนัขใหม่</a>
+            </header>
 
-/* ======== 2. ADMIN LAYOUT ======== */
-.admin-layout {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    min-height: 100vh;
-}
+            <div class="admin-card">
+                 <h2>รายการสุนัขทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
+                 <div class="product-table-wrapper">
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;"></th> <!-- Handle for drag-drop -->
+                                <th>ข้อมูลสุนัข</th>
+                                <th>สถานะ</th>
+                                <th>ราคา</th>
+                                <th style="width: 150px;">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-list">
+                            <!-- Product rows will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
 
-/* ======== 3. ADMIN SIDEBAR ======== */
-.sidebar {
-    background-color: var(--bg-main);
-    border-right: 1px solid var(--border-color);
-    padding: 32px;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.sidebar-logo {
-    font-size: 1.8em;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 40px;
-}
-.sidebar-logo span { color: var(--accent-primary); }
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="script.js"></script>
 
-.sidebar-nav h3 {
-    font-size: 0.8em;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-secondary);
-    margin: 0 0 16px 0;
-}
-.sidebar-nav ul { list-style: none; padding: 0; margin: 0 0 32px 0; }
-.sidebar-nav a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 1.05em;
-    transition: all 0.2s;
-}
-.sidebar-nav a:hover { background-color: var(--border-color); color: var(--accent-primary); }
-.sidebar-nav a.active { background-color: var(--accent-primary); color: var(--text-primary); font-weight: 700; }
-.sidebar-nav a.logout-link { color: var(--accent-red); }
-.sidebar-nav a.logout-link:hover { background-color: rgba(255, 65, 54, 0.1); }
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-/* ======== 4. ADMIN MAIN CONTENT ======== */
-.admin-main { padding: 40px; }
+        const firebaseConfig = {
+            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
+            authDomain: "cesarkennel.firebaseapp.com",
+            projectId: "cesarkennel",
+            storageBucket: "cesarkennel.firebasestorage.app",
+            messagingSenderId: "512752480416",
+            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
+        };
+        
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-.desktop-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-}
-.desktop-header h1 { font-size: 2.2em; font-weight: 700; margin: 0; }
-.button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-family: var(--font-main);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 1em;
-}
-.button-primary { background-color: var(--accent-primary); color: var(--text-primary); }
-.button-primary:hover { filter: brightness(1.2); }
-.button-secondary { background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); }
-.button-secondary:hover { border-color: var(--accent-primary); }
+        onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
+        document.getElementById('logout-button')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                alert('คุณออกจากระบบแล้ว');
+                window.location.href = 'index.html';
+            });
+        });
 
-/* ======== 5. ADMIN CARDS & FORMS ======== */
-.admin-card {
-    background: var(--bg-main);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    margin-bottom: 32px;
-}
-.admin-card h2 { margin-top: 0; font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;}
+        const productList = document.getElementById('product-list');
+        let productsCache = [];
 
-/* --- MODIFIED: Added top margin for better spacing --- */
-.form-section-header {
-    margin-top: 40px;
-}
+        const fetchProducts = async () => {
+            productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`;
+            const q = query(collection(db, "products"), orderBy("orderPosition", "asc"));
+            const querySnapshot = await getDocs(q);
+            
+            productsCache = []; // Clear cache before fetching
+            querySnapshot.forEach(doc => {
+                productsCache.push({ id: doc.id, ...doc.data() });
+            });
+            
+            renderProducts();
+        };
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 22px;
-}
-.input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9em; }
-.input-group input, .input-group textarea, .input-group select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-family: var(--font-main);
-    font-size: 1em;
-    background-color: var(--bg-canvas);
-    box-sizing: border-box;
-    color: var(--text-primary);
-}
-.input-group input[type="file"] { padding: 8px; }
-.input-group input:focus, .input-group textarea:focus, .input-group select:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-    background-color: var(--bg-main);
-}
-.form-grid .full-width { grid-column: 1 / -1; }
-.form-actions { margin-top: 32px; }
+        const renderProducts = () => {
+            productList.innerHTML = ''; // Clear table
+            if (productsCache.length === 0) {
+                 productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลสุนัขในระบบ</td></tr>`;
+                 return;
+            }
 
+            productsCache.forEach(product => {
+                const statusMap = {
+                    available: { class: 'available', text: 'พร้อมย้ายบ้าน' },
+                    preordered: { class: 'preordered', text: 'ติดจอง' },
+                    sold: { class: 'sold', text: 'ขายแล้ว' }
+                };
+                const statusInfo = statusMap[product.status] || statusMap.available;
+                
+                const tr = document.createElement('tr');
+                tr.dataset.id = product.id;
+                tr.innerHTML = `
+                    <td style="cursor: grab; text-align: center;" class="drag-handle">☰</td>
+                    <td data-label="ข้อมูลสุนัข">
+                        <div class="product-info-cell">
+                            <img src="${product.thumbnailUrl || 'https://via.placeholder.com/60'}" alt="${product.name}">
+                            <div>
+                                <a href="product-detail.html?id=${product.id}" target="_blank" class="name">${product.name}</a>
+                                <div class="details">${product.breed} &middot; เพศ${product.gender}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td data-label="สถานะ"><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
+                    <td data-label="ราคา">${product.price.toLocaleString('th-TH')} บาท</td>
+                    <td data-label="จัดการ">
+                        <div class="action-buttons">
+                            <a href="add-item.html?id=${product.id}" class="button edit-btn">แก้ไข</a>
+                            <button class="button delete-btn" data-id="${product.id}">ลบ</button>
+                        </div>
+                    </td>
+                `;
+                productList.appendChild(tr);
+            });
+        };
 
-/* ======== 6. PRODUCT LIST TABLE ======== */
-.product-table { width: 100%; border-collapse: collapse; }
-.product-table th, .product-table td { text-align: left; padding: 16px; border-bottom: 1px solid var(--border-color); vertical-align: middle;}
-.product-table thead { color: var(--text-secondary); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px;}
-.product-table tbody tr { transition: background-color 0.2s; }
-.product-table tbody tr:hover { background-color: #1a1a1a; }
-.product-table tbody tr:last-child td { border-bottom: none; }
+        productList.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const id = e.target.dataset.id;
+                const row = e.target.closest('tr');
+                const productName = row.querySelector('.name').textContent;
 
-.product-info-cell { display: flex; align-items: center; gap: 16px; }
-.product-info-cell img { width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-md); }
-.product-info-cell .name { font-weight: 600; color: var(--text-primary); }
-.product-info-cell .details { font-size: 0.9em; color: var(--text-secondary); }
+                if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${productName}"?`)) {
+                    try {
+                        await deleteDoc(doc(db, 'products', id));
+                        row.remove();
+                        alert('ลบข้อมูลสำเร็จ');
+                    } catch (error) {
+                        console.error("Error removing document: ", error);
+                        alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+                    }
+                }
+            }
+        });
 
-/* --- UNCHANGED: Status badge colors remain from the original light theme as requested --- */
-.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
-.status-badge.available { background-color: #D3F9D8; color: #2B8A3E; }
-.status-badge.preordered { background-color: #FFF3BF; color: #C59300; }
-.status-badge.sold { background-color: #FFF5F5; color: #FA5252; }
+        new Sortable(productList, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: async (evt) => {
+                const items = Array.from(productList.querySelectorAll('tr'));
+                const batch = writeBatch(db);
+                
+                items.forEach((item, index) => {
+                    const docId = item.dataset.id;
+                    const docRef = doc(db, 'products', docId);
+                    // We update the orderPosition based on its new index in the DOM
+                    batch.update(docRef, { orderPosition: index });
+                });
 
-.action-buttons a, .action-buttons button {
-    font-size: 0.9em; padding: 6px 12px; border-radius: 6px;
-    margin-right: 8px; border: 1px solid transparent; background: none;
-}
-.action-buttons .edit-btn { background-color: rgba(0, 123, 255, 0.15); color: var(--accent-primary); }
-.action-buttons .delete-btn { background-color: rgba(255, 65, 54, 0.15); color: var(--accent-red); }
-
-.reorder-cell {
-    width: 90px;
-    text-align: center;
-}
-.reorder-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-}
-.reorder-buttons .button {
-    padding: 6px 10px;
-    font-size: 1em;
-    line-height: 1;
-    background-color: var(--bg-canvas);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-}
-.reorder-buttons .button:hover {
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
-}
-.reorder-buttons .button:disabled {
-    background-color: var(--bg-canvas);
-    border-color: var(--border-color);
-    color: var(--border-color);
-    cursor: not-allowed;
-    opacity: 0.6;
-}
+                try {
+                    await batch.commit();
+                    // Refetch to ensure cache and UI are perfectly in sync
+                    fetchProducts();
+                } catch (error) {
+                    console.error("Error updating order: ", error);
+                    alert("เกิดข้อผิดพลาดในการจัดลำดับ");
+                }
+            },
+        });
 
 
-/* ======== 7. LOGIN PAGE ======== */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 24px;
-    box-sizing: border-box;
-}
-.login-form {
-    width: 100%;
-    max-width: 420px;
-    background-color: var(--bg-main);
-    padding: 40px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-}
-.login-form h2 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 32px;
-    font-size: 1.8em;
-}
-.login-form .input-group {
-    margin-bottom: 24px;
-}
-.login-form .button {
-    width: 100%;
-    padding: 14px;
-    font-size: 1.1em;
-    margin-top: 8px;
-}
-.login-form .home-link {
-    text-align: center;
-    margin-top: 24px;
-    font-size: 0.9em;
-}
-.login-form .home-link a {
-    color: var(--accent-primary);
-    font-weight: 500;
-}
-
-/* ======== 8. RESPONSIVE ADMIN ======== */
-.mobile-header { display: none; }
-@media (max-width: 1024px) {
-    .admin-layout { grid-template-columns: 1fr; }
-    
-    .sidebar {
-        position: fixed;
-        left: -100%;
-        top: 0;
-        z-index: 200;
-        height: 100%;
-        transition: left 0.3s ease-in-out;
-        box-shadow: 0 0 40px rgba(0,0,0,0.1);
-        width: 280px;
-    }
-    .sidebar.open { left: 0; }
-    
-    .desktop-header { display: none; }
-    
-    .mobile-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-    }
-    .mobile-logo { font-size: 1.5em; font-weight: 700; color: var(--text-primary); }
-    .mobile-logo span { color: var(--accent-primary); }
-    .mobile-menu-button {
-        display: block;
-        font-size: 1.5rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        color: var(--text-primary);
-    }
-    
-    .admin-main { padding: 24px; }
-    
-    .product-table { display: block; }
-    .product-table thead { display: none; }
-    .product-table tbody, .product-table tr, .product-table td { display: block; width: 100%; box-sizing: border-box; }
-    
-    .product-table tr {
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        margin-bottom: 16px;
-        padding: 16px;
-        background-color: var(--bg-main);
-    }
-    
-    .product-table td {
-        padding: 12px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: none;
-        border-bottom: 1px solid var(--border-color);
-    }
-    
-    .product-table tr td:last-child { border-bottom: none; }
-    
-    .product-table td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: var(--text-secondary);
-        margin-right: 16px;
-    }
-    .product-info-cell { flex-direction: row; }
-}
-
-/* ======== 9. IMAGE UPLOAD PREVIEW ======== */
-.image-preview-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
-    padding: 16px;
-    border: 1px dashed var(--border-color);
-    border-radius: var(--radius-md);
-    min-height: 100px;
-    background-color: var(--bg-canvas);
-}
-
-.image-preview-item {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: var(--border-color);
-    cursor: grab;
-}
-
-.image-preview-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.image-preview-item .remove-btn {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 24px;
-    height: 24px;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 16px;
-    line-height: 24px;
-    text-align: center;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s;
-    z-index: 10;
-}
-
-.image-preview-item:hover .remove-btn {
-    opacity: 1;
-}
-
-.image-preview-item .drag-handle {
-    position: absolute;
-    bottom: 4px;
-    left: 4px;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 14px;
-    cursor: grab;
-    z-index: 10;
-}
-
-.image-preview-container .sortable-ghost {
-    background-color: var(--accent-primary);
-    opacity: 0.4;
-    border: 2px dashed white;
-}
-/* ======== 10. CROPPER MODAL ======== */
-.crop-modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.8);
-    justify-content: center;
-    align-items: center;
-}
-
-.crop-modal-content {
-    background-color: var(--bg-main);
-    margin: auto;
-    padding: 20px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    width: 90%;
-    max-width: 800px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-}
-
-.crop-image-container {
-    width: 100%;
-    max-height: 60vh; /* Limit height to prevent huge images from taking over */
-    margin-bottom: 20px;
-}
-
-.crop-image-container img {
-    max-width: 100%;
-}
-
-.crop-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
+        fetchProducts();
+    </script>
+</body>
+</html>

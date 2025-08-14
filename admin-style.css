@@ -113,7 +113,7 @@ a { text-decoration: none; color: inherit; }
 }
 .admin-card h2 { margin-top: 0; font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;}
 .form-section-header {
-    margin-top: 40px;
+    margin-top: 60px; /* MODIFIED: Increased margin for better separation */
 }
 .form-grid {
     display: grid;
