@@ -1,25 +1,19 @@
-/* --- CESAR KENNEL DARK THEME --- */
+/* --- MODERN BLACK & WHITE THEME --- */
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
 
 /* ======== 1. ROOT & UNIVERSAL STYLES ======== */
 :root {
-    /* Color Palette from Cesar Kennel Logo */
-    --bg-canvas: #0A1921; /* Deepest blue/black from logo background */
-    --bg-main: #112230;   /* Dark blue-gray for cards and sidebars */
-    --border-color: #233545; /* Lighter blue-gray for borders */
-    --text-primary: #E6F1FF;   /* Light cyan/white for main text */
-    --text-secondary: #8892B0; /* Muted gray-blue for secondary text */
-    --accent-primary: #59D5D8; /* Bright cyan from logo */
-    --accent-gold: #D1A54B;   /* Gold from logo text */
-    
-    /* Status Colors */
-    --accent-green: #64FFDA; /* A vibrant teal-green */
-    --accent-yellow: var(--accent-gold); /* Use the gold for pre-ordered */
-    --accent-red: #FF6B6B;     /* A clear, vibrant red */
+    /* New Modern Dark Palette */
+    --bg-canvas: #000000;    /* Pure black canvas */
+    --bg-main: #121212;      /* Near-black for main elements */
+    --border-color: #2e2e2e;  /* Subtle gray for borders */
+    --text-primary: #FFFFFF;    /* Pure white for high contrast */
+    --text-secondary: #b3b3b3;  /* Light gray for secondary info */
+    --accent-primary: #007BFF;  /* Vibrant blue accent */
     
     --font-main: 'Kanit', sans-serif;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
     --radius-md: 12px;
     --radius-lg: 16px;
 }
@@ -77,8 +71,8 @@ a { text-decoration: none; color: inherit; }
     display: block; padding: 12px; border-radius: 8px;
     font-weight: 500; transition: all 0.2s; font-size: 1.05em;
 }
-.sidebar-nav a:hover { background-color: var(--bg-canvas); color: var(--accent-primary); }
-.sidebar-nav a.active { background-color: var(--accent-primary); color: var(--bg-main); font-weight: 700;}
+.sidebar-nav a:hover { background-color: var(--border-color); color: var(--accent-primary); }
+.sidebar-nav a.active { background-color: var(--accent-primary); color: var(--text-primary); font-weight: 700;}
 
 .filter-group { margin-bottom: 24px; }
 .filter-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; }
@@ -106,17 +100,14 @@ a { text-decoration: none; color: inherit; }
 
 /* ======== 5. HERO SECTION & MARQUEE ======== */
 .hero-section { width: 100%; }
-
-/* MODIFIED: Add position relative for the text overlay */
 .hero-image-container {
     width: 100%; height: 400px; border-radius: var(--radius-lg);
     overflow: hidden; background-color: var(--bg-canvas);
     display: flex; align-items: center; justify-content: center;
-    position: relative; /* This is crucial for positioning the overlay */
+    position: relative;
 }
 .hero-image-container img { width: 100%; height: 100%; object-fit: cover; }
 
-/* NEW: Hero text overlay styles */
 .hero-text-overlay {
     position: absolute;
     bottom: 0;
@@ -125,14 +116,14 @@ a { text-decoration: none; color: inherit; }
     padding: 40px;
     box-sizing: border-box;
     color: var(--text-primary);
-    background: linear-gradient(to top, rgba(10, 25, 33, 0.95) 0%, rgba(10, 25, 33, 0) 100%);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 .hero-text-overlay h1 {
     margin: 0 0 8px 0;
     font-size: 3em;
     font-weight: 700;
-    color: var(--accent-primary);
+    color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -140,18 +131,20 @@ a { text-decoration: none; color: inherit; }
     margin: 4px 0;
     font-size: 1.1em;
     line-height: 1.6;
-    max-width: 600px; /* Prevent text from spanning too wide on large screens */
+    max-width: 600px;
+    color: var(--text-secondary);
 }
 .hero-text-overlay .hero-price {
     font-weight: 700;
-    color: var(--accent-gold);
+    color: var(--accent-primary);
     margin-top: 12px;
 }
 
 .marquee-container {
-    width: 100%; background-color: var(--accent-primary); color: var(--bg-main);
+    width: 100%; background-color: var(--bg-main);
     padding: 12px 0; overflow: hidden; white-space: nowrap;
-    border-radius: var(--radius-md); margin-top: 24px; box-sizing: border-box; font-weight: 700;
+    border-radius: var(--radius-md); margin-top: 24px; box-sizing: border-box; font-weight: 500;
+    border: 1px solid var(--border-color);
 }
 .marquee-text {
     display: inline-block; padding-left: 100%;
@@ -171,13 +164,14 @@ a { text-decoration: none; color: inherit; }
 .product-card {
     background: var(--bg-main); border: 1px solid var(--border-color);
     border-radius: var(--radius-lg); overflow: hidden;
-    box-shadow: none; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: none; transition: transform 0.2s, border-color 0.2s;
 }
-.product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--accent-primary);}
+.product-card:hover { transform: translateY(-5px); border-color: var(--accent-primary);}
 
 .card-image-container { position: relative; }
 .card-image-container img { width: 100%; height: 250px; object-fit: cover; display: block; }
 
+/* --- UNCHANGED: Status colors remain from the original light theme as requested --- */
 .card-status {
     position: absolute; top: 16px; left: 16px; padding: 6px 12px;
     font-size: 0.8em; font-weight: 600; border-radius: 20px;
@@ -301,18 +295,18 @@ a { text-decoration: none; color: inherit; }
 
 .add-to-cart-button {
     display: block; width: 100%; padding: 18px; background-color: var(--accent-primary);
-    color: var(--bg-main); text-align: center; font-size: 1.2em; font-weight: 600;
+    color: var(--text-primary); text-align: center; font-size: 1.2em; font-weight: 600;
     border: none; border-radius: 12px; transition: all 0.2s;
 }
-.add-to-cart-button:hover { background-color: var(--accent-gold); }
+.add-to-cart-button:hover { filter: brightness(1.2); }
 
 .add-to-cart-button.sold-button {
-    background-color: var(--text-secondary);
-    color: var(--bg-main);
+    background-color: var(--border-color);
+    color: var(--text-secondary);
     cursor: not-allowed;
 }
 .add-to-cart-button.sold-button:hover {
-    background-color: var(--text-secondary);
+    filter: none;
 }
 
 
@@ -344,17 +338,12 @@ a { text-decoration: none; color: inherit; }
     .hero-section { margin-top: 0; }
     .hero-image-container { height: 300px; }
 
-    /* NEW: Responsive hero text */
     .hero-text-overlay {
         padding: 24px;
-        background: linear-gradient(to top, rgba(10, 25, 33, 0.95) 0%, rgba(10, 25, 33, 0.7) 50%, rgba(10, 25, 33, 0) 100%);
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0) 100%);
     }
-    .hero-text-overlay h1 {
-        font-size: 2em;
-    }
-    .hero-text-overlay p {
-        font-size: 0.9em;
-    }
+    .hero-text-overlay h1 { font-size: 2em; }
+    .hero-text-overlay p { font-size: 0.9em; }
     
     .product-detail-grid { 
         grid-template-columns: 1fr; 
@@ -390,11 +379,11 @@ a { text-decoration: none; color: inherit; }
 .page-btn:hover {
     background-color: var(--accent-primary);
     border-color: var(--accent-primary);
-    color: var(--bg-main);
+    color: var(--text-primary);
 }
 .page-btn.active {
     background-color: var(--accent-primary);
-    color: var(--bg-main);
+    color: var(--text-primary);
     border-color: var(--accent-primary);
     cursor: default;
 }
@@ -408,8 +397,8 @@ a { text-decoration: none; color: inherit; }
 /* ======== 10. SITE FOOTER ======== */
 .site-footer {
     grid-column: 1 / -1;
-    background-color: #0A1921;
-    color: #8892B0;
+    background-color: #000000;
+    color: var(--text-secondary);
     padding: 40px 24px;
     text-align: center;
     border-top: 1px solid var(--border-color);
@@ -450,5 +439,4 @@ a { text-decoration: none; color: inherit; }
 }
 .social-links a:hover {
     background-color: var(--accent-primary);
-    color: var(--bg-main);
 }
