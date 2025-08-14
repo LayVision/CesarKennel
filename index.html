@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ซีซาร์ เคนเนล - ฟาร์มสุนัขคุณภาพ</title>
     <link rel="stylesheet" href="style.css">
-    <!-- NEW: Added TikTok embed script directly to the head -->
-    <script async src="https://www.tiktok.com/embed.js"></script>
 </head>
 <body>
     <div class="shop-layout">
@@ -50,6 +48,18 @@
                     <p id="marquee-text-display" class="marquee-text">✨ สุนัขสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
+            
+            <!-- NEW: Gallery Slider Section -->
+            <section id="gallery-section" class="gallery-section" style="display: none;">
+                <h2>แกลเลอรี่</h2>
+                <div class="gallery-slider">
+                    <div class="gallery-track" id="gallery-track">
+                        <!-- Images will be injected here -->
+                    </div>
+                    <button class="gallery-arrow prev" id="gallery-prev">&#10094;</button>
+                    <button class="gallery-arrow next" id="gallery-next">&#10095;</button>
+                </div>
+            </section>
 
             <header class="desktop-header">
                 <h1>เพื่อนคู่ใจที่ดีที่สุด</h1>
@@ -61,13 +71,6 @@
             </div>
 
             <div class="pagination-container" id="pagination"></div>
-
-            <section id="tiktok-section" class="tiktok-section" style="display: none;">
-                <h2>วิดีโอล่าสุดจาก TikTok</h2>
-                <div class="tiktok-grid" id="tiktok-grid">
-                    <!-- TikTok videos will be injected here by script -->
-                </div>
-            </section>
 
         </main>
     </div>
@@ -125,29 +128,45 @@
                 }
             });
         };
+        
+        const initializeGallerySlider = () => {
+            const track = document.getElementById('gallery-track');
+            const prevButton = document.getElementById('gallery-prev');
+            const nextButton = document.getElementById('gallery-next');
+            if (!track || !prevButton || !nextButton) return;
 
-        // --- NEW: More robust function to render TikTok embeds by polling ---
-        function renderTikTokEmbeds() {
-            // Check if the TikTok object is ready
-            if (window.tiktok && typeof window.tiktok.embed.render === 'function') {
-                window.tiktok.embed.render();
+            const slides = Array.from(track.children);
+            if (slides.length <= 1) {
+                prevButton.style.display = 'none';
+                nextButton.style.display = 'none';
                 return;
             }
 
-            // If not ready, poll every 100ms for a few seconds
-            let attempts = 0;
-            const interval = setInterval(() => {
-                attempts++;
-                // Check again if the function is now available
-                if (window.tiktok && typeof window.tiktok.embed.render === 'function') {
-                    clearInterval(interval); // Stop polling
-                    window.tiktok.embed.render(); // Render the embeds
-                } else if (attempts > 50) { // Give up after 5 seconds
-                    clearInterval(interval);
-                    console.error("TikTok embed script failed to initialize in time.");
-                }
-            }, 100);
-        }
+            let currentIndex = 0;
+            const slideWidth = slides[0].getBoundingClientRect().width;
+
+            const setSlidePosition = (index) => {
+                track.style.transform = `translateX(-${slideWidth * index}px)`;
+            };
+
+            nextButton.addEventListener('click', () => {
+                currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
+                setSlidePosition(currentIndex);
+            });
+
+            prevButton.addEventListener('click', () => {
+                currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
+                setSlidePosition(currentIndex);
+            });
+            
+            // On resize, recalculate and reset
+            window.addEventListener('resize', () => {
+                const newSlideWidth = slides[0].getBoundingClientRect().width;
+                track.style.transition = 'none'; // Prevent animation on resize
+                track.style.transform = `translateX(-${newSlideWidth * currentIndex}px)`;
+                setTimeout(() => { track.style.transition = 'transform 0.5s ease-in-out'; }, 50);
+            });
+        };
 
 
         const loadSiteSettings = async () => {
@@ -158,42 +177,23 @@
                 const data = docSnap.data();
                 const heroImage = document.getElementById('hero-image');
                 const marqueeText = document.getElementById('marquee-text-display');
-                const tiktokSection = document.getElementById('tiktok-section');
-                const tiktokGrid = document.getElementById('tiktok-grid');
-
+                
                 if (data.coverImageUrl && heroImage) heroImage.src = data.coverImageUrl;
                 if (data.marqueeText && marqueeText) marqueeText.textContent = data.marqueeText;
                 
-                const urls = [data.tiktokUrl1, data.tiktokUrl2, data.tiktokUrl3].filter(Boolean);
-
-                if (urls.length > 0 && tiktokGrid) {
-                    tiktokGrid.innerHTML = ''; 
-                    
-                    const fetchPromises = urls.map(url => 
-                        fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`)
-                            .then(res => res.ok ? res.json() : Promise.reject(`oEmbed fetch failed for ${url}`))
-                            .catch(err => {
-                                console.error(err);
-                                return null;
-                            })
-                    );
-
-                    const results = await Promise.all(fetchPromises);
-                    
-                    results.forEach(result => {
-                        if (result && result.html) {
-                             const wrapper = document.createElement('div');
-                             wrapper.className = 'tiktok-embed-wrapper';
-                             wrapper.innerHTML = result.html;
-                             tiktokGrid.appendChild(wrapper);
-                        }
+                // Gallery logic
+                const gallerySection = document.getElementById('gallery-section');
+                const galleryTrack = document.getElementById('gallery-track');
+                if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls) && data.galleryImageUrls.length > 0) {
+                    galleryTrack.innerHTML = '';
+                    data.galleryImageUrls.forEach(url => {
+                        const slide = document.createElement('div');
+                        slide.className = 'gallery-slide';
+                        slide.innerHTML = `<img src="${url}" alt="Gallery Image">`;
+                        galleryTrack.appendChild(slide);
                     });
-
-                    if (tiktokGrid.childElementCount > 0) {
-                        if(tiktokSection) tiktokSection.style.display = 'block';
-                        // --- MODIFIED: Call the new, more robust render function ---
-                        renderTikTokEmbeds();
-                    }
+                    gallerySection.style.display = 'block';
+                    initializeGallerySlider();
                 }
             }
         };
