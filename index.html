@@ -10,8 +10,7 @@
     <div class="shop-layout">
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo">CesarKennel<span>.</span></div>
-                <!-- MODIFIED: Menu links now have functional hrefs and data-filter attributes -->
+                <div class="sidebar-logo">Cesar<span>.</span></div>
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
@@ -60,6 +59,15 @@
             </div>
 
             <div class="pagination-container" id="pagination"></div>
+
+            <!-- NEW: TikTok Section -->
+            <section id="tiktok-section" class="tiktok-section" style="display: none;">
+                <h2>วิดีโอล่าสุดจาก TikTok</h2>
+                <div class="tiktok-grid" id="tiktok-grid">
+                    <!-- TikTok videos will be injected here by script -->
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -81,7 +89,6 @@
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        // MODIFIED: Added 'where' to imports
         import { getFirestore, collection, query, where, orderBy, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -108,7 +115,6 @@
             }
         });
 
-        // NEW: Function to update the active state of menu links
         const updateActiveMenu = (filter) => {
             const menuLinks = document.querySelectorAll('.sidebar-nav a[data-filter]');
             menuLinks.forEach(link => {
@@ -127,12 +133,33 @@
                 const data = docSnap.data();
                 const heroImage = document.getElementById('hero-image');
                 const marqueeText = document.getElementById('marquee-text-display');
+                
+                // MODIFIED: Add TikTok section elements
+                const tiktokSection = document.getElementById('tiktok-section');
+                const tiktokGrid = document.getElementById('tiktok-grid');
 
-                if (data.coverImageUrl && heroImage) {
-                    heroImage.src = data.coverImageUrl;
-                }
-                if (data.marqueeText && marqueeText) {
-                    marqueeText.textContent = data.marqueeText;
+                if (data.coverImageUrl && heroImage) heroImage.src = data.coverImageUrl;
+                if (data.marqueeText && marqueeText) marqueeText.textContent = data.marqueeText;
+                
+                // MODIFIED: Logic to display TikTok videos
+                const embeds = [data.tiktokEmbed1, data.tiktokEmbed2, data.tiktokEmbed3].filter(Boolean);
+                if (embeds.length > 0 && tiktokGrid) {
+                    tiktokGrid.innerHTML = ''; // Clear previous
+                    embeds.forEach(embedCode => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'tiktok-embed-wrapper';
+                        wrapper.innerHTML = embedCode; // Inject the full embed code
+                        tiktokGrid.appendChild(wrapper);
+                    });
+                    if(tiktokSection) tiktokSection.style.display = 'block';
+
+                    // Load the TikTok embed script if it's not already loaded
+                    if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
+                        const script = document.createElement('script');
+                        script.src = 'https://www.tiktok.com/embed.js';
+                        script.async = true;
+                        document.body.appendChild(script);
+                    }
                 }
             }
         };
@@ -141,23 +168,17 @@
         const fetchAndDisplayProducts = async () => {
             productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">กำลังโหลดข้อมูลสุนัข...</p>';
             
-            // MODIFIED: Read gender filter from URL
             const urlParams = new URLSearchParams(window.location.search);
             const genderFilter = urlParams.get('gender');
-
-            // Set the correct active menu item
             updateActiveMenu(genderFilter || 'all');
 
             try {
                 const productsRef = collection(db, "products");
                 let q;
 
-                // MODIFIED: Build the query based on the filter
                 if (genderFilter) {
-                    // Query for a specific gender
                     q = query(productsRef, where("gender", "==", genderFilter), orderBy("orderPosition", "asc"));
                 } else {
-                    // Default query for all dogs
                     q = query(productsRef, orderBy("orderPosition", "asc"));
                 }
 
@@ -250,7 +271,6 @@
                 });
                 
                 updatePaginationButtons(page, totalPages);
-                // Don't modify history for gender filter pages to keep base URL clean for pagination
             }
 
             function updatePaginationButtons(currentPage, totalPages) {
@@ -267,7 +287,6 @@
                     if (!isDisabled) {
                         urlParams.set('page', page);
                         btn.href = `?${urlParams.toString()}`;
-                        // We let the page reload for filtered views to ensure simplicity
                     }
                     return btn;
                 };

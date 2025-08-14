@@ -51,6 +51,24 @@
                     </div>
                 </div>
 
+                <!-- NEW: TikTok Embed Section -->
+                <h2 class="form-section-header">วิดีโอ TikTok ล่าสุด</h2>
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label for="tiktok-embed-1">โค้ดสำหรับฝังวิดีโอ TikTok #1 (ใหม่สุด)</label>
+                        <textarea id="tiktok-embed-1" name="tiktok-embed-1" rows="4" placeholder="วางโค้ด <blockquote ...> ที่คัดลอกจาก TikTok ที่นี่"></textarea>
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="tiktok-embed-2">โค้ดสำหรับฝังวิดีโอ TikTok #2</label>
+                        <textarea id="tiktok-embed-2" name="tiktok-embed-2" rows="4" placeholder="วางโค้ด <blockquote ...> ที่คัดลอกจาก TikTok ที่นี่"></textarea>
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="tiktok-embed-3">โค้ดสำหรับฝังวิดีโอ TikTok #3</label>
+                        <textarea id="tiktok-embed-3" name="tiktok-embed-3" rows="4" placeholder="วางโค้ด <blockquote ...> ที่คัดลอกจาก TikTok ที่นี่"></textarea>
+                    </div>
+                </div>
+
+
                 <div class="form-actions full-width">
                    <button type="submit" class="button button-primary">บันทึกการตั้งค่าทั้งหมด</button>
                </div>
@@ -105,6 +123,10 @@
         const settingsForm = document.getElementById('settings-form');
         const coverImageInput = document.getElementById('cover-image-upload');
         const marqueeTextInput = document.getElementById('marquee-text');
+        // MODIFIED: Added TikTok inputs
+        const tiktokEmbed1 = document.getElementById('tiktok-embed-1');
+        const tiktokEmbed2 = document.getElementById('tiktok-embed-2');
+        const tiktokEmbed3 = document.getElementById('tiktok-embed-3');
         const settingsRef = doc(db, "settings", "siteConfig");
 
         const cropModal = document.getElementById('crop-modal');
@@ -118,9 +140,11 @@
             const docSnap = await getDoc(settingsRef);
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                if (data.marqueeText) {
-                    marqueeTextInput.value = data.marqueeText;
-                }
+                if (data.marqueeText) marqueeTextInput.value = data.marqueeText;
+                // MODIFIED: Load TikTok embed codes
+                if (data.tiktokEmbed1) tiktokEmbed1.value = data.tiktokEmbed1;
+                if (data.tiktokEmbed2) tiktokEmbed2.value = data.tiktokEmbed2;
+                if (data.tiktokEmbed3) tiktokEmbed3.value = data.tiktokEmbed3;
             }
         };
         loadCurrentSettings();
@@ -132,14 +156,8 @@
                 reader.onload = (event) => {
                     imageToCrop.src = event.target.result;
                     cropModal.style.display = 'flex';
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(imageToCrop, {
-                        aspectRatio: 16 / 9,
-                        viewMode: 1,
-                        background: false,
-                    });
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(imageToCrop, { aspectRatio: 16 / 9, viewMode: 1, background: false });
                 };
                 reader.readAsDataURL(files[0]);
             }
@@ -147,10 +165,7 @@
 
         cropBtn.addEventListener('click', () => {
             if (cropper) {
-                cropper.getCroppedCanvas({
-                    width: 1280,
-                    height: 720
-                }).toBlob((blob) => {
+                cropper.getCroppedCanvas({ width: 1280, height: 720 }).toBlob((blob) => {
                     croppedBlob = blob;
                     alert('ตัดรูปภาพเรียบร้อย! กด "บันทึกการตั้งค่าทั้งหมด" เพื่อยืนยัน');
                     closeCropModal();
@@ -177,7 +192,6 @@
 
             try {
                 let coverImageUrl = null;
-
                 if (croppedBlob) {
                      coverImageUrl = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
@@ -185,19 +199,9 @@
                             const base64String = reader.result.split(',')[1];
                             const body = new URLSearchParams();
                             body.append('image', base64String);
-
-                            fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, {
-                                method: 'POST',
-                                body: body
-                            })
+                            fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: body })
                             .then(res => res.json())
-                            .then(result => {
-                                if (result.success) {
-                                    resolve(result.data.url);
-                                } else {
-                                    reject(new Error(result.error?.message || `Image upload failed`));
-                                }
-                            })
+                            .then(result => result.success ? resolve(result.data.url) : reject(new Error(result.error?.message || `Image upload failed`)))
                             .catch(reject);
                         };
                         reader.onerror = error => reject(error);
@@ -205,8 +209,12 @@
                     });
                 }
 
+                // MODIFIED: Prepare data with TikTok fields
                 const settingsData = {
-                    marqueeText: marqueeTextInput.value
+                    marqueeText: marqueeTextInput.value,
+                    tiktokEmbed1: tiktokEmbed1.value,
+                    tiktokEmbed2: tiktokEmbed2.value,
+                    tiktokEmbed3: tiktokEmbed3.value,
                 };
 
                 if (coverImageUrl) {

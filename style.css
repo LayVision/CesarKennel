@@ -158,7 +158,6 @@ a { text-decoration: none; color: inherit; }
 /* ======== 6. PRODUCT GRID & CARDS ======== */
 .product-grid {
     display: grid;
-    /* MODIFIED: Adjusted minmax to favor a 4-column layout on desktop */
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 32px;
 }
@@ -172,7 +171,6 @@ a { text-decoration: none; color: inherit; }
 .card-image-container { position: relative; }
 .card-image-container img { width: 100%; height: 250px; object-fit: cover; display: block; }
 
-/* UNCHANGED: Status colors remain from the original light theme as requested */
 .card-status {
     position: absolute; top: 16px; left: 16px; padding: 6px 12px;
     font-size: 0.8em; font-weight: 600; border-radius: 20px;
@@ -440,4 +438,37 @@ a { text-decoration: none; color: inherit; }
 }
 .social-links a:hover {
     background-color: var(--accent-primary);
+}
+
+/* ======== 11. TIKTOK SECTION (NEW) ======== */
+.tiktok-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-color);
+}
+.tiktok-section h2 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+.tiktok-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 32px;
+}
+.tiktok-embed-wrapper {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+    background-color: var(--bg-main);
+}
+.tiktok-embed-wrapper:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-primary);
+}
+/* This helps ensure the TikTok content fills the wrapper */
+.tiktok-embed-wrapper blockquote {
+    margin: 0 !important;
 }
