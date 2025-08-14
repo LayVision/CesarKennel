@@ -157,11 +157,11 @@ a { text-decoration: none; color: inherit; }
 .product-info-cell .name { font-weight: 600; color: var(--text-primary); }
 .product-info-cell .details { font-size: 0.9em; color: var(--text-secondary); }
 
-/* Status badge styling. */
-.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; color: var(--bg-main); }
-.status-badge.available { background-color: #64FFDA; }
-.status-badge.preordered { background-color: var(--accent-gold); }
-.status-badge.sold { background-color: var(--accent-red); }
+/* --- MODIFIED: Reverted status badge colors to original light theme --- */
+.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
+.status-badge.available { background-color: #D3F9D8; color: #2B8A3E; }
+.status-badge.preordered { background-color: #FFF3BF; color: #C59300; }
+.status-badge.sold { background-color: #FFF5F5; color: #FA5252; }
 
 .action-buttons a, .action-buttons button {
     font-size: 0.9em; padding: 6px 12px; border-radius: 6px;
