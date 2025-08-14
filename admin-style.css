@@ -1,17 +1,20 @@
-/* --- ADMIN DIGITAL BOUTIQUE THEME (CORRECTED) --- */
+/* --- ADMIN CESAR KENNEL DARK THEME --- */
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
 
 /* ======== 1. ROOT & UNIVERSAL STYLES ======== */
 :root {
-    --bg-canvas: #F8F9FA;
-    --bg-main: #FFFFFF;
-    --border-color: #E9ECEF;
-    --text-primary: #212529;
-    --text-secondary: #6C757D;
-    --accent-primary: #4C6EF5;
-    --accent-red: #FA5252; /* For delete/logout actions */
+    /* Color Palette from Cesar Kennel Logo */
+    --bg-canvas: #0A1921; /* Deepest blue/black from logo background */
+    --bg-main: #112230;   /* Dark blue-gray for cards and sidebars */
+    --border-color: #233545; /* Lighter blue-gray for borders */
+    --text-primary: #E6F1FF;   /* Light cyan/white for main text */
+    --text-secondary: #8892B0; /* Muted gray-blue for secondary text */
+    --accent-primary: #59D5D8; /* Bright cyan from logo */
+    --accent-gold: #D1A54B;   /* Gold from logo text */
+    --accent-red: #FF6B6B;     /* A clear, vibrant red */
+    
     --font-main: 'Kanit', sans-serif;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
     --radius-md: 12px;
     --radius-lg: 16px;
 }
@@ -71,10 +74,10 @@ a { text-decoration: none; color: inherit; }
     font-size: 1.05em;
     transition: all 0.2s;
 }
-.sidebar-nav a:hover { background-color: var(--bg-canvas); }
-.sidebar-nav a.active { background-color: var(--accent-primary); color: white; }
+.sidebar-nav a:hover { background-color: var(--bg-canvas); color: var(--accent-primary); }
+.sidebar-nav a.active { background-color: var(--accent-primary); color: var(--bg-main); font-weight: 700; }
 .sidebar-nav a.logout-link { color: var(--accent-red); }
-.sidebar-nav a.logout-link:hover { background-color: #FFE3E3; }
+.sidebar-nav a.logout-link:hover { background-color: rgba(255, 107, 107, 0.1); }
 
 /* ======== 4. ADMIN MAIN CONTENT ======== */
 .admin-main { padding: 40px; }
@@ -96,10 +99,10 @@ a { text-decoration: none; color: inherit; }
     transition: all 0.2s;
     font-size: 1em;
 }
-.button-primary { background-color: var(--accent-primary); color: white; }
-.button-primary:hover { background-color: #3B5BDB; }
+.button-primary { background-color: var(--accent-primary); color: var(--bg-main); }
+.button-primary:hover { background-color: var(--accent-gold); }
 .button-secondary { background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); }
-.button-secondary:hover { background-color: var(--bg-canvas); }
+.button-secondary:hover { border-color: var(--accent-primary); }
 
 /* ======== 5. ADMIN CARDS & FORMS ======== */
 .admin-card {
@@ -128,12 +131,13 @@ a { text-decoration: none; color: inherit; }
     font-size: 1em;
     background-color: var(--bg-canvas);
     box-sizing: border-box;
+    color: var(--text-primary);
 }
 .input-group input[type="file"] { padding: 8px; }
 .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.2);
+    box-shadow: 0 0 0 3px rgba(89, 213, 216, 0.2);
     background-color: var(--bg-main);
 }
 .form-grid .full-width { grid-column: 1 / -1; }
@@ -144,26 +148,27 @@ a { text-decoration: none; color: inherit; }
 .product-table { width: 100%; border-collapse: collapse; }
 .product-table th, .product-table td { text-align: left; padding: 16px; border-bottom: 1px solid var(--border-color); vertical-align: middle;}
 .product-table thead { color: var(--text-secondary); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px;}
+.product-table tbody tr { transition: background-color 0.2s; }
+.product-table tbody tr:hover { background-color: var(--bg-canvas); }
 .product-table tbody tr:last-child td { border-bottom: none; }
 
 .product-info-cell { display: flex; align-items: center; gap: 16px; }
 .product-info-cell img { width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-md); }
-.product-info-cell .name { font-weight: 600; }
+.product-info-cell .name { font-weight: 600; color: var(--text-primary); }
 .product-info-cell .details { font-size: 0.9em; color: var(--text-secondary); }
 
 /* Status badge styling. */
-.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
-.status-badge.available { background-color: #D3F9D8; color: #2B8A3E; }
-.status-badge.preordered { background-color: #FFF3BF; color: #C59300; }
-/* --- MODIFIED RULE --- */
-.status-badge.sold { background-color: #FFF5F5; color: var(--accent-red); }
+.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; color: var(--bg-main); }
+.status-badge.available { background-color: #64FFDA; }
+.status-badge.preordered { background-color: var(--accent-gold); }
+.status-badge.sold { background-color: var(--accent-red); }
 
 .action-buttons a, .action-buttons button {
     font-size: 0.9em; padding: 6px 12px; border-radius: 6px;
-    margin-right: 8px; border: 1px solid transparent;
+    margin-right: 8px; border: 1px solid transparent; background: none;
 }
-.action-buttons .edit-btn { background-color: #E7F5FF; color: #1971C2; }
-.action-buttons .delete-btn { background-color: #FFF5F5; color: var(--accent-red); }
+.action-buttons .edit-btn { background-color: rgba(89, 213, 216, 0.1); color: var(--accent-primary); }
+.action-buttons .delete-btn { background-color: rgba(255, 107, 107, 0.1); color: var(--accent-red); }
 
 .reorder-cell {
     width: 90px;
@@ -180,9 +185,11 @@ a { text-decoration: none; color: inherit; }
     line-height: 1;
     background-color: var(--bg-canvas);
     border: 1px solid var(--border-color);
+    color: var(--text-secondary);
 }
 .reorder-buttons .button:hover {
-    border-color: var(--text-secondary);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
 }
 .reorder-buttons .button:disabled {
     background-color: var(--bg-canvas);
@@ -209,7 +216,6 @@ a { text-decoration: none; color: inherit; }
     padding: 40px;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
 }
 .login-form h2 {
     text-align: center;
@@ -261,7 +267,7 @@ a { text-decoration: none; color: inherit; }
         align-items: center;
         margin-bottom: 24px;
     }
-    .mobile-logo { font-size: 1.5em; font-weight: 700; }
+    .mobile-logo { font-size: 1.5em; font-weight: 700; color: var(--text-primary); }
     .mobile-logo span { color: var(--accent-primary); }
     .mobile-menu-button {
         display: block;
@@ -270,6 +276,7 @@ a { text-decoration: none; color: inherit; }
         border: none;
         cursor: pointer;
         padding: 0;
+        color: var(--text-primary);
     }
     
     .admin-main { padding: 24px; }
@@ -283,6 +290,7 @@ a { text-decoration: none; color: inherit; }
         border-radius: var(--radius-lg);
         margin-bottom: 16px;
         padding: 16px;
+        background-color: var(--bg-main);
     }
     
     .product-table td {
@@ -324,7 +332,6 @@ a { text-decoration: none; color: inherit; }
     border-radius: 8px;
     overflow: hidden;
     background-color: var(--border-color);
-    box-shadow: var(--shadow-sm);
     cursor: grab;
 }
 
@@ -386,16 +393,17 @@ a { text-decoration: none; color: inherit; }
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0,0,0,0.8);
     justify-content: center;
     align-items: center;
 }
 
 .crop-modal-content {
-    background-color: #fff;
+    background-color: var(--bg-main);
     margin: auto;
     padding: 20px;
     border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
     width: 90%;
     max-width: 800px;
     box-shadow: 0 5px 25px rgba(0,0,0,0.2);

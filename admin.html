@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจัดการ - ปอมปอม บูทีค</title>
+    <title>ระบบจัดการ - ซีซาร์ เคนเนล</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
 
@@ -16,7 +16,7 @@
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
-                        <li><a href="admin.html" class="active">จัดการน้องหมา</a></li>
+                        <li><a href="admin.html" class="active">จัดการสุนัข</a></li>
                         <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
@@ -36,8 +36,8 @@
             </header>
 
             <header class="desktop-header">
-                <h1>จัดการน้องหมา</h1>
-                <a href="add-item.html" class="button button-primary">เพิ่มน้องหมาตัวใหม่</a>
+                <h1>จัดการสุนัข</h1>
+                <a href="add-item.html" class="button button-primary">เพิ่มสุนัขตัวใหม่</a>
             </header>
 
             <div class="admin-card">
@@ -45,9 +45,8 @@
                 <table class="product-table">
                     <thead>
                         <tr>
-                            <!-- MODIFIED: New header for reorder buttons -->
                             <th class="reorder-cell">จัดลำดับ</th>
-                            <th>ข้อมูลน้องหมา</th>
+                            <th>ข้อมูลสุนัข</th>
                             <th>สถานะ</th>
                             <th>ราคา</th>
                             <th>การกระทำ</th>
@@ -61,7 +60,6 @@
         </main>
     </div>
 
-    <!-- REMOVED SortableJS library -->
     <script src="script.js"></script>
 
     <script type="module">
@@ -117,7 +115,7 @@
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
-                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลน้องหมาในระบบ</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลสุนัขในระบบ</td></tr>';
                     return;
                 }
 
@@ -128,7 +126,6 @@
                     const price = (product.price || 0).toLocaleString('th-TH');
                     const details = `${product.breed || ''} (${product.gender || ''}, ${product.color || ''})`;
 
-                    // MODIFIED: Row template with reorder buttons
                     const row = `
                         <tr data-id="${productId}">
                             <td class="reorder-cell" data-label="จัดลำดับ">
@@ -159,7 +156,6 @@
                     tableBody.innerHTML += row;
                 });
 
-                // NEW: Update button states after rendering
                 updateArrowButtonsState();
 
             } catch (error) {
@@ -168,7 +164,6 @@
             }
         };
 
-        // NEW: Function to disable/enable arrow buttons
         const updateArrowButtonsState = () => {
             const rows = document.querySelectorAll('#product-table-body tr');
             rows.forEach((row, index) => {
@@ -179,10 +174,9 @@
             });
         };
 
-        // MODIFIED: This function is now only for saving, not for drag-drop
         const saveNewOrder = async () => {
             const tableBody = document.getElementById('product-table-body');
-            tableBody.style.opacity = '0.5'; // Visual feedback
+            tableBody.style.opacity = '0.5';
 
             const batch = writeBatch(db);
             const rows = tableBody.children;
@@ -206,7 +200,6 @@
             }
         };
 
-        // MODIFIED: Main event listener for all actions
         const tableBody = document.getElementById('product-table-body');
         tableBody.addEventListener('click', async (e) => {
             const button = e.target.closest('button');
@@ -215,27 +208,24 @@
             const currentRow = button.closest('tr');
             if (!currentRow) return;
 
-            // Handle Move Up
             if (button.classList.contains('move-up-btn')) {
                 const prevRow = currentRow.previousElementSibling;
                 if (prevRow) {
-                    prevRow.before(currentRow); // Move row in the DOM
-                    updateArrowButtonsState(); // Update button states
-                    await saveNewOrder(); // Save the new order
+                    prevRow.before(currentRow);
+                    updateArrowButtonsState();
+                    await saveNewOrder();
                 }
             }
 
-            // Handle Move Down
             if (button.classList.contains('move-down-btn')) {
                 const nextRow = currentRow.nextElementSibling;
                 if (nextRow) {
-                    nextRow.after(currentRow); // Move row in the DOM
-                    updateArrowButtonsState(); // Update button states
-                    await saveNewOrder(); // Save the new order
+                    nextRow.after(currentRow);
+                    updateArrowButtonsState();
+                    await saveNewOrder();
                 }
             }
 
-            // Handle Delete
             if (button.classList.contains('delete-btn')) {
                 const productId = button.dataset.id;
                 const productName = button.dataset.name;
@@ -246,7 +236,7 @@
                         button.textContent = 'กำลังลบ...';
                         await deleteDoc(doc(db, "products", productId));
                         currentRow.remove();
-                        updateArrowButtonsState(); // Update states in case first/last item was deleted
+                        updateArrowButtonsState();
                     } catch (error) {
                         console.error("Error deleting document: ", error);
                         alert("เกิดข้อผิดพลาดในการลบข้อมูล");

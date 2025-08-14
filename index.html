@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ปอมปอม บูทีค</title>
+    <title>ซีซาร์ เคนเนล - ฟาร์มสุนัขคุณภาพ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="shop-layout">
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="sidebar-logo">PomPom<span>.</span></div>
+                <div class="sidebar-logo">Cesar<span>.</span></div>
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
-                        <li><a href="index.html" class="active">น้องหมาทั้งหมด</a></li>
+                        <li><a href="index.html" class="active">สุนัขทั้งหมด</a></li>
                         <li><a href="#">เพศผู้</a></li>
                         <li><a href="#">เพศเมีย</a></li>
                         <li><a href="#">เกี่ยวกับเรา</a></li>
@@ -22,31 +22,30 @@
                 </nav>
             </div>
             <div class="sidebar-footer">
-                &copy; 2568 ปอมปอม บูทีค
+                &copy; 2568 ซีซาร์ เคนเนล
                 <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
         
         <main class="main-content">
             <header class="mobile-header">
-                <div class="mobile-logo">PomPom<span>.</span></div>
+                <div class="mobile-logo">Cesar<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
             <section class="hero-section">
                 <div class="hero-image-container">
-                    <!-- ADDED ID to the image -->
-                    <img id="hero-image" src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cover Image">
+                    <!-- USE YOUR NEW LOGO -->
+                    <img id="hero-image" src="cesar-kennel-logo.png" alt="Cesar Kennel Logo">
                 </div>
                 <div class="marquee-container">
-                    <!-- ADDED ID to the marquee text -->
-                    <p id="marquee-text-display" class="marquee-text">✨ น้องหมาสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
+                    <p id="marquee-text-display" class="marquee-text">✨ สุนัขสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
 
             <header class="desktop-header">
-                <h1>เพื่อนคู่ใจแสนน่ารัก</h1>
-                <p>น้องหมาทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
+                <h1>เพื่อนคู่ใจที่ดีที่สุด</h1>
+                <p>สุนัขทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
             </header>
 
             <div class="product-grid" id="product-grid">
@@ -59,10 +58,10 @@
 
     <footer class="site-footer">
         <div class="footer-content">
-            <h3 class="footer-logo">ปอมปอม บูทีค</h3>
-            <p class="footer-description">ฟาร์มปอมเมอเรเนียนเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+            <h3 class="footer-logo">ซีซาร์ เคนเนล</h3>
+            <p class="footer-description">ฟาร์มสุนัขเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
             <div class="footer-contact">
-                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@pompomboutique.com</span>
+                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@cesarkennel.com</span>
             </div>
             <div class="social-links">
                 <a href="#" aria-label="Facebook">FB</a> <a href="#" aria-label="Instagram">IG</a> <a href="#" aria-label="Line">LINE</a>
@@ -101,7 +100,6 @@
             }
         });
 
-        // NEW: Function to load site settings
         const loadSiteSettings = async () => {
             const settingsRef = doc(db, "settings", "siteConfig");
             const docSnap = await getDoc(settingsRef);
@@ -111,6 +109,7 @@
                 const heroImage = document.getElementById('hero-image');
                 const marqueeText = document.getElementById('marquee-text-display');
 
+                // We are using the logo by default, this will override it if set in admin
                 if (data.coverImageUrl && heroImage) {
                     heroImage.src = data.coverImageUrl;
                 }
@@ -122,7 +121,7 @@
 
         const productGrid = document.getElementById('product-grid');
         const fetchAndDisplayProducts = async () => {
-            productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">กำลังโหลดน้องหมา...</p>';
+            productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">กำลังโหลดข้อมูลสุนัข...</p>';
 
             try {
                 const productsRef = collection(db, "products");
@@ -130,7 +129,7 @@
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
-                    productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">ตอนนี้ยังไม่มีน้องหมาพร้อมย้ายบ้านค่ะ</p>';
+                    productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">ตอนนี้ยังไม่มีสุนัขพร้อมย้ายบ้านค่ะ</p>';
                     return;
                 }
                 
@@ -181,7 +180,7 @@
                 <a href="product-detail.html?id=${id}" class="product-card ${isSold ? 'sold-item' : ''}">
                     <div class="card-image-container">
                         <span class="card-status ${statusInfo.class}">${statusInfo.text}</span>
-                        <img src="${product.thumbnailUrl || 'https://via.placeholder.com/400'}" alt="${product.name || 'น้องหมา'}">
+                        <img src="${product.thumbnailUrl || 'https://via.placeholder.com/400'}" alt="${product.name || 'สุนัข'}">
                     </div>
                     <div class="card-content">
                         <h3>${product.name || 'ไม่มีชื่อ'}</h3>

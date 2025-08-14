@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เพิ่ม/แก้ไข ข้อมูลน้องหมา</title>
+    <title>เพิ่ม/แก้ไข ข้อมูลสุนัข</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
                 <nav class="sidebar-nav">
                     <h3>เมนูหลัก</h3>
                     <ul>
-                        <li><a href="admin.html" class="active">จัดการน้องหมา</a></li>
+                        <li><a href="admin.html" class="active">จัดการสุนัข</a></li>
                         <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
@@ -34,7 +34,7 @@
             </header>
 
             <header class="desktop-header">
-                <h1 id="page-title">เพิ่มข้อมูลน้องหมา</h1>
+                <h1 id="page-title">เพิ่มข้อมูลสุนัข</h1>
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
@@ -42,7 +42,7 @@
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
                     <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" required></div>
-                    <div class="input-group"><label for="breed">สายพันธุ์</label><input type="text" id="breed" name="breed" value="ปอมเมอเรเนียน" required></div>
+                    <div class="input-group"><label for="breed">สายพันธุ์</label><input type="text" id="breed" name="breed" value="ไซบีเรียน ฮัสกี้" required></div>
                     <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age" required></div>
                     <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" name="price" required></div>
                     <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
@@ -82,7 +82,6 @@
                     <label for="image_upload">อัปโหลดรูปภาพใหม่</label>
                     <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*">
                 </div>
-                <!-- NEW: Container for image previews -->
                 <div id="image-preview-container" class="image-preview-container">
                     <!-- Previews will be generated here -->
                 </div>
@@ -116,7 +115,6 @@
         const auth = getAuth(app);
         const IMG_BB_API_KEY = '2c1b183962c1d06f8aecea08cbc78d11';
 
-        // --- Auth & Logout ---
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
         document.getElementById('logout-button')?.addEventListener('click', (e) => {
             e.preventDefault();
@@ -126,7 +124,6 @@
             });
         });
 
-        // --- DOM Elements ---
         const form = document.querySelector('form.admin-card');
         const pageTitle = document.getElementById('page-title');
         const imageInput = document.getElementById('image_upload');
@@ -134,19 +131,15 @@
         const urlParams = new URLSearchParams(window.location.search);
         const itemId = urlParams.get('id');
 
-        // --- State Management for Images ---
-        // Use a Map to store new File objects, keyed by a unique identifier (timestamp + filename)
         const newFilesMap = new Map();
 
-        // --- Image Preview & Sorting Logic ---
         const createPreviewElement = (id, src, isExisting = false) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'image-preview-item';
-            wrapper.dataset.id = id; // Unique ID for both new and existing images
+            wrapper.dataset.id = id;
             if (isExisting) {
-                wrapper.dataset.url = src; // Store original URL for existing images
+                wrapper.dataset.url = src;
             }
-
             wrapper.innerHTML = `
                 <span class="drag-handle">☰</span>
                 <img src="${src}" alt="Image preview">
@@ -166,7 +159,7 @@
                 };
                 reader.readAsDataURL(file);
             }
-            e.target.value = ''; // Reset input to allow selecting the same file again
+            e.target.value = '';
         });
 
         previewContainer.addEventListener('click', (e) => {
@@ -174,22 +167,20 @@
                 const wrapper = e.target.closest('.image-preview-item');
                 if (wrapper) {
                     const id = wrapper.dataset.id;
-                    newFilesMap.delete(id); // Remove from new files map if it exists there
+                    newFilesMap.delete(id);
                     wrapper.remove();
                 }
             }
         });
 
-        // Initialize SortableJS on the preview container
         new Sortable(previewContainer, {
             animation: 150,
             handle: '.drag-handle',
             ghostClass: 'sortable-ghost'
         });
 
-        // --- Form Population (for Edit Mode) ---
         const populateForm = async (id) => {
-            pageTitle.textContent = 'แก้ไขข้อมูลน้องหมา';
+            pageTitle.textContent = 'แก้ไขข้อมูลสุนัข';
             const docRef = doc(db, 'products', id);
             const docSnap = await getDoc(docRef);
 
@@ -207,14 +198,13 @@
                 document.getElementById('status').value = data.status || 'available';
                 document.getElementById('description').value = data.description || '';
 
-                // Populate existing images
                 if (data.imageUrls && Array.isArray(data.imageUrls)) {
                     data.imageUrls.forEach(url => {
-                        createPreviewElement(url, url, true); // Use URL as ID for existing
+                        createPreviewElement(url, url, true);
                     });
                 }
             } else {
-                alert('ไม่พบข้อมูลน้องหมา');
+                alert('ไม่พบข้อมูลสุนัข');
                 window.location.href = 'admin.html';
             }
         };
@@ -223,7 +213,6 @@
             populateForm(itemId);
         }
 
-        // --- Form Submission Logic ---
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitButton = form.querySelector('button[type="submit"]');
@@ -231,34 +220,46 @@
             submitButton.textContent = 'กำลังบันทึก...';
 
             try {
-                // Step 1: Get the final sorted order of all images from the DOM
                 const previewItems = Array.from(previewContainer.querySelectorAll('.image-preview-item'));
 
-                // Step 2: Process all images (existing and new) in parallel
                 const uploadPromises = previewItems.map(item => {
                     const { id, url } = item.dataset;
-                    // If it's an existing image (has a data-url), just return its URL
                     if (url) {
                         return Promise.resolve(url);
                     }
-                    // If it's a new image, upload it and return the new URL
+                    
                     const file = newFilesMap.get(id);
                     if (file) {
-                        const formData = new FormData();
-                        formData.append('image', file);
-                        return fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: formData })
-                            .then(res => res.json())
-                            .then(result => {
-                                if (result.success) return result.data.url;
-                                throw new Error(`Image upload failed for ${file.name}`);
-                            });
+                        return new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                const base64String = reader.result.split(',')[1];
+                                const body = new URLSearchParams();
+                                body.append('image', base64String);
+
+                                fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, {
+                                    method: 'POST',
+                                    body: body
+                                })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        resolve(result.data.url);
+                                    } else {
+                                        reject(new Error(result.error?.message || `Upload failed for ${file.name}`));
+                                    }
+                                })
+                                .catch(reject);
+                            };
+                            reader.onerror = error => reject(error);
+                            reader.readAsDataURL(file);
+                        });
                     }
-                    return Promise.resolve(null); // Should not happen
+                    return Promise.resolve(null);
                 });
 
-                const finalImageUrls = (await Promise.all(uploadPromises)).filter(Boolean); // Wait for all uploads and filter out nulls
+                const finalImageUrls = (await Promise.all(uploadPromises)).filter(Boolean);
 
-                // Step 3: Prepare product data for Firestore
                 const productData = {
                     name: document.getElementById('name').value,
                     breed: document.getElementById('breed').value,
@@ -276,19 +277,18 @@
                     thumbnailUrl: finalImageUrls.length > 0 ? finalImageUrls[0] : ''
                 };
 
-                // Step 4: Save to Firestore
-                if (itemId) { // Update existing item
+                if (itemId) {
                     const docRef = doc(db, 'products', itemId);
                     await updateDoc(docRef, productData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
-                } else { // Add new item
-                    const q = query(collection(db, "products"), orderBy("orderPosition", "asc"), limit(1));
+                } else {
+                    const q = query(collection(db, "products"), orderBy("orderPosition", "desc"), limit(1));
                     const querySnapshot = await getDocs(q);
-                    const firstPosition = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().orderPosition;
-                    productData.orderPosition = (firstPosition || 0) - 1;
+                    const lastPosition = querySnapshot.empty ? -1 : querySnapshot.docs[0].data().orderPosition;
+                    productData.orderPosition = (lastPosition ?? -1) + 1;
                     productData.createdAt = serverTimestamp();
                     await addDoc(collection(db, 'products'), productData);
-                    alert('เพิ่มน้องหมาสำเร็จ!');
+                    alert('เพิ่มสุนัขสำเร็จ!');
                 }
                 window.location.href = 'admin.html';
 
