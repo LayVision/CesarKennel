@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Product Detail Gallery ---
-    // Manages the image gallery on the product-detail.html page.
+    // This logic is now correctly handled in the product-detail.html file's module script 
+    // to ensure it runs only after the dynamic gallery has been created.
+    // The code here is being left as a fallback but is technically redundant.
     const mainImage = document.getElementById('mainImage');
     const thumbnails = document.querySelectorAll('.detail-thumbnails img');
     if (mainImage && thumbnails.length) {
@@ -39,74 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // It is now handled directly on the relevant pages (login.html, add-item.html, etc.)
     // using Firebase Authentication SDKs.
 
-    // --- URL-BASED PAGINATION LOGIC ---
-    const productGrid = document.getElementById('product-grid');
-    const paginationContainer = document.getElementById('pagination');
+    // --- PAGINATION LOGIC REMOVED ---
+    // The URL-based pagination logic has been removed from this global script.
+    // The correct, functioning pagination logic is now exclusively located inside the 
+    // <script type="module"> tag in 'index.html'. This ensures that pagination is 
+    // only initialized *after* the product data has been fetched from Firebase, 
+    // preventing conflicts and ensuring the correct number of pages is always calculated.
 
-    if (productGrid && paginationContainer) {
-        const itemsPerPage = 6;
-        const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
-        const totalPages = Math.ceil(allItems.length / itemsPerPage);
-
-        function displayPage(page) {
-            page = Math.max(1, Math.min(page, totalPages));
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            allItems.forEach(item => item.style.display = 'none');
-            allItems.slice(startIndex, endIndex).forEach(item => item.style.display = 'block');
-            
-            paginationContainer.innerHTML = '';
-            if (totalPages <= 1) return;
-
-            const prevButton = document.createElement('a');
-            prevButton.classList.add('page-btn');
-            prevButton.textContent = 'ก่อนหน้า';
-            prevButton.href = `?page=${page - 1}`;
-            if (page === 1) { prevButton.classList.add('disabled'); }
-            paginationContainer.appendChild(prevButton);
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('a');
-                pageButton.classList.add('page-btn');
-                pageButton.textContent = i;
-                pageButton.href = (i === 1) ? window.location.pathname.split('?')[0] : `?page=${i}`;
-                if (i === page) { pageButton.classList.add('active'); }
-                paginationContainer.appendChild(pageButton);
-            }
-
-            const nextButton = document.createElement('a');
-            nextButton.classList.add('page-btn');
-            nextButton.textContent = 'ถัดไป';
-            nextButton.href = `?page=${page + 1}`;
-             if (page === totalPages) { nextButton.classList.add('disabled'); }
-            paginationContainer.appendChild(nextButton);
-        }
-
-        function handleNavigation(e) {
-            const target = e.target.closest('.page-btn');
-            if (!target || target.classList.contains('active') || target.classList.contains('disabled')) {
-                e.preventDefault(); return;
-            }
-            e.preventDefault();
-            const url = new URL(target.href);
-            const page = parseInt(url.searchParams.get('page')) || 1;
-            history.pushState({page: page}, '', target.href);
-            displayPage(page);
-        }
-
-        paginationContainer.addEventListener('click', handleNavigation);
-        
-        window.addEventListener('popstate', (e) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const page = parseInt(urlParams.get('page')) || 1;
-            displayPage(page);
-        });
-
-        const initialUrlParams = new URLSearchParams(window.location.search);
-        const initialPage = parseInt(initialUrlParams.get('page')) || 1;
-        displayPage(initialPage);
-    }
-
-    // NOTE: The drag-and-drop sorting logic for the admin table has been removed from this file.
+    // NOTE: The drag-and-drop sorting logic for the admin table has also been removed.
     // It is now correctly handled exclusively within admin.html to prevent conflicts.
 });
