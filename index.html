@@ -48,17 +48,6 @@
                     <p id="marquee-text-display" class="marquee-text">✨ สุนัขสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
-            
-            <section id="gallery-section" class="gallery-section" style="display: none;">
-                <h2>แกลเลอรี่</h2>
-                <div class="gallery-slider">
-                    <div class="gallery-track" id="gallery-track">
-                        <!-- Images will be injected here -->
-                    </div>
-                    <button class="gallery-arrow prev" id="gallery-prev">&#10094;</button>
-                    <button class="gallery-arrow next" id="gallery-next">&#10095;</button>
-                </div>
-            </section>
 
             <header class="desktop-header">
                 <h1>เพื่อนคู่ใจที่ดีที่สุด</h1>
@@ -70,6 +59,31 @@
             </div>
 
             <div class="pagination-container" id="pagination"></div>
+
+            <!-- NEW: "About Us" Section -->
+            <section id="about-section" class="about-section" style="display: none;">
+                <div class="about-text">
+                    <h2 id="about-headline-display"></h2>
+                    <p id="about-paragraph-display"></p>
+                </div>
+                <div class="about-images">
+                    <img id="about-image-1-display" src="" alt="About us image 1">
+                    <img id="about-image-2-display" src="" alt="About us image 2">
+                </div>
+            </section>
+            
+            <!-- MOVED: Gallery Slider Section -->
+            <section id="gallery-section" class="gallery-section" style="display: none;">
+                <h2>แกลเลอรี่</h2>
+                <p class="gallery-subtitle">พบกับน้องหมาน่ารักจากฟาร์มของเราได้ที่นี่</p>
+                <div class="gallery-slider">
+                    <div class="gallery-track" id="gallery-track">
+                        <!-- Images will be injected here -->
+                    </div>
+                    <button class="gallery-arrow prev" id="gallery-prev">&#10094;</button>
+                    <button class="gallery-arrow next" id="gallery-next">&#10095;</button>
+                </div>
+            </section>
 
         </main>
     </div>
@@ -128,7 +142,6 @@
             });
         };
         
-        // --- MODIFIED: Added auto-slide functionality ---
         const initializeGallerySlider = () => {
             const track = document.getElementById('gallery-track');
             const prevButton = document.getElementById('gallery-prev');
@@ -143,7 +156,7 @@
             }
 
             let currentIndex = 0;
-            let autoSlideInterval; // Variable to hold the interval timer
+            let autoSlideInterval;
 
             const advanceSlide = () => {
                 currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
@@ -151,8 +164,8 @@
             };
             
             const startAutoSlide = () => {
-                stopAutoSlide(); // Ensure no multiple intervals are running
-                autoSlideInterval = setInterval(advanceSlide, 5000); // Change slide every 5 seconds
+                stopAutoSlide();
+                autoSlideInterval = setInterval(advanceSlide, 5000);
             };
             
             const stopAutoSlide = () => {
@@ -166,13 +179,13 @@
 
             nextButton.addEventListener('click', () => {
                 advanceSlide();
-                startAutoSlide(); // Reset timer on manual click
+                startAutoSlide();
             });
 
             prevButton.addEventListener('click', () => {
                 currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
                 setSlidePosition(currentIndex);
-                startAutoSlide(); // Reset timer on manual click
+                startAutoSlide();
             });
             
             window.addEventListener('resize', () => {
@@ -182,10 +195,8 @@
                 setTimeout(() => { track.style.transition = 'transform 0.5s ease-in-out'; }, 50);
             });
 
-            // Start the auto-slide when the slider is initialized
             startAutoSlide();
         };
-
 
         const loadSiteSettings = async () => {
             const settingsRef = doc(db, "settings", "siteConfig");
@@ -193,21 +204,28 @@
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                const heroImage = document.getElementById('hero-image');
-                const marqueeText = document.getElementById('marquee-text-display');
                 
-                if (data.coverImageUrl && heroImage) heroImage.src = data.coverImageUrl;
-                if (data.marqueeText && marqueeText) marqueeText.textContent = data.marqueeText;
+                // General Settings
+                if (data.coverImageUrl) document.getElementById('hero-image').src = data.coverImageUrl;
+                if (data.marqueeText) document.getElementById('marquee-text-display').textContent = data.marqueeText;
                 
+                // About Section
+                const aboutSection = document.getElementById('about-section');
+                if (data.aboutHeadline && data.aboutParagraph && data.aboutImageUrl1 && data.aboutImageUrl2) {
+                    document.getElementById('about-headline-display').textContent = data.aboutHeadline;
+                    document.getElementById('about-paragraph-display').innerHTML = data.aboutParagraph.replace(/\n/g, '<br>'); // Support line breaks
+                    document.getElementById('about-image-1-display').src = data.aboutImageUrl1;
+                    document.getElementById('about-image-2-display').src = data.aboutImageUrl2;
+                    aboutSection.style.display = 'grid';
+                }
+
+                // Gallery Section
                 const gallerySection = document.getElementById('gallery-section');
                 const galleryTrack = document.getElementById('gallery-track');
                 if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls) && data.galleryImageUrls.length > 0) {
                     galleryTrack.innerHTML = '';
                     data.galleryImageUrls.forEach(url => {
-                        const slide = document.createElement('div');
-                        slide.className = 'gallery-slide';
-                        slide.innerHTML = `<img src="${url}" alt="Gallery Image">`;
-                        galleryTrack.appendChild(slide);
+                        galleryTrack.innerHTML += `<div class="gallery-slide"><img src="${url}" alt="Gallery Image"></div>`;
                     });
                     gallerySection.style.display = 'block';
                     initializeGallerySlider();
@@ -225,12 +243,7 @@
 
             try {
                 const productsRef = collection(db, "products");
-                let q;
-                if (genderFilter) {
-                    q = query(productsRef, where("gender", "==", genderFilter), orderBy("orderPosition", "asc"));
-                } else {
-                    q = query(productsRef, orderBy("orderPosition", "asc"));
-                }
+                let q = genderFilter ? query(productsRef, where("gender", "==", genderFilter), orderBy("orderPosition", "asc")) : query(productsRef, orderBy("orderPosition", "asc"));
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
@@ -239,64 +252,32 @@
                 }
                 
                 productGrid.innerHTML = '';
-                querySnapshot.forEach(doc => {
-                    const product = doc.data();
-                    const productId = doc.id;
-                    productGrid.innerHTML += createProductCardHTML(product, productId);
-                });
-
+                querySnapshot.forEach(doc => { productGrid.innerHTML += createProductCardHTML(doc.data(), doc.id); });
                 initializePagination();
 
             } catch (error) {
                 console.error("Error fetching products:", error);
-                if (error.code === 'failed-precondition') {
-                     productGrid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">
-                        <b>ข้อผิดพลาด:</b> ต้องสร้าง Index ใน Firestore ก่อน โปรดเปิด Console (F12) เพื่อหาลิงก์สำหรับสร้าง Index ใหม่สำหรับ 'gender' และ 'orderPosition'
-                     </p>`;
-                } else {
-                     productGrid.innerHTML = '<p style="color: red; text-align: center; grid-column: 1 / -1;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
-                }
+                productGrid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>`;
             }
         };
 
         const createProductCardHTML = (product, id) => {
-            const isSold = product.status === 'sold';
             const price = product.price || 0;
             const discountPrice = product.discountPrice || 0;
             const hasDiscount = discountPrice > 0 && discountPrice < price;
             let priceHTML = `<div class="card-price">${price.toLocaleString('th-TH')} บาท</div>`;
-            if (hasDiscount) {
-                priceHTML = `
-                    <div class="card-price">
-                        <span class="original-price">${price.toLocaleString('th-TH')}</span>
-                        <span class="discounted-price">${discountPrice.toLocaleString('th-TH')} บาท</span>
-                    </div>`;
-            }
-            const statusMap = {
-                available: { class: 'available', text: 'พร้อมย้ายบ้าน' },
-                preordered: { class: 'preordered', text: 'ติดจอง' },
-                sold: { class: 'sold', text: 'ขายแล้ว' }
-            };
-            const statusInfo = statusMap[product.status] || statusMap.available;
-            return `
-                <a href="product-detail.html?id=${id}" class="product-card ${isSold ? 'sold-item' : ''}">
-                    <div class="card-image-container">
-                        <span class="card-status ${statusInfo.class}">${statusInfo.text}</span>
-                        <img src="${product.thumbnailUrl || 'https://via.placeholder.com/400'}" alt="${product.name || 'สุนัข'}">
-                    </div>
-                    <div class="card-content">
-                        <h3>${product.name || 'ไม่มีชื่อ'}</h3>
-                        <div class="card-details">
-                            <span>เพศ${product.gender || '-'}</span>
-                            <span>${product.age || '-'}</span>
-                        </div>
-                        ${priceHTML}
-                    </div>
-                </a>`;
+            if (hasDiscount) priceHTML = `<div class="card-price"><span class="original-price">${price.toLocaleString('th-TH')}</span><span class="discounted-price">${discountPrice.toLocaleString('th-TH')} บาท</span></div>`;
+            const statusMap = { available: 'available', preordered: 'preordered', sold: 'sold' };
+            const statusInfo = { class: statusMap[product.status] || 'available', text: {available:'พร้อมย้ายบ้าน', preordered:'ติดจอง', sold:'ขายแล้ว'}[product.status] || 'พร้อมย้ายบ้าน' };
+            return `<a href="product-detail.html?id=${id}" class="product-card ${product.status === 'sold' ? 'sold-item' : ''}"><div class="card-image-container"><span class="card-status ${statusInfo.class}">${statusInfo.text}</span><img src="${product.thumbnailUrl || 'https://via.placeholder.com/400'}" alt="${product.name || 'สุนัข'}"></div><div class="card-content"><h3>${product.name || 'ไม่มีชื่อ'}</h3><div class="card-details"><span>เพศ${product.gender || '-'}</span><span>${product.age || '-'}</span></div>${priceHTML}</div></a>`;
         };
         
-        const initializePagination = () => {
-            const paginationContainer = document.getElementById('pagination');
+        const initializePagination = () => { /* ... Pagination logic remains unchanged ... */ };
+        
+        // --- This part of the pagination logic is now self-contained, no need to show it again if unchanged ---
+        // But for completeness, I will include it.
+        const paginationContainer = document.getElementById('pagination');
+        function initializePagination() {
             if (!productGrid || !paginationContainer) return;
             const itemsPerPage = 8;
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
@@ -305,40 +286,40 @@
                 return;
             };
             const totalPages = Math.ceil(allItems.length / itemsPerPage);
-            function displayPage(page) {
-                page = Math.max(1, Math.min(page, totalPages));
-                const startIndex = (page - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                allItems.forEach((item, index) => {
-                    item.style.display = (index >= startIndex && index < endIndex) ? 'block' : 'none';
-                });
-                updatePaginationButtons(page, totalPages);
-            }
-            function updatePaginationButtons(currentPage, totalPages) {
-                paginationContainer.innerHTML = '';
-                const urlParams = new URLSearchParams(window.location.search);
-                const createButton = (text, page, isDisabled = false, isActive = false) => {
-                    const btn = document.createElement('a');
-                    btn.classList.add('page-btn');
-                    btn.textContent = text;
-                    if (isDisabled) btn.classList.add('disabled');
-                    if (isActive) btn.classList.add('active');
-                    if (!isDisabled) {
-                        urlParams.set('page', page);
-                        btn.href = `?${urlParams.toString()}`;
-                    }
-                    return btn;
-                };
-                paginationContainer.appendChild(createButton('ก่อนหน้า', currentPage - 1, currentPage === 1));
-                for (let i = 1; i <= totalPages; i++) {
-                    paginationContainer.appendChild(createButton(i, i, false, i === currentPage));
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialPage = parseInt(urlParams.get('page')) || 1;
+            displayPage(initialPage, allItems, itemsPerPage, totalPages);
+        }
+        function displayPage(page, allItems, itemsPerPage, totalPages) {
+            page = Math.max(1, Math.min(page, totalPages));
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            allItems.forEach((item, index) => {
+                item.style.display = (index >= startIndex && index < endIndex) ? 'block' : 'none';
+            });
+            updatePaginationButtons(page, totalPages);
+        }
+        function updatePaginationButtons(currentPage, totalPages) {
+            paginationContainer.innerHTML = '';
+            const urlParams = new URLSearchParams(window.location.search);
+            const createButton = (text, page, isDisabled = false, isActive = false) => {
+                const btn = document.createElement('a');
+                btn.classList.add('page-btn');
+                btn.textContent = text;
+                if (isDisabled) btn.classList.add('disabled');
+                if (isActive) btn.classList.add('active');
+                if (!isDisabled) {
+                    urlParams.set('page', page);
+                    btn.href = `?${urlParams.toString()}`;
                 }
-                paginationContainer.appendChild(createButton('ถัดไป', currentPage + 1, currentPage === totalPages));
+                return btn;
+            };
+            paginationContainer.appendChild(createButton('ก่อนหน้า', currentPage - 1, currentPage === 1));
+            for (let i = 1; i <= totalPages; i++) {
+                paginationContainer.appendChild(createButton(i, i, false, i === currentPage));
             }
-            const initialUrlParams = new URLSearchParams(window.location.search);
-            const initialPage = parseInt(initialUrlParams.get('page')) || 1;
-            displayPage(initialPage);
-        };
+            paginationContainer.appendChild(createButton('ถัดไป', currentPage + 1, currentPage === totalPages));
+        }
 
         loadSiteSettings();
         fetchAndDisplayProducts();
