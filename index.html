@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ซีซาร์ เคนเนล - ฟาร์มสุนัขคุณภาพ</title>
     <link rel="stylesheet" href="style.css">
+    <!-- NEW: Added TikTok embed script directly to the head -->
+    <script async src="https://www.tiktok.com/embed.js"></script>
 </head>
 <body>
     <div class="shop-layout">
@@ -124,31 +126,27 @@
             });
         };
 
-        // --- NEW: Function to load and trigger the TikTok embed script ---
-        function loadAndRenderTikTok() {
-            // Check if the TikTok script is already loaded and ready
+        // --- NEW: More robust function to render TikTok embeds by polling ---
+        function renderTikTokEmbeds() {
+            // Check if the TikTok object is ready
             if (window.tiktok && typeof window.tiktok.embed.render === 'function') {
                 window.tiktok.embed.render();
                 return;
             }
 
-            // If not, find or create the script tag
-            let script = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
-            if (!script) {
-                script = document.createElement('script');
-                script.src = 'https://www.tiktok.com/embed.js';
-                script.async = true;
-                document.body.appendChild(script);
-                
-                // When the new script loads, it will automatically render.
-                // If it was already on the page but not ready, we add an onload
-                // handler to be safe.
-                script.onload = () => {
-                    if (window.tiktok && typeof window.tiktok.embed.render === 'function') {
-                         window.tiktok.embed.render();
-                    }
-                };
-            }
+            // If not ready, poll every 100ms for a few seconds
+            let attempts = 0;
+            const interval = setInterval(() => {
+                attempts++;
+                // Check again if the function is now available
+                if (window.tiktok && typeof window.tiktok.embed.render === 'function') {
+                    clearInterval(interval); // Stop polling
+                    window.tiktok.embed.render(); // Render the embeds
+                } else if (attempts > 50) { // Give up after 5 seconds
+                    clearInterval(interval);
+                    console.error("TikTok embed script failed to initialize in time.");
+                }
+            }, 100);
         }
 
 
@@ -193,8 +191,8 @@
 
                     if (tiktokGrid.childElementCount > 0) {
                         if(tiktokSection) tiktokSection.style.display = 'block';
-                        // --- MODIFIED: Trigger the TikTok script render function ---
-                        loadAndRenderTikTok();
+                        // --- MODIFIED: Call the new, more robust render function ---
+                        renderTikTokEmbeds();
                     }
                 }
             }
