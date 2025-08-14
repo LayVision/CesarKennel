@@ -11,12 +11,13 @@
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Cesar<span>.</span></div>
+                <!-- MODIFIED: Menu links now have functional hrefs and data-filter attributes -->
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
-                        <li><a href="index.html" class="active">สุนัขทั้งหมด</a></li>
-                        <li><a href="#">เพศผู้</a></li>
-                        <li><a href="#">เพศเมีย</a></li>
+                        <li><a href="index.html" data-filter="all">สุนัขทั้งหมด</a></li>
+                        <li><a href="index.html?gender=ผู้" data-filter="ผู้">เพศผู้</a></li>
+                        <li><a href="index.html?gender=เมีย" data-filter="เมีย">เพศเมีย</a></li>
                         <li><a href="#">เกี่ยวกับเรา</a></li>
                     </ul>
                 </nav>
@@ -80,7 +81,8 @@
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        // MODIFIED: Added 'where' to imports
+        import { getFirestore, collection, query, where, orderBy, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
@@ -106,6 +108,17 @@
             }
         });
 
+        // NEW: Function to update the active state of menu links
+        const updateActiveMenu = (filter) => {
+            const menuLinks = document.querySelectorAll('.sidebar-nav a[data-filter]');
+            menuLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.filter === filter) {
+                    link.classList.add('active');
+                }
+            });
+        };
+
         const loadSiteSettings = async () => {
             const settingsRef = doc(db, "settings", "siteConfig");
             const docSnap = await getDoc(settingsRef);
@@ -127,14 +140,31 @@
         const productGrid = document.getElementById('product-grid');
         const fetchAndDisplayProducts = async () => {
             productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">กำลังโหลดข้อมูลสุนัข...</p>';
+            
+            // MODIFIED: Read gender filter from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const genderFilter = urlParams.get('gender');
+
+            // Set the correct active menu item
+            updateActiveMenu(genderFilter || 'all');
 
             try {
                 const productsRef = collection(db, "products");
-                const q = query(productsRef, orderBy("orderPosition", "asc"));
+                let q;
+
+                // MODIFIED: Build the query based on the filter
+                if (genderFilter) {
+                    // Query for a specific gender
+                    q = query(productsRef, where("gender", "==", genderFilter), orderBy("orderPosition", "asc"));
+                } else {
+                    // Default query for all dogs
+                    q = query(productsRef, orderBy("orderPosition", "asc"));
+                }
+
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
-                    productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">ตอนนี้ยังไม่มีสุนัขพร้อมย้ายบ้านค่ะ</p>';
+                    productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">ตอนนี้ยังไม่มีสุนัขตรงตามเงื่อนไขค่ะ</p>';
                     return;
                 }
                 
@@ -151,7 +181,7 @@
                 console.error("Error fetching products:", error);
                 if (error.code === 'failed-precondition') {
                      productGrid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">
-                        <b>ข้อผิดพลาด:</b> ต้องสร้าง Index ใน Firestore ก่อน โปรดเปิด Console (F12) เพื่อหาลิงก์สำหรับสร้าง Index ใหม่สำหรับ 'orderPosition'
+                        <b>ข้อผิดพลาด:</b> ต้องสร้าง Index ใน Firestore ก่อน โปรดเปิด Console (F12) เพื่อหาลิงก์สำหรับสร้าง Index ใหม่สำหรับ 'gender' และ 'orderPosition'
                      </p>`;
                 } else {
                      productGrid.innerHTML = '<p style="color: red; text-align: center; grid-column: 1 / -1;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
@@ -202,7 +232,6 @@
             const paginationContainer = document.getElementById('pagination');
             if (!productGrid || !paginationContainer) return;
 
-            // MODIFIED: Set items per page to 8 (4 columns x 2 rows)
             const itemsPerPage = 8;
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
@@ -221,15 +250,12 @@
                 });
                 
                 updatePaginationButtons(page, totalPages);
-                if (history.state?.page !== page) {
-                    const url = new URL(window.location);
-                    url.searchParams.set('page', page);
-                    history.pushState({page: page}, '', url);
-                }
+                // Don't modify history for gender filter pages to keep base URL clean for pagination
             }
 
             function updatePaginationButtons(currentPage, totalPages) {
                 paginationContainer.innerHTML = '';
+                const urlParams = new URLSearchParams(window.location.search);
 
                 const createButton = (text, page, isDisabled = false, isActive = false) => {
                     const btn = document.createElement('a');
@@ -237,12 +263,11 @@
                     btn.textContent = text;
                     if (isDisabled) btn.classList.add('disabled');
                     if (isActive) btn.classList.add('active');
+                    
                     if (!isDisabled) {
-                        btn.href = `?page=${page}`;
-                        btn.addEventListener('click', e => {
-                            e.preventDefault();
-                            displayPage(page);
-                        });
+                        urlParams.set('page', page);
+                        btn.href = `?${urlParams.toString()}`;
+                        // We let the page reload for filtered views to ensure simplicity
                     }
                     return btn;
                 };
@@ -256,11 +281,6 @@
                 paginationContainer.appendChild(createButton('ถัดไป', currentPage + 1, currentPage === totalPages));
             }
             
-            window.onpopstate = (e) => {
-                const page = e.state?.page || 1;
-                displayPage(page);
-            };
-
             const initialUrlParams = new URLSearchParams(window.location.search);
             const initialPage = parseInt(initialUrlParams.get('page')) || 1;
             displayPage(initialPage);

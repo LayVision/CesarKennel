@@ -8,15 +8,17 @@
 </head>
 <body>
     <div class="shop-layout">
+        <!-- Main layout grid, consistent with index.html -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Cesar<span>.</span></div>
+                <!-- MODIFIED: Menu links now point back to the filtered index page -->
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
                         <li><a href="index.html">สุนัขทั้งหมด</a></li>
-                        <li><a href="#">เพศผู้</a></li>
-                        <li><a href="#">เพศเมีย</a></li>
+                        <li><a href="index.html?gender=ผู้">เพศผู้</a></li>
+                        <li><a href="index.html?gender=เมีย">เพศเมีย</a></li>
                         <li><a href="#">เกี่ยวกับเรา</a></li>
                     </ul>
                 </nav>
@@ -27,18 +29,22 @@
             </div>
         </aside>
         
+        <!-- Main content area -->
         <main class="main-content" id="main-content">
+            <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">Cesar<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
+            <!-- Grid layout for product details, content will be loaded here -->
             <div class="product-detail-grid" id="product-detail-container">
                 <!-- Loading message or dynamic content appears here -->
             </div>
         </main>
-    </div>
+    </div> <!-- End of .shop-layout -->
 
+    <!-- Main site footer -->
     <footer class="site-footer">
         <div class="footer-content">
             <h3 class="footer-logo">ซีซาร์ เคนเนล</h3>
@@ -54,13 +60,16 @@
         </div>
     </footer>
 
+    <!-- Link to the global JavaScript file -->
     <script src="script.js"></script>
 
+    <!-- Main Firebase Logic for this page -->
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
+        // --- Firebase Initialization ---
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -74,6 +83,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // --- Manage Admin Link in Sidebar ---
         const authLink = document.getElementById('auth-link');
         onAuthStateChanged(auth, user => {
             if (user) {
@@ -85,6 +95,7 @@
             }
         });
         
+        // --- Main function to fetch and display product details ---
         const container = document.getElementById('product-detail-container');
         const fetchProductDetails = async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -114,9 +125,12 @@
             }
         };
 
+        // --- Helper function to populate the DOM ---
         const displayProductDetails = (product) => {
+            // Set Page Title
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
             
+            // Button HTML
             let buttonHTML;
             if (product.status === 'sold') {
                 buttonHTML = `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`;
@@ -124,6 +138,7 @@
                  buttonHTML = `<button class="add-to-cart-button">ติดต่อเพื่อจอง</button>`;
             }
             
+            // Price HTML
             const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
             let priceHTML = `<span class="discounted-price">${product.price.toLocaleString('th-TH')} บาท</span>`;
             if (hasDiscount) {
@@ -133,6 +148,7 @@
                 `;
             }
 
+            // Image Gallery HTML
             let thumbnailsHTML = '';
             if (product.imageUrls && product.imageUrls.length > 0) {
                 product.imageUrls.forEach((url, index) => {
@@ -173,6 +189,7 @@
             initializeGalleryListeners();
         };
         
+        // --- Function to make the image gallery interactive ---
         const initializeGalleryListeners = () => {
             const mainImage = document.getElementById('mainImage');
             const thumbnails = document.querySelectorAll('#thumbnail-container img');
@@ -190,6 +207,7 @@
             }
         }
 
+        // --- Run everything on page load ---
         fetchProductDetails();
     </script>
 </body>
