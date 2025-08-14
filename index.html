@@ -60,7 +60,6 @@
 
             <div class="pagination-container" id="pagination"></div>
             
-            <!-- MODIFIED: Gallery section moved here, below the product grid -->
             <section id="gallery-section" class="gallery-section" style="display: none;">
                 <h2>แกลเลอรี่</h2>
                 <div class="gallery-slider">
@@ -297,7 +296,12 @@
         const initializePagination = () => {
             const paginationContainer = document.getElementById('pagination');
             if (!productGrid || !paginationContainer) return;
-            const itemsPerPage = 8;
+
+            // --- MODIFIED: Dynamic items per page based on screen width ---
+            // On screens 768px wide or more (like iPads), show 9 items. Otherwise, show 8.
+            const isTabletOrWider = window.matchMedia("(min-width: 768px)").matches;
+            const itemsPerPage = isTabletOrWider ? 9 : 8;
+
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
                 paginationContainer.innerHTML = '';

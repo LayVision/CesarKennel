@@ -312,6 +312,13 @@ a { text-decoration: none; color: inherit; }
 /* ======== 8. RESPONSIVE DESIGN ======== */
 .mobile-header, .mobile-menu-button { display: none; }
 
+/* MODIFIED: Added a specific rule for tablet-sized screens to force a 3-column grid */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 1024px) {
     .shop-layout { grid-template-columns: 1fr; min-height: auto; }
     .sidebar {
