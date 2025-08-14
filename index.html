@@ -49,17 +49,6 @@
                 </div>
             </section>
             
-            <section id="gallery-section" class="gallery-section" style="display: none;">
-                <h2>แกลเลอรี่</h2>
-                <div class="gallery-slider">
-                    <div class="gallery-track" id="gallery-track">
-                        <!-- Images will be injected here -->
-                    </div>
-                    <button class="gallery-arrow prev" id="gallery-prev">&#10094;</button>
-                    <button class="gallery-arrow next" id="gallery-next">&#10095;</button>
-                </div>
-            </section>
-
             <header class="desktop-header">
                 <h1>เพื่อนคู่ใจที่ดีที่สุด</h1>
                 <p>สุนัขทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
@@ -70,6 +59,18 @@
             </div>
 
             <div class="pagination-container" id="pagination"></div>
+            
+            <!-- MODIFIED: Gallery section moved here, below the product grid -->
+            <section id="gallery-section" class="gallery-section" style="display: none;">
+                <h2>แกลเลอรี่</h2>
+                <div class="gallery-slider">
+                    <div class="gallery-track" id="gallery-track">
+                        <!-- Images will be injected here -->
+                    </div>
+                    <button class="gallery-arrow prev" id="gallery-prev">&#10094;</button>
+                    <button class="gallery-arrow next" id="gallery-next">&#10095;</button>
+                </div>
+            </section>
 
         </main>
     </div>
@@ -128,7 +129,6 @@
             });
         };
         
-        // --- MODIFIED: Added auto-slide functionality ---
         const initializeGallerySlider = () => {
             const track = document.getElementById('gallery-track');
             const prevButton = document.getElementById('gallery-prev');
@@ -143,7 +143,7 @@
             }
 
             let currentIndex = 0;
-            let autoSlideInterval; // Variable to hold the interval timer
+            let autoSlideInterval;
 
             const advanceSlide = () => {
                 currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
@@ -151,8 +151,8 @@
             };
             
             const startAutoSlide = () => {
-                stopAutoSlide(); // Ensure no multiple intervals are running
-                autoSlideInterval = setInterval(advanceSlide, 5000); // Change slide every 5 seconds
+                stopAutoSlide();
+                autoSlideInterval = setInterval(advanceSlide, 5000);
             };
             
             const stopAutoSlide = () => {
@@ -166,13 +166,13 @@
 
             nextButton.addEventListener('click', () => {
                 advanceSlide();
-                startAutoSlide(); // Reset timer on manual click
+                startAutoSlide();
             });
 
             prevButton.addEventListener('click', () => {
                 currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
                 setSlidePosition(currentIndex);
-                startAutoSlide(); // Reset timer on manual click
+                startAutoSlide();
             });
             
             window.addEventListener('resize', () => {
@@ -182,7 +182,6 @@
                 setTimeout(() => { track.style.transition = 'transform 0.5s ease-in-out'; }, 50);
             });
 
-            // Start the auto-slide when the slider is initialized
             startAutoSlide();
         };
 
