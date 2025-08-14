@@ -297,10 +297,10 @@
             const paginationContainer = document.getElementById('pagination');
             if (!productGrid || !paginationContainer) return;
 
-            // --- MODIFIED: Dynamic items per page based on screen width ---
-            // On screens 768px wide or more (like iPads), show 9 items. Otherwise, show 8.
-            const isTabletOrWider = window.matchMedia("(min-width: 768px)").matches;
-            const itemsPerPage = isTabletOrWider ? 9 : 8;
+            // --- MODIFIED: More specific logic for items per page ---
+            // On tablets (768px to 1199px), show 9 items. On mobile and desktop, show 8.
+            const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1199px)").matches;
+            const itemsPerPage = isTablet ? 9 : 8;
 
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
