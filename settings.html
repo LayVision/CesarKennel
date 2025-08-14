@@ -51,20 +51,20 @@
                     </div>
                 </div>
 
-                <!-- NEW: TikTok Embed Section -->
+                <!-- MODIFIED: Changed to URL inputs for ease of use -->
                 <h2 class="form-section-header">วิดีโอ TikTok ล่าสุด</h2>
                 <div class="form-grid">
                     <div class="input-group full-width">
-                        <label for="tiktok-embed-1">โค้ดสำหรับฝังวิดีโอ TikTok #1 (ใหม่สุด)</label>
-                        <textarea id="tiktok-embed-1" name="tiktok-embed-1" rows="4" placeholder="วางโค้ด <blockquote ...> ที่คัดลอกจาก TikTok ที่นี่"></textarea>
+                        <label for="tiktok-url-1">URL ของวิดีโอ TikTok #1 (ใหม่สุด)</label>
+                        <input type="url" id="tiktok-url-1" name="tiktok-url-1" placeholder="เช่น https://www.tiktok.com/@username/video/12345...">
                     </div>
                     <div class="input-group full-width">
-                        <label for="tiktok-embed-2">โค้ดสำหรับฝังวิดีโอ TikTok #2</label>
-                        <textarea id="tiktok-embed-2" name="tiktok-embed-2" rows="4" placeholder="วางโค้ด <blockquote ...> ที่คัดลอกจาก TikTok ที่นี่"></textarea>
+                        <label for="tiktok-url-2">URL ของวิดีโอ TikTok #2</label>
+                        <input type="url" id="tiktok-url-2" name="tiktok-url-2" placeholder="วางลิงก์ของวิดีโอ TikTok ที่นี่">
                     </div>
                     <div class="input-group full-width">
-                        <label for="tiktok-embed-3">โค้ดสำหรับฝังวิดีโอ TikTok #3</label>
-                        <textarea id="tiktok-embed-3" name="tiktok-embed-3" rows="4" placeholder="วางโค้ด <blockquote ...> ที่คัดลอกจาก TikTok ที่นี่"></textarea>
+                        <label for="tiktok-url-3">URL ของวิดีโอ TikTok #3</label>
+                        <input type="url" id="tiktok-url-3" name="tiktok-url-3" placeholder="วางลิงก์ของวิดีโอ TikTok ที่นี่">
                     </div>
                 </div>
 
@@ -123,10 +123,10 @@
         const settingsForm = document.getElementById('settings-form');
         const coverImageInput = document.getElementById('cover-image-upload');
         const marqueeTextInput = document.getElementById('marquee-text');
-        // MODIFIED: Added TikTok inputs
-        const tiktokEmbed1 = document.getElementById('tiktok-embed-1');
-        const tiktokEmbed2 = document.getElementById('tiktok-embed-2');
-        const tiktokEmbed3 = document.getElementById('tiktok-embed-3');
+        // MODIFIED: Point to new URL inputs
+        const tiktokUrl1 = document.getElementById('tiktok-url-1');
+        const tiktokUrl2 = document.getElementById('tiktok-url-2');
+        const tiktokUrl3 = document.getElementById('tiktok-url-3');
         const settingsRef = doc(db, "settings", "siteConfig");
 
         const cropModal = document.getElementById('crop-modal');
@@ -141,10 +141,10 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 if (data.marqueeText) marqueeTextInput.value = data.marqueeText;
-                // MODIFIED: Load TikTok embed codes
-                if (data.tiktokEmbed1) tiktokEmbed1.value = data.tiktokEmbed1;
-                if (data.tiktokEmbed2) tiktokEmbed2.value = data.tiktokEmbed2;
-                if (data.tiktokEmbed3) tiktokEmbed3.value = data.tiktokEmbed3;
+                // MODIFIED: Load TikTok URLs
+                if (data.tiktokUrl1) tiktokUrl1.value = data.tiktokUrl1;
+                if (data.tiktokUrl2) tiktokUrl2.value = data.tiktokUrl2;
+                if (data.tiktokUrl3) tiktokUrl3.value = data.tiktokUrl3;
             }
         };
         loadCurrentSettings();
@@ -209,12 +209,12 @@
                     });
                 }
 
-                // MODIFIED: Prepare data with TikTok fields
+                // MODIFIED: Save TikTok URLs instead of embed codes
                 const settingsData = {
                     marqueeText: marqueeTextInput.value,
-                    tiktokEmbed1: tiktokEmbed1.value,
-                    tiktokEmbed2: tiktokEmbed2.value,
-                    tiktokEmbed3: tiktokEmbed3.value,
+                    tiktokUrl1: tiktokUrl1.value,
+                    tiktokUrl2: tiktokUrl2.value,
+                    tiktokUrl3: tiktokUrl3.value,
                 };
 
                 if (coverImageUrl) {
