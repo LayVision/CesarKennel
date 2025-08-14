@@ -49,7 +49,6 @@
                 </div>
             </section>
             
-            <!-- NEW: Gallery Slider Section -->
             <section id="gallery-section" class="gallery-section" style="display: none;">
                 <h2>แกลเลอรี่</h2>
                 <div class="gallery-slider">
@@ -129,6 +128,7 @@
             });
         };
         
+        // --- MODIFIED: Added auto-slide functionality ---
         const initializeGallerySlider = () => {
             const track = document.getElementById('gallery-track');
             const prevButton = document.getElementById('gallery-prev');
@@ -143,29 +143,47 @@
             }
 
             let currentIndex = 0;
-            const slideWidth = slides[0].getBoundingClientRect().width;
+            let autoSlideInterval; // Variable to hold the interval timer
+
+            const advanceSlide = () => {
+                currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
+                setSlidePosition(currentIndex);
+            };
+            
+            const startAutoSlide = () => {
+                stopAutoSlide(); // Ensure no multiple intervals are running
+                autoSlideInterval = setInterval(advanceSlide, 5000); // Change slide every 5 seconds
+            };
+            
+            const stopAutoSlide = () => {
+                clearInterval(autoSlideInterval);
+            };
 
             const setSlidePosition = (index) => {
+                const slideWidth = slides[0].getBoundingClientRect().width;
                 track.style.transform = `translateX(-${slideWidth * index}px)`;
             };
 
             nextButton.addEventListener('click', () => {
-                currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
-                setSlidePosition(currentIndex);
+                advanceSlide();
+                startAutoSlide(); // Reset timer on manual click
             });
 
             prevButton.addEventListener('click', () => {
                 currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
                 setSlidePosition(currentIndex);
+                startAutoSlide(); // Reset timer on manual click
             });
             
-            // On resize, recalculate and reset
             window.addEventListener('resize', () => {
                 const newSlideWidth = slides[0].getBoundingClientRect().width;
-                track.style.transition = 'none'; // Prevent animation on resize
+                track.style.transition = 'none';
                 track.style.transform = `translateX(-${newSlideWidth * currentIndex}px)`;
                 setTimeout(() => { track.style.transition = 'transform 0.5s ease-in-out'; }, 50);
             });
+
+            // Start the auto-slide when the slider is initialized
+            startAutoSlide();
         };
 
 
@@ -181,7 +199,6 @@
                 if (data.coverImageUrl && heroImage) heroImage.src = data.coverImageUrl;
                 if (data.marqueeText && marqueeText) marqueeText.textContent = data.marqueeText;
                 
-                // Gallery logic
                 const gallerySection = document.getElementById('gallery-section');
                 const galleryTrack = document.getElementById('gallery-track');
                 if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls) && data.galleryImageUrls.length > 0) {
