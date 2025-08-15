@@ -127,18 +127,12 @@
 
         // --- Helper function to populate the DOM ---
         const displayProductDetails = (product) => {
-            // Set Page Title
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
             
-            // Button HTML
-            let buttonHTML;
-            if (product.status === 'sold') {
-                buttonHTML = `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`;
-            } else {
-                 buttonHTML = `<button class="add-to-cart-button">ติดต่อเพื่อจอง</button>`;
-            }
+            let buttonHTML = product.status === 'sold'
+                ? `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`
+                : `<button class="add-to-cart-button">ติดต่อเพื่อจอง</button>`;
             
-            // Price HTML
             const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
             let priceHTML = `<span class="discounted-price">${product.price.toLocaleString('th-TH')} บาท</span>`;
             if (hasDiscount) {
@@ -148,31 +142,31 @@
                 `;
             }
 
-            // MODIFIED: Image Gallery HTML (Now a Slider)
-            let slidesHTML = '';
+            // MODIFIED: Image Gallery HTML with thumbnails
+            let mainSlidesHTML = '';
+            let thumbnailsHTML = '';
             const imageUrls = product.imageUrls && product.imageUrls.length > 0 
                 ? product.imageUrls 
-                : ['https://via.placeholder.com/800']; // Fallback image
+                : ['https://via.placeholder.com/800'];
 
-            imageUrls.forEach(url => {
-                slidesHTML += `
-                    <div class="gallery-slide">
-                        <img src="${url}" alt="รูปของ ${product.name}">
-                    </div>
-                `;
+            imageUrls.forEach((url, index) => {
+                mainSlidesHTML += `<div class="gallery-slide"><img src="${url}" alt="รูปของ ${product.name} - ${index + 1}"></div>`;
+                thumbnailsHTML += `<div class="thumbnail-item"><img src="${url}" alt="Thumbnail of ${product.name} - ${index + 1}"></div>`;
             });
 
             const galleryHTML = `
-                <div class="gallery-slider">
-                    <div class="gallery-track" id="product-gallery-track">
-                        ${slidesHTML}
+                <div class="product-gallery-container">
+                    <div class="main-image-wrapper">
+                        <div class="gallery-track" id="product-gallery-track">${mainSlidesHTML}</div>
+                        <button class="gallery-arrow prev" id="product-gallery-prev">&#10094;</button>
+                        <button class="gallery-arrow next" id="product-gallery-next">&#10095;</button>
                     </div>
-                    <button class="gallery-arrow prev" id="product-gallery-prev">&#10094;</button>
-                    <button class="gallery-arrow next" id="product-gallery-next">&#10095;</button>
+                    <div class="thumbnail-wrapper" id="thumbnail-wrapper">
+                        <div class="thumbnail-track" id="thumbnail-track">${thumbnailsHTML}</div>
+                    </div>
                 </div>
             `;
 
-            // Final combined HTML for the grid
             container.innerHTML = `
                 ${galleryHTML}
                 <div class="detail-info">
@@ -192,69 +186,66 @@
                 </div>
             `;
             
-            // Initialize the new gallery slider
             initializeProductGallery();
         };
         
-        // --- NEW: Function to make the product image gallery an interactive slider ---
+        // --- NEW: Function for interactive product gallery with thumbnails ---
         const initializeProductGallery = () => {
             const track = document.getElementById('product-gallery-track');
             const prevButton = document.getElementById('product-gallery-prev');
             const nextButton = document.getElementById('product-gallery-next');
-            if (!track || !prevButton || !nextButton) return;
+            const thumbnailTrack = document.getElementById('thumbnail-track');
+            
+            if (!track || !thumbnailTrack) return;
 
             const slides = Array.from(track.children);
+            const thumbnails = Array.from(thumbnailTrack.children);
+            
             if (slides.length <= 1) {
                 prevButton.style.display = 'none';
                 nextButton.style.display = 'none';
-                return; // No need for a slider if there's only one image
+                thumbnailTrack.parentElement.style.display = 'none';
+                return;
             }
 
             let currentIndex = 0;
             let autoSlideInterval;
 
-            const setSlidePosition = (index) => {
+            const showSlide = (index) => {
+                currentIndex = (index + slides.length) % slides.length;
+
                 const slideWidth = slides[0].getBoundingClientRect().width;
-                track.style.transform = `translateX(-${slideWidth * index}px)`;
+                track.style.transform = `translateX(-${slideWidth * currentIndex}px)`;
+
+                thumbnails.forEach((thumb, i) => thumb.classList.toggle('active', i === currentIndex));
+
+                const activeThumbnail = thumbnails[currentIndex];
+                if (activeThumbnail) {
+                    activeThumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
             };
 
-            const advanceSlide = (direction = 1) => {
-                currentIndex = (currentIndex + direction + slides.length) % slides.length;
-                setSlidePosition(currentIndex);
-            };
-            
+            const advanceSlide = (direction = 1) => showSlide(currentIndex + direction);
             const startAutoSlide = () => {
-                stopAutoSlide(); // Clear any existing timer
-                autoSlideInterval = setInterval(() => advanceSlide(1), 5000); // 5-second interval
+                stopAutoSlide();
+                autoSlideInterval = setInterval(() => advanceSlide(1), 5000);
             };
-            
-            const stopAutoSlide = () => {
-                clearInterval(autoSlideInterval);
-            };
+            const stopAutoSlide = () => clearInterval(autoSlideInterval);
 
-            nextButton.addEventListener('click', () => {
-                advanceSlide(1);
-                startAutoSlide(); // Reset timer on manual click
-            });
-
-            prevButton.addEventListener('click', () => {
-                advanceSlide(-1);
-                startAutoSlide(); // Reset timer on manual click
-            });
+            nextButton.addEventListener('click', () => { advanceSlide(1); startAutoSlide(); });
+            prevButton.addEventListener('click', () => { advanceSlide(-1); startAutoSlide(); });
+            thumbnails.forEach((thumb, index) => thumb.addEventListener('click', () => { showSlide(index); startAutoSlide(); }));
             
-            // Recalculate dimensions on window resize
             window.addEventListener('resize', () => {
-                track.style.transition = 'none'; // Disable transition during resize
-                setSlidePosition(currentIndex);
-                // Use a timeout to re-enable transition after resize is complete
+                track.style.transition = 'none';
+                showSlide(currentIndex);
                 setTimeout(() => { track.style.transition = 'transform 0.5s ease-in-out'; }, 50);
             });
 
-            startAutoSlide(); // Start the slideshow automatically
+            showSlide(0);
+            startAutoSlide();
         };
 
-
-        // --- Run everything on page load ---
         fetchProductDetails();
     </script>
 </body>
