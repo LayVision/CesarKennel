@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ซีซาร์ เคนเนล - ฟาร์มสุนัขคุณภาพ</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.0">
 </head>
 <body>
     <div class="shop-layout">
@@ -296,12 +296,8 @@
         const initializePagination = () => {
             const paginationContainer = document.getElementById('pagination');
             if (!productGrid || !paginationContainer) return;
-
-            // --- MODIFIED: More specific logic for items per page ---
-            // On tablets (768px to 1199px), show 9 items. On mobile and desktop, show 8.
             const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1199px)").matches;
             const itemsPerPage = isTablet ? 9 : 8;
-
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
                 paginationContainer.innerHTML = '';
