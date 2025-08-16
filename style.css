@@ -489,7 +489,7 @@ a { text-decoration: none; color: inherit; }
 }
 .main-image-wrapper .gallery-track { height: 100%; }
 .main-image-wrapper .gallery-slide { height: 100%; }
-.main-image-wrapper .gallery-slide img { width: 100%; height: 100%; object-fit: cover; }
+.main-image-wrapper .gallery-slide img { width: 100%; height: 100%; object-fit: contain; } /* MODIFIED: Changed cover to contain */
 .main-image-wrapper .gallery-arrow { position: absolute; }
 
 .thumbnail-wrapper {
