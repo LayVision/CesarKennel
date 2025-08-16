@@ -137,20 +137,20 @@
         const displayProductDetails = (product, settings) => { // MODIFICATION: Receive settings object
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
             
-            // --- MODIFICATION START: Build dynamic contact buttons ---
+            // --- MODIFICATION START: Build dynamic contact buttons with corrected SVGs ---
             let buttonHTML = '';
             if (product.status === 'sold') {
                 buttonHTML = `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`;
             } else {
                 const lineBtn = settings.lineUrl ? `
                     <a href="${settings.lineUrl}" target="_blank" rel="noopener noreferrer" class="contact-btn line-btn">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.83,12.24H11.38v4.3H9.1v-4.3H7.66v-2h1.44v-1.3c0-1.12.53-2.79,2.75-2.79h1.8v2.11H12.3a.56.56,0,0,0-.57.64v1.33h1.8Z" fill="white"></path><path d="M21.2,8.39a9.3,9.3,0,0,0-9.2-8.3C5.1,0,0,4.48,0,9.9a9.5,9.5,0,0,0,5.4,8.59,7.1,7.1,0,0,0,.8.3l.1.1v-2a.4.4,0,0,1,.1-.3,7.6,7.6,0,0,1,6.5-6.6,7.3,7.3,0,0,1,8.3,7.4,7.8,7.8,0,0,1-6.1,7.2.5.5,0,0,1-.4.1,7.5,7.5,0,0,1-7.2-5.4.5.5,0,0,0-.5-.4H5.3a.5.5,0,0,0-.5.6,9.5,9.5,0,0,0,8.2,7.2h.3l.1-.1a8.9,8.9,0,0,0,8.5-9.6Z" fill="white"></path></svg>
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6Z" fill="white"></path><path d="M18 16.5C18 14.0147 15.3137 12 12 12C8.68629 12 6 14.0147 6 16.5V18H18V16.5Z" fill="white"></path></svg>
                         สั่งซื้อทาง LINE
                     </a>` : '';
                 
                 const messengerBtn = settings.messengerUrl ? `
                     <a href="${settings.messengerUrl}" target="_blank" rel="noopener noreferrer" class="contact-btn messenger-btn">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 4.92 0 11c0 3.9 2.2 7.35 5.53 9.24V24l4.05-2.14c.97.15 1.97.24 3.02.24 6.63 0 12-4.92 12-11S18.63 0 12 0Zm1.22 14.28-2.6-2.8-6.05 2.8c.5-.94 2.22-3.53 4.52-5.7 2.3-2.18 4.04-2.7 4.54-2.7s-.16 2.3-2.46 4.5z" fill="white"></path></svg>
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17.5H11V14L8.5 12.5L13 7.5V11H15V14L13 15.5V17.5Z" fill="white"></path></svg>
                         แชทหาเรา
                     </a>` : '';
                 
