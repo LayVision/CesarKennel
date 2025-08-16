@@ -278,6 +278,18 @@ a { text-decoration: none; color: inherit; }
         color: var(--text-primary);
     }
     
+    /* MODIFICATION START: Added styles for mobile header actions */
+    .mobile-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .mobile-add-btn {
+        padding: 8px 14px;
+        font-size: 0.9em;
+    }
+    /* MODIFICATION END */
+
     .admin-main { padding: 24px; }
     
     .product-table { display: block; }
