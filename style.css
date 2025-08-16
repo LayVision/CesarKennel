@@ -54,7 +54,8 @@ a { text-decoration: none; color: inherit; }
 }
 .sidebar-logo span { color: var(--accent-primary); }
 
-.sidebar-nav h3, .sidebar-filters h3 {
+/* MODIFICATION: Combined h3 selector */
+.sidebar-nav h3, .sidebar-follow h3 {
     font-size: 0.8em;
     font-weight: 600;
     text-transform: uppercase;
@@ -73,6 +74,37 @@ a { text-decoration: none; color: inherit; }
 }
 .sidebar-nav a:hover { background-color: var(--border-color); color: var(--accent-primary); }
 .sidebar-nav a.active { background-color: var(--accent-primary); color: var(--text-primary); font-weight: 700;}
+
+/* MODIFICATION START: Added styles for Follow Us section */
+.sidebar-follow {
+    margin-top: 40px;
+}
+.sidebar-social-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar-social-links a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-size: 1.05em;
+}
+.sidebar-social-links a:hover {
+    background-color: var(--border-color);
+    color: var(--accent-primary);
+}
+.sidebar-social-links svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+/* MODIFICATION END */
+
 
 .filter-group { margin-bottom: 24px; }
 .filter-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; }
