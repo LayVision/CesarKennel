@@ -62,23 +62,28 @@
                         <input type="url" id="messenger-url" name="messenger-url" placeholder="เช่น https://m.me/yourpage">
                     </div>
                 </div>
-                <br>
+                
                 <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บ (Footer)</h2>
                 <div class="form-grid">
                      <div class="input-group"><label for="footer-phone">เบอร์โทรศัพท์</label><input type="text" id="footer-phone" name="footer-phone" placeholder="เช่น 081-234-5678"></div>
                      <div class="input-group"><label for="footer-email">อีเมล</label><input type="email" id="footer-email" name="footer-email" placeholder="เช่น contact@cesarkennel.com"></div>
+                     <!-- MODIFICATION START: Added footer address field -->
+                     <div class="input-group full-width">
+                        <label for="footer-address">ที่อยู่</label>
+                        <textarea id="footer-address" name="footer-address" rows="3" placeholder="ใส่ที่อยู่ ที่นี่">79 เเม่ปูคา สันกำเเพง
+อ. สันกำแพง เชียงใหม่ 50310</textarea>
+                    </div>
+                    <!-- MODIFICATION END -->
                      <div class="input-group"><label for="social-facebook">Facebook URL</label><input type="url" id="social-facebook" name="social-facebook" placeholder="https://facebook.com/yourpage"></div>
                      <div class="input-group"><label for="social-instagram">Instagram URL</label><input type="url" id="social-instagram" name="social-instagram" placeholder="https://instagram.com/yourprofile"></div>
                      <div class="input-group"><label for="social-line">LINE URL</label><input type="url" id="social-line" name="social-line" placeholder="https://line.me/ti/p/..."></div>
                      <div class="input-group"><label for="social-tiktok">TikTok URL</label><input type="url" id="social-tiktok" name="social-tiktok" placeholder="https://tiktok.com/@yourprofile"></div>
-                     <!-- MODIFICATION START: Changed to accept full iframe embed code -->
                      <div class="input-group full-width">
                          <label for="google-maps-embed">Google Maps Embed Code (HTML)</label>
                          <textarea id="google-maps-embed" name="google-maps-embed" rows="4" placeholder="วางโค้ด<iframe> จาก Google Maps ที่นี่"><iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d60440.021145593804!2d99.110425!3d18.775799!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30da27a492d61e43%3A0xa3a918912c35cd86!2zQ2VzYXIgRG9nIGNhcmUg4Lij4Lix4Lia4Lid4Liy4LiB4Liq4Li44LiZ4Lix4LiC4LmA4LiK4Li14Lii4LiH4LmD4Lir4Lih4LmI!5e0!3m2!1sen!2sus!4v1755346701144!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></textarea>
                      </div>
-                     <!-- MODIFICATION END -->
                 </div>
-                <br>
+                
                 <h2 class="form-section-header">แกลเลอรี่หน้าแรก (ลากเพื่อจัดลำดับ, สูงสุด 10 รูป)</h2>
                 <div class="input-group full-width">
                     <label for="gallery-image-upload">อัปโหลดรูปภาพใหม่สำหรับแกลเลอรี่</label>
@@ -151,11 +156,12 @@
         
         const footerPhoneInput = document.getElementById('footer-phone');
         const footerEmailInput = document.getElementById('footer-email');
+        const footerAddressInput = document.getElementById('footer-address'); // MODIFICATION
         const socialFacebookInput = document.getElementById('social-facebook');
         const socialInstagramInput = document.getElementById('social-instagram');
         const socialLineInput = document.getElementById('social-line');
         const socialTiktokInput = document.getElementById('social-tiktok');
-        const googleMapsEmbedInput = document.getElementById('google-maps-embed'); // MODIFICATION
+        const googleMapsEmbedInput = document.getElementById('google-maps-embed');
         
         const galleryImageInput = document.getElementById('gallery-image-upload');
         const galleryPreviewContainer = document.getElementById('gallery-preview-container');
@@ -220,11 +226,12 @@
                 
                 if(data.footerPhone) footerPhoneInput.value = data.footerPhone;
                 if(data.footerEmail) footerEmailInput.value = data.footerEmail;
+                if(data.footerAddress) footerAddressInput.value = data.footerAddress; // MODIFICATION
                 if(data.socialFacebook) socialFacebookInput.value = data.socialFacebook;
                 if(data.socialInstagram) socialInstagramInput.value = data.socialInstagram;
                 if(data.socialLine) socialLineInput.value = data.socialLine;
                 if(data.socialTiktok) socialTiktokInput.value = data.socialTiktok;
-                if(data.googleMapsEmbed) googleMapsEmbedInput.value = data.googleMapsEmbed; // MODIFICATION
+                if(data.googleMapsEmbed) googleMapsEmbedInput.value = data.googleMapsEmbed;
                 
                 if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls)) {
                     data.galleryImageUrls.forEach(url => createGalleryPreviewElement(url, url, true));
@@ -321,11 +328,12 @@
                     
                     footerPhone: footerPhoneInput.value,
                     footerEmail: footerEmailInput.value,
+                    footerAddress: footerAddressInput.value, // MODIFICATION
                     socialFacebook: socialFacebookInput.value,
                     socialInstagram: socialInstagramInput.value,
                     socialLine: socialLineInput.value,
                     socialTiktok: socialTiktokInput.value,
-                    googleMapsEmbed: googleMapsEmbedInput.value // MODIFICATION
+                    googleMapsEmbed: googleMapsEmbedInput.value
                 };
                 if (coverImageUrl) settingsData.coverImageUrl = coverImageUrl;
 
