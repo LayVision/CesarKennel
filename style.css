@@ -264,6 +264,19 @@ a { text-decoration: none; color: inherit; }
 }
 .details-list li strong { font-weight: 600; color: var(--text-primary); }
 
+/* MODIFICATION: Added styles for status icons */
+.status-icon {
+    font-weight: 700;
+    font-size: 1.4em;
+    line-height: 1;
+}
+.status-icon.check {
+    color: #28A745; /* Green */
+}
+.status-icon.cross {
+    color: #FA5252; /* Red */
+}
+
 .add-to-cart-button {
     display: block; width: 100%; padding: 18px; background-color: var(--accent-primary);
     color: var(--text-primary); text-align: center; font-size: 1.2em; font-weight: 600;

@@ -164,6 +164,11 @@
                 `;
             }
 
+            // MODIFICATION: Generate HTML for the dewormed status icon
+            const dewormedHTML = product.dewormed === true
+                ? `<span class="status-icon check">✓</span>`
+                : `<span class="status-icon cross">✗</span>`;
+
             let mainSlidesHTML = '';
             let thumbnailsHTML = '';
             const imageUrls = product.imageUrls && product.imageUrls.length > 0 
@@ -196,13 +201,12 @@
                     <p class="description">${product.description || 'ไม่มีคำอธิบายเพิ่มเติม'}</p>
                     
                     <ul class="details-list">
-                        <!-- MODIFICATION: Removed breed, added dewormed -->
                         <li><strong>อายุ:</strong><span>${product.age}</span></li>
                         <li><strong>เพศ:</strong><span>${product.gender}</span></li>
                         <li><strong>ตัวสี:</strong><span>${product.color}</span></li>
                         <li><strong>ตาสี:</strong><span>${product.eyeColor || '-'}</span></li>
                         <li><strong>วัคซีน:</strong><span>${product.vaccine || '-'}</span></li>
-                        <li><strong>ถ่ายพยาธิ:</strong><span>${product.dewormed || '-'}</span></li>
+                        <li><strong>ถ่ายพยาธิ:</strong><span>${dewormedHTML}</span></li>
                     </ul>
                     ${buttonHTML}
                 </div>

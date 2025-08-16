@@ -42,7 +42,6 @@
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
                     <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" required></div>
-                    <!-- MODIFICATION: Removed Breed field -->
                     <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age" required></div>
                     <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" name="price" required></div>
                     <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
@@ -63,11 +62,15 @@
                         <label for="vaccine">วัคซีน</label>
                         <input type="text" id="vaccine" name="vaccine">
                     </div>
-                    <!-- MODIFICATION: Added Dewormed field -->
+                    <!-- MODIFICATION START: Changed input to select for Dewormed field -->
                     <div class="input-group">
                         <label for="dewormed">ถ่ายพยาธิ</label>
-                        <input type="text" id="dewormed" name="dewormed">
+                        <select id="dewormed" name="dewormed" required>
+                            <option value="true">ทำแล้ว</option>
+                            <option value="false" selected>ยังไม่ได้ทำ</option>
+                        </select>
                     </div>
+                    <!-- MODIFICATION END -->
                     <div class="input-group">
                         <label for="status">สถานะ</label>
                         <select id="status" name="status" required>
@@ -192,7 +195,6 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 document.getElementById('name').value = data.name || '';
-                // MODIFICATION: Removed breed
                 document.getElementById('age').value = data.age || '';
                 document.getElementById('price').value = data.price || '';
                 document.getElementById('discount-price').value = data.discountPrice || '';
@@ -200,9 +202,11 @@
                 document.getElementById('color').value = data.color || '';
                 document.getElementById('eye-color').value = data.eyeColor || '';
                 document.getElementById('vaccine').value = data.vaccine || '';
-                document.getElementById('dewormed').value = data.dewormed || ''; // MODIFICATION: Added dewormed
                 document.getElementById('status').value = data.status || 'available';
                 document.getElementById('description').value = data.description || '';
+                
+                // MODIFICATION: Handle boolean value for dewormed select
+                document.getElementById('dewormed').value = data.dewormed ? 'true' : 'false';
 
                 if (data.imageUrls && Array.isArray(data.imageUrls)) {
                     data.imageUrls.forEach(url => {
@@ -268,7 +272,6 @@
 
                 const productData = {
                     name: document.getElementById('name').value,
-                    // MODIFICATION: Removed breed
                     age: document.getElementById('age').value,
                     price: Number(document.getElementById('price').value),
                     discountPrice: Number(document.getElementById('discount-price').value) || 0,
@@ -276,9 +279,10 @@
                     color: document.getElementById('color').value,
                     eyeColor: document.getElementById('eye-color').value,
                     vaccine: document.getElementById('vaccine').value,
-                    dewormed: document.getElementById('dewormed').value, // MODIFICATION: Added dewormed
                     status: document.getElementById('status').value,
                     description: document.getElementById('description').value,
+                    // MODIFICATION: Convert select value 'true'/'false' to actual boolean
+                    dewormed: document.getElementById('dewormed').value === 'true',
                     updatedAt: serverTimestamp(),
                     imageUrls: finalImageUrls,
                     thumbnailUrl: finalImageUrls.length > 0 ? finalImageUrls[0] : ''
