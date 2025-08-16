@@ -51,8 +51,7 @@
                     </div>
                 </div>
                 
-                <!-- MODIFICATION START: Added contact link fields -->
-                <h2 class="form-section-header">ลิงก์สำหรับติดต่อ</h2>
+                <h2 class="form-section-header">ลิงก์สำหรับติดต่อ (หน้าสินค้า)</h2>
                 <div class="form-grid">
                     <div class="input-group full-width">
                         <label for="line-url">LINE Contact URL</label>
@@ -62,6 +61,21 @@
                         <label for="messenger-url">Facebook Messenger URL</label>
                         <input type="url" id="messenger-url" name="messenger-url" placeholder="เช่น https://m.me/yourpage">
                     </div>
+                </div>
+                
+                <!-- MODIFICATION START: Added Footer Contact and Social Fields -->
+                <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บ (Footer)</h2>
+                <div class="form-grid">
+                     <div class="input-group"><label for="footer-phone">เบอร์โทรศัพท์</label><input type="text" id="footer-phone" name="footer-phone" placeholder="เช่น 081-234-5678"></div>
+                     <div class="input-group"><label for="footer-email">อีเมล</label><input type="email" id="footer-email" name="footer-email" placeholder="เช่น contact@cesarkennel.com"></div>
+                     <div class="input-group"><label for="social-facebook">Facebook URL</label><input type="url" id="social-facebook" name="social-facebook" placeholder="https://facebook.com/yourpage"></div>
+                     <div class="input-group"><label for="social-instagram">Instagram URL</label><input type="url" id="social-instagram" name="social-instagram" placeholder="https://instagram.com/yourprofile"></div>
+                     <div class="input-group"><label for="social-line">LINE URL</label><input type="url" id="social-line" name="social-line" placeholder="https://line.me/ti/p/..."></div>
+                     <div class="input-group"><label for="social-tiktok">TikTok URL</label><input type="url" id="social-tiktok" name="social-tiktok" placeholder="https://tiktok.com/@yourprofile"></div>
+                     <div class="input-group full-width">
+                         <label for="google-maps-url">Google Maps URL</label>
+                         <textarea id="google-maps-url" name="google-maps-url" rows="3" placeholder="วางลิงก์ Google Maps แบบเต็มที่นี่"></textarea>
+                     </div>
                 </div>
                 <!-- MODIFICATION END -->
                 
@@ -132,9 +146,17 @@
         const marqueeTextInput = document.getElementById('marquee-text');
         const settingsRef = doc(db, "settings", "siteConfig");
         
-        // --- MODIFICATION: Added contact link inputs
         const lineUrlInput = document.getElementById('line-url');
         const messengerUrlInput = document.getElementById('messenger-url');
+        
+        // --- MODIFICATION: Get all new footer elements
+        const footerPhoneInput = document.getElementById('footer-phone');
+        const footerEmailInput = document.getElementById('footer-email');
+        const socialFacebookInput = document.getElementById('social-facebook');
+        const socialInstagramInput = document.getElementById('social-instagram');
+        const socialLineInput = document.getElementById('social-line');
+        const socialTiktokInput = document.getElementById('social-tiktok');
+        const googleMapsUrlInput = document.getElementById('google-maps-url');
         
         const galleryImageInput = document.getElementById('gallery-image-upload');
         const galleryPreviewContainer = document.getElementById('gallery-preview-container');
@@ -194,9 +216,18 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 if (data.marqueeText) marqueeTextInput.value = data.marqueeText;
-                // --- MODIFICATION: Load contact links
                 if (data.lineUrl) lineUrlInput.value = data.lineUrl;
                 if (data.messengerUrl) messengerUrlInput.value = data.messengerUrl;
+                
+                // --- MODIFICATION: Load footer data into form
+                if(data.footerPhone) footerPhoneInput.value = data.footerPhone;
+                if(data.footerEmail) footerEmailInput.value = data.footerEmail;
+                if(data.socialFacebook) socialFacebookInput.value = data.socialFacebook;
+                if(data.socialInstagram) socialInstagramInput.value = data.socialInstagram;
+                if(data.socialLine) socialLineInput.value = data.socialLine;
+                if(data.socialTiktok) socialTiktokInput.value = data.socialTiktok;
+                if(data.googleMapsUrl) googleMapsUrlInput.value = data.googleMapsUrl;
+                
                 if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls)) {
                     data.galleryImageUrls.forEach(url => createGalleryPreviewElement(url, url, true));
                 }
@@ -286,10 +317,18 @@
 
                 const settingsData = {
                     marqueeText: marqueeTextInput.value,
-                    // --- MODIFICATION: Save contact links
                     lineUrl: lineUrlInput.value,
                     messengerUrl: messengerUrlInput.value,
                     galleryImageUrls: finalGalleryImageUrls,
+                    
+                    // --- MODIFICATION: Add footer data to save object
+                    footerPhone: footerPhoneInput.value,
+                    footerEmail: footerEmailInput.value,
+                    socialFacebook: socialFacebookInput.value,
+                    socialInstagram: socialInstagramInput.value,
+                    socialLine: socialLineInput.value,
+                    socialTiktok: socialTiktokInput.value,
+                    googleMapsUrl: googleMapsUrlInput.value
                 };
                 if (coverImageUrl) settingsData.coverImageUrl = coverImageUrl;
 

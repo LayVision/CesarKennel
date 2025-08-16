@@ -74,18 +74,29 @@
         </main>
     </div>
 
+    <!-- MODIFICATION: Updated footer structure -->
     <footer class="site-footer">
-        <div class="footer-content">
-            <h3 class="footer-logo">ซีซาร์ เคนเนล</h3>
-            <p class="footer-description">ฟาร์มสุนัขเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
-            <div class="footer-contact">
-                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@cesarkennel.com</span>
+        <div class="footer-grid">
+            <div class="footer-info">
+                <h3 class="footer-logo">ซีซาร์ เคนเนล</h3>
+                <p class="footer-description">ฟาร์มสุนัขเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+                <div class="footer-contact">
+                    <span id="footer-phone"></span>
+                    <span id="footer-email"></span>
+                </div>
+                <div class="social-links">
+                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;">FB</a>
+                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;">IG</a>
+                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;">LINE</a>
+                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;">TT</a>
+                </div>
             </div>
-            <div class="social-links">
-                <a href="#" aria-label="Facebook">FB</a> <a href="#" aria-label="Instagram">IG</a> <a href="#" aria-label="Line">LINE</a>
+            <div class="footer-map" id="footer-map-container">
+                <!-- Google Map Iframe will be injected here by script -->
             </div>
         </div>
     </footer>
+
 
     <script src="script.js"></script>
 
@@ -184,16 +195,17 @@
             startAutoSlide();
         };
 
-
-        const loadSiteSettings = async () => {
+        // --- MODIFICATION: Combined settings and footer loader
+        const loadSiteSettingsAndFooter = async () => {
             const settingsRef = doc(db, "settings", "siteConfig");
             const docSnap = await getDoc(settingsRef);
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                
+                // --- Homepage settings ---
                 const heroImage = document.getElementById('hero-image');
                 const marqueeText = document.getElementById('marquee-text-display');
-                
                 if (data.coverImageUrl && heroImage) heroImage.src = data.coverImageUrl;
                 if (data.marqueeText && marqueeText) marqueeText.textContent = data.marqueeText;
                 
@@ -210,8 +222,36 @@
                     gallerySection.style.display = 'block';
                     initializeGallerySlider();
                 }
+
+                // --- Footer settings ---
+                const footerPhone = document.getElementById('footer-phone');
+                if (data.footerPhone) footerPhone.textContent = `โทร: ${data.footerPhone}`;
+                
+                const footerEmail = document.getElementById('footer-email');
+                if (data.footerEmail) footerEmail.textContent = `อีเมล: ${data.footerEmail}`;
+                
+                const socialLinks = {
+                    'social-fb': data.socialFacebook,
+                    'social-ig': data.socialInstagram,
+                    'social-line': data.socialLine,
+                    'social-tiktok': data.socialTiktok
+                };
+                for (const [id, url] of Object.entries(socialLinks)) {
+                    const linkEl = document.getElementById(id);
+                    if (linkEl && url) {
+                        linkEl.href = url;
+                        linkEl.style.display = 'inline-block';
+                    }
+                }
+
+                const mapContainer = document.getElementById('footer-map-container');
+                if (mapContainer && data.googleMapsUrl) {
+                    const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(data.googleMapsUrl)}&output=embed`;
+                    mapContainer.innerHTML = `<iframe src="${embedUrl}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+                }
             }
         };
+
 
         const productGrid = document.getElementById('product-grid');
         const fetchAndDisplayProducts = async () => {
@@ -301,7 +341,7 @@
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
                 paginationContainer.innerHTML = '';
-                allItems.forEach(item => item.style.display = 'block'); // Ensure all items are visible if no pagination
+                allItems.forEach(item => item.style.display = 'block'); 
                 return;
             };
             const totalPages = Math.ceil(allItems.length / itemsPerPage);
@@ -340,20 +380,15 @@
             displayPage(initialPage);
         };
 
-        // --- MODIFICATION START ---
-        // Add a resize listener to make pagination responsive. This ensures that if the user resizes 
-        // the browser across breakpoints, the number of items per page is recalculated correctly.
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                // Re-initialize pagination which will re-check the media query and update the view.
                 initializePagination();
-            }, 250); // Debounce to avoid excessive calls during resize.
+            }, 250);
         });
-        // --- MODIFICATION END ---
 
-        loadSiteSettings();
+        loadSiteSettingsAndFooter();
         fetchAndDisplayProducts();
     </script>
 </body>

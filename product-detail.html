@@ -8,11 +8,9 @@
 </head>
 <body>
     <div class="shop-layout">
-        <!-- Main layout grid, consistent with index.html -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Cesar<span>.</span></div>
-                <!-- MODIFIED: Menu links now point back to the filtered index page -->
                 <nav class="sidebar-nav">
                     <h3>เมนู</h3>
                     <ul>
@@ -29,47 +27,49 @@
             </div>
         </aside>
         
-        <!-- Main content area -->
         <main class="main-content" id="main-content">
-            <!-- Header for mobile view -->
             <header class="mobile-header">
                 <div class="mobile-logo">Cesar<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <!-- Grid layout for product details, content will be loaded here -->
             <div class="product-detail-grid" id="product-detail-container">
                 <!-- Loading message or dynamic content appears here -->
             </div>
         </main>
-    </div> <!-- End of .shop-layout -->
+    </div>
 
-    <!-- Main site footer -->
+    <!-- MODIFICATION: Updated footer structure -->
     <footer class="site-footer">
-        <div class="footer-content">
-            <h3 class="footer-logo">ซีซาร์ เคนเนล</h3>
-            <p class="footer-description">ฟาร์มสุนัขเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
-            <div class="footer-contact">
-                <span>โทร: 081-234-5678</span> | <span>อีเมล: contact@cesarkennel.com</span>
+        <div class="footer-grid">
+            <div class="footer-info">
+                <h3 class="footer-logo">ซีซาร์ เคนเนล</h3>
+                <p class="footer-description">ฟาร์มสุนัขเกรดพรีเมียม จัดส่งทั่วประเทศ</p>
+                <div class="footer-contact">
+                    <span id="footer-phone"></span>
+                    <span id="footer-email"></span>
+                </div>
+                <div class="social-links">
+                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;">FB</a>
+                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;">IG</a>
+                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;">LINE</a>
+                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;">TT</a>
+                </div>
             </div>
-            <div class="social-links">
-                <a href="#" aria-label="Facebook">FB</a>
-                <a href="#" aria-label="Instagram">IG</a>
-                <a href="#" aria-label="Line">LINE</a>
+            <div class="footer-map" id="footer-map-container">
+                <!-- Google Map Iframe will be injected here by script -->
             </div>
         </div>
     </footer>
 
-    <!-- Link to the global JavaScript file -->
+
     <script src="script.js"></script>
 
-    <!-- Main Firebase Logic for this page -->
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // --- Firebase Initialization ---
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -83,7 +83,6 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // --- Manage Admin Link in Sidebar ---
         const authLink = document.getElementById('auth-link');
         onAuthStateChanged(auth, user => {
             if (user) {
@@ -95,7 +94,35 @@
             }
         });
         
-        // --- Main function to fetch and display product details ---
+        // --- MODIFICATION: Added footer loader function ---
+        const loadFooter = async (settings) => {
+            const footerPhone = document.getElementById('footer-phone');
+            if (settings.footerPhone) footerPhone.textContent = `โทร: ${settings.footerPhone}`;
+            
+            const footerEmail = document.getElementById('footer-email');
+            if (settings.footerEmail) footerEmail.textContent = `อีเมล: ${settings.footerEmail}`;
+            
+            const socialLinks = {
+                'social-fb': settings.socialFacebook,
+                'social-ig': settings.socialInstagram,
+                'social-line': settings.socialLine,
+                'social-tiktok': settings.socialTiktok
+            };
+            for (const [id, url] of Object.entries(socialLinks)) {
+                const linkEl = document.getElementById(id);
+                if (linkEl && url) {
+                    linkEl.href = url;
+                    linkEl.style.display = 'inline-block';
+                }
+            }
+
+            const mapContainer = document.getElementById('footer-map-container');
+            if (mapContainer && settings.googleMapsUrl) {
+                const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(settings.googleMapsUrl)}&output=embed`;
+                mapContainer.innerHTML = `<iframe src="${embedUrl}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+            }
+        };
+
         const container = document.getElementById('product-detail-container');
         const fetchProductDetails = async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -118,6 +145,8 @@
                 ]);
                 
                 const settings = settingsDocSnap.exists() ? settingsDocSnap.data() : {};
+                
+                loadFooter(settings); // Load footer data
 
                 if (productDocSnap.exists()) {
                     const product = productDocSnap.data();
@@ -132,7 +161,6 @@
             }
         };
 
-        // --- Helper function to populate the DOM ---
         const displayProductDetails = (product, settings) => {
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
             
@@ -164,7 +192,6 @@
                 `;
             }
 
-            // MODIFICATION: Generate HTML for the dewormed status icon
             const dewormedHTML = product.dewormed === true
                 ? `<span class="status-icon check">✓</span>`
                 : `<span class="status-icon cross">✗</span>`;
