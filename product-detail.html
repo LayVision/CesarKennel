@@ -39,7 +39,6 @@
         </main>
     </div>
 
-    <!-- MODIFICATION: Updated footer structure -->
     <footer class="site-footer">
         <div class="footer-grid">
             <div class="footer-info">
@@ -94,7 +93,6 @@
             }
         });
         
-        // --- MODIFICATION: Added footer loader function ---
         const loadFooter = async (settings) => {
             const footerPhone = document.getElementById('footer-phone');
             if (settings.footerPhone) footerPhone.textContent = `โทร: ${settings.footerPhone}`;
@@ -116,10 +114,10 @@
                 }
             }
 
+            // MODIFICATION: Directly inject the iframe embed HTML
             const mapContainer = document.getElementById('footer-map-container');
-            if (mapContainer && settings.googleMapsUrl) {
-                const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(settings.googleMapsUrl)}&output=embed`;
-                mapContainer.innerHTML = `<iframe src="${embedUrl}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+            if (mapContainer && settings.googleMapsEmbed) {
+                mapContainer.innerHTML = settings.googleMapsEmbed;
             }
         };
 
@@ -146,7 +144,7 @@
                 
                 const settings = settingsDocSnap.exists() ? settingsDocSnap.data() : {};
                 
-                loadFooter(settings); // Load footer data
+                loadFooter(settings);
 
                 if (productDocSnap.exists()) {
                     const product = productDocSnap.data();

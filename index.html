@@ -74,7 +74,6 @@
         </main>
     </div>
 
-    <!-- MODIFICATION: Updated footer structure -->
     <footer class="site-footer">
         <div class="footer-grid">
             <div class="footer-info">
@@ -195,7 +194,6 @@
             startAutoSlide();
         };
 
-        // --- MODIFICATION: Combined settings and footer loader
         const loadSiteSettingsAndFooter = async () => {
             const settingsRef = doc(db, "settings", "siteConfig");
             const docSnap = await getDoc(settingsRef);
@@ -203,7 +201,6 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 
-                // --- Homepage settings ---
                 const heroImage = document.getElementById('hero-image');
                 const marqueeText = document.getElementById('marquee-text-display');
                 if (data.coverImageUrl && heroImage) heroImage.src = data.coverImageUrl;
@@ -223,7 +220,6 @@
                     initializeGallerySlider();
                 }
 
-                // --- Footer settings ---
                 const footerPhone = document.getElementById('footer-phone');
                 if (data.footerPhone) footerPhone.textContent = `โทร: ${data.footerPhone}`;
                 
@@ -244,10 +240,10 @@
                     }
                 }
 
+                // MODIFICATION: Directly inject the iframe embed HTML
                 const mapContainer = document.getElementById('footer-map-container');
-                if (mapContainer && data.googleMapsUrl) {
-                    const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(data.googleMapsUrl)}&output=embed`;
-                    mapContainer.innerHTML = `<iframe src="${embedUrl}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+                if (mapContainer && data.googleMapsEmbed) {
+                    mapContainer.innerHTML = data.googleMapsEmbed;
                 }
             }
         };
