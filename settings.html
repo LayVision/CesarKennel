@@ -50,9 +50,21 @@
                         <input type="text" id="marquee-text" name="marquee-text" value="✨ สุนัขสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨">
                     </div>
                 </div>
-                    <br>
-                    <br>
-                <!-- NEW: Homepage Gallery Manager -->
+                
+                <!-- MODIFICATION START: Added contact link fields -->
+                <h2 class="form-section-header">ลิงก์สำหรับติดต่อ</h2>
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label for="line-url">LINE Contact URL</label>
+                        <input type="url" id="line-url" name="line-url" placeholder="เช่น https://line.me/ti/p/...">
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="messenger-url">Facebook Messenger URL</label>
+                        <input type="url" id="messenger-url" name="messenger-url" placeholder="เช่น https://m.me/yourpage">
+                    </div>
+                </div>
+                <!-- MODIFICATION END -->
+                
                 <h2 class="form-section-header">แกลเลอรี่หน้าแรก (ลากเพื่อจัดลำดับ, สูงสุด 10 รูป)</h2>
                 <div class="input-group full-width">
                     <label for="gallery-image-upload">อัปโหลดรูปภาพใหม่สำหรับแกลเลอรี่</label>
@@ -85,7 +97,6 @@
 
     <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <!-- ADDED: SortableJS for gallery reordering -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <script type="module">
@@ -121,12 +132,14 @@
         const marqueeTextInput = document.getElementById('marquee-text');
         const settingsRef = doc(db, "settings", "siteConfig");
         
-        // --- Gallery Elements & State ---
+        // --- MODIFICATION: Added contact link inputs
+        const lineUrlInput = document.getElementById('line-url');
+        const messengerUrlInput = document.getElementById('messenger-url');
+        
         const galleryImageInput = document.getElementById('gallery-image-upload');
         const galleryPreviewContainer = document.getElementById('gallery-preview-container');
         const newGalleryFilesMap = new Map();
 
-        // --- Cropper Elements & State ---
         const cropModal = document.getElementById('crop-modal');
         const imageToCrop = document.getElementById('image-to-crop');
         const cropBtn = document.getElementById('crop-btn');
@@ -134,7 +147,6 @@
         let cropper = null;
         let croppedBlob = null;
         
-        // --- Gallery Logic (similar to add-item.html) ---
         const createGalleryPreviewElement = (id, src, isExisting = false) => {
              if (galleryPreviewContainer.children.length >= 10) {
                 alert('คุณสามารถอัปโหลดรูปภาพแกลเลอรี่ได้สูงสุด 10 รูป');
@@ -177,12 +189,14 @@
         new Sortable(galleryPreviewContainer, { animation: 150, handle: '.drag-handle', ghostClass: 'sortable-ghost' });
 
 
-        // --- Main Load & Save Logic ---
         const loadCurrentSettings = async () => {
             const docSnap = await getDoc(settingsRef);
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 if (data.marqueeText) marqueeTextInput.value = data.marqueeText;
+                // --- MODIFICATION: Load contact links
+                if (data.lineUrl) lineUrlInput.value = data.lineUrl;
+                if (data.messengerUrl) messengerUrlInput.value = data.messengerUrl;
                 if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls)) {
                     data.galleryImageUrls.forEach(url => createGalleryPreviewElement(url, url, true));
                 }
@@ -229,7 +243,6 @@
             submitButton.textContent = 'กำลังบันทึก...';
 
             try {
-                // 1. Process Cover Image
                 let coverImageUrl = null;
                 if (croppedBlob) {
                      coverImageUrl = await new Promise((resolve, reject) => {
@@ -248,7 +261,6 @@
                     });
                 }
                 
-                // 2. Process Gallery Images
                 const galleryItems = Array.from(galleryPreviewContainer.querySelectorAll('.image-preview-item'));
                 const galleryUploadPromises = galleryItems.map(item => {
                     if (item.dataset.url) return Promise.resolve(item.dataset.url);
@@ -272,9 +284,11 @@
                 
                 const finalGalleryImageUrls = (await Promise.all(galleryUploadPromises)).filter(Boolean);
 
-                // 3. Prepare data and save
                 const settingsData = {
                     marqueeText: marqueeTextInput.value,
+                    // --- MODIFICATION: Save contact links
+                    lineUrl: lineUrlInput.value,
+                    messengerUrl: messengerUrlInput.value,
                     galleryImageUrls: finalGalleryImageUrls,
                 };
                 if (coverImageUrl) settingsData.coverImageUrl = coverImageUrl;
