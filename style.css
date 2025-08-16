@@ -54,7 +54,6 @@ a { text-decoration: none; color: inherit; }
 }
 .sidebar-logo span { color: var(--accent-primary); }
 
-/* MODIFICATION: Combined h3 selector */
 .sidebar-nav h3, .sidebar-follow h3 {
     font-size: 0.8em;
     font-weight: 600;
@@ -75,7 +74,6 @@ a { text-decoration: none; color: inherit; }
 .sidebar-nav a:hover { background-color: var(--border-color); color: var(--accent-primary); }
 .sidebar-nav a.active { background-color: var(--accent-primary); color: var(--text-primary); font-weight: 700;}
 
-/* MODIFICATION START: Added styles for Follow Us section */
 .sidebar-follow {
     margin-top: 40px;
 }
@@ -98,9 +96,19 @@ a { text-decoration: none; color: inherit; }
     background-color: var(--border-color);
     color: var(--accent-primary);
 }
-.sidebar-social-links svg {
+/* MODIFICATION START: Replaced svg specific style with a general icon class */
+.sidebar-social-icon {
     width: 20px;
     height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9em;
+}
+.sidebar-social-icon svg {
+    width: 100%;
+    height: 100%;
     fill: currentColor;
 }
 /* MODIFICATION END */
