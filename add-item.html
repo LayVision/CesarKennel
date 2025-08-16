@@ -42,7 +42,7 @@
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
                     <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" required></div>
-                    <div class="input-group"><label for="breed">สายพันธุ์</label><input type="text" id="breed" name="breed" value="ไซบีเรียน ฮัสกี้" required></div>
+                    <!-- MODIFICATION: Removed Breed field -->
                     <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age" required></div>
                     <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" name="price" required></div>
                     <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
@@ -62,6 +62,11 @@
                     <div class="input-group">
                         <label for="vaccine">วัคซีน</label>
                         <input type="text" id="vaccine" name="vaccine">
+                    </div>
+                    <!-- MODIFICATION: Added Dewormed field -->
+                    <div class="input-group">
+                        <label for="dewormed">ถ่ายพยาธิ</label>
+                        <input type="text" id="dewormed" name="dewormed">
                     </div>
                     <div class="input-group">
                         <label for="status">สถานะ</label>
@@ -187,7 +192,7 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 document.getElementById('name').value = data.name || '';
-                document.getElementById('breed').value = data.breed || '';
+                // MODIFICATION: Removed breed
                 document.getElementById('age').value = data.age || '';
                 document.getElementById('price').value = data.price || '';
                 document.getElementById('discount-price').value = data.discountPrice || '';
@@ -195,6 +200,7 @@
                 document.getElementById('color').value = data.color || '';
                 document.getElementById('eye-color').value = data.eyeColor || '';
                 document.getElementById('vaccine').value = data.vaccine || '';
+                document.getElementById('dewormed').value = data.dewormed || ''; // MODIFICATION: Added dewormed
                 document.getElementById('status').value = data.status || 'available';
                 document.getElementById('description').value = data.description || '';
 
@@ -262,7 +268,7 @@
 
                 const productData = {
                     name: document.getElementById('name').value,
-                    breed: document.getElementById('breed').value,
+                    // MODIFICATION: Removed breed
                     age: document.getElementById('age').value,
                     price: Number(document.getElementById('price').value),
                     discountPrice: Number(document.getElementById('discount-price').value) || 0,
@@ -270,6 +276,7 @@
                     color: document.getElementById('color').value,
                     eyeColor: document.getElementById('eye-color').value,
                     vaccine: document.getElementById('vaccine').value,
+                    dewormed: document.getElementById('dewormed').value, // MODIFICATION: Added dewormed
                     status: document.getElementById('status').value,
                     description: document.getElementById('description').value,
                     updatedAt: serverTimestamp(),
@@ -282,13 +289,10 @@
                     await updateDoc(docRef, productData);
                     alert('อัปเดตข้อมูลสำเร็จ!');
                 } else {
-                    // --- MODIFIED LOGIC ---
-                    // Find the item with the LOWEST orderPosition to place the new one BEFORE it.
                     const q = query(collection(db, "products"), orderBy("orderPosition", "asc"), limit(1));
                     const querySnapshot = await getDocs(q);
                     const firstPosition = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().orderPosition;
                     
-                    // Assign a new position that is one less than the current first position.
                     productData.orderPosition = (firstPosition || 0) - 1; 
                     productData.createdAt = serverTimestamp();
                     

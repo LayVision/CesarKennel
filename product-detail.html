@@ -109,7 +109,6 @@
             container.innerHTML = '<p style="text-align: center;">กำลังโหลดข้อมูล...</p>';
 
             try {
-                // MODIFICATION: Fetch site settings along with product details
                 const productDocRef = doc(db, 'products', productId);
                 const settingsDocRef = doc(db, "settings", "siteConfig");
                 
@@ -122,7 +121,7 @@
 
                 if (productDocSnap.exists()) {
                     const product = productDocSnap.data();
-                    displayProductDetails(product, settings); // Pass settings to the display function
+                    displayProductDetails(product, settings);
                 } else {
                     container.innerHTML = '<h1>404 - ไม่พบข้อมูล</h1><p>เราไม่พบสุนัขที่คุณค้นหา อาจถูกลบไปแล้วหรือคุณมีลิงก์ที่ไม่ถูกต้อง <a href="index.html">กลับสู่หน้าร้าน</a></p>';
                     document.title = "ไม่พบข้อมูล - ซีซาร์ เคนเนล";
@@ -134,10 +133,9 @@
         };
 
         // --- Helper function to populate the DOM ---
-        const displayProductDetails = (product, settings) => { // MODIFICATION: Receive settings object
+        const displayProductDetails = (product, settings) => {
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
             
-            // --- MODIFICATION START: Build dynamic contact buttons with corrected SVGs ---
             let buttonHTML = '';
             if (product.status === 'sold') {
                 buttonHTML = `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`;
@@ -156,7 +154,6 @@
                 
                 buttonHTML = `<div class="contact-buttons-container">${lineBtn}${messengerBtn}</div>`;
             }
-            // --- MODIFICATION END ---
             
             const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
             let priceHTML = `<span class="discounted-price">${product.price.toLocaleString('th-TH')} บาท</span>`;
@@ -199,12 +196,13 @@
                     <p class="description">${product.description || 'ไม่มีคำอธิบายเพิ่มเติม'}</p>
                     
                     <ul class="details-list">
-                        <li><strong>สายพันธุ์:</strong><span>${product.breed}</span></li>
+                        <!-- MODIFICATION: Removed breed, added dewormed -->
                         <li><strong>อายุ:</strong><span>${product.age}</span></li>
                         <li><strong>เพศ:</strong><span>${product.gender}</span></li>
                         <li><strong>ตัวสี:</strong><span>${product.color}</span></li>
                         <li><strong>ตาสี:</strong><span>${product.eyeColor || '-'}</span></li>
                         <li><strong>วัคซีน:</strong><span>${product.vaccine || '-'}</span></li>
+                        <li><strong>ถ่ายพยาธิ:</strong><span>${product.dewormed || '-'}</span></li>
                     </ul>
                     ${buttonHTML}
                 </div>
