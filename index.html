@@ -301,6 +301,7 @@
             const allItems = Array.from(productGrid.getElementsByClassName('product-card'));
             if (allItems.length <= itemsPerPage) {
                 paginationContainer.innerHTML = '';
+                allItems.forEach(item => item.style.display = 'block'); // Ensure all items are visible if no pagination
                 return;
             };
             const totalPages = Math.ceil(allItems.length / itemsPerPage);
@@ -338,6 +339,19 @@
             const initialPage = parseInt(initialUrlParams.get('page')) || 1;
             displayPage(initialPage);
         };
+
+        // --- MODIFICATION START ---
+        // Add a resize listener to make pagination responsive. This ensures that if the user resizes 
+        // the browser across breakpoints, the number of items per page is recalculated correctly.
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // Re-initialize pagination which will re-check the media query and update the view.
+                initializePagination();
+            }, 250); // Debounce to avoid excessive calls during resize.
+        });
+        // --- MODIFICATION END ---
 
         loadSiteSettings();
         fetchAndDisplayProducts();
