@@ -340,7 +340,7 @@ a {
 }
 
 .product-card.sold-item .card-image-container img {
-    filter: grayscale(1);
+    filter: grayscale(0);
     /* Visual cue for sold items */
 }
 
