@@ -57,10 +57,10 @@
                     <div id="footer-address" style="white-space: pre-line; margin-top: 1em;"></div>
                 </div>
                 <div class="social-links">
-                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;">FB</a>
-                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;">IG</a>
-                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;">LINE</a>
-                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;">TT</a>
+                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="https://i.ibb.co/2d5jV61/facebook-icon.png" alt="Facebook"></a>
+                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img src="https://i.ibb.co/3zd7Jv8/instagram-icon.png" alt="Instagram"></a>
+                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img src="https://i.ibb.co/yQWz0n6/line-icon.png" alt="Line"></a>
+                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img src="https://i.ibb.co/L5B0b5N/tiktok-icon.png" alt="TikTok"></a>
                 </div>
             </div>
             <div class="footer-map" id="footer-map-container">
@@ -130,16 +130,16 @@
             if (sidebarSocialContainer) {
                 let linksHTML = '';
                 if (settings.socialFacebook) {
-                    linksHTML += `<li><a href="${settings.socialFacebook}" target="_blank"><span class="sidebar-social-icon"><svg viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3v9h4v-9z"/></svg></span><span>Facebook</span></a></li>`;
+                    linksHTML += `<li><a href="${settings.socialFacebook}" target="_blank"><img src="https://i.ibb.co/2d5jV61/facebook-icon.png" class="sidebar-social-icon" alt="Facebook"><span>Facebook</span></a></li>`;
                 }
                 if (settings.socialInstagram) {
-                    linksHTML += `<li><a href="${settings.socialInstagram}" target="_blank"><span class="sidebar-social-icon"><svg viewBox="0 0 24 24"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122s-.013 3.056-.06 4.122c-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06s-3.056-.013-4.122-.06c-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12s.013-3.056.06-4.122c.05-1.065.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.902 4.902 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-3c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5z"/></svg></span><span>Instagram</span></a></li>`;
+                    linksHTML += `<li><a href="${settings.socialInstagram}" target="_blank"><img src="https://i.ibb.co/3zd7Jv8/instagram-icon.png" class="sidebar-social-icon" alt="Instagram"><span>Instagram</span></a></li>`;
                 }
                 if (settings.socialLine) {
-                    linksHTML += `<li><a href="${settings.socialLine}" target="_blank"><span class="sidebar-social-icon">L</span><span>LINE</span></a></li>`;
+                    linksHTML += `<li><a href="${settings.socialLine}" target="_blank"><img src="https://i.ibb.co/yQWz0n6/line-icon.png" class="sidebar-social-icon" alt="Line"><span>LINE</span></a></li>`;
                 }
                 if (settings.socialTiktok) {
-                    linksHTML += `<li><a href="${settings.socialTiktok}" target="_blank"><span class="sidebar-social-icon">T</span><span>TikTok</span></a></li>`;
+                    linksHTML += `<li><a href="${settings.socialTiktok}" target="_blank"><img src="https://i.ibb.co/L5B0b5N/tiktok-icon.png" class="sidebar-social-icon" alt="TikTok"><span>TikTok</span></a></li>`;
                 }
                 sidebarSocialContainer.innerHTML = linksHTML;
             }
