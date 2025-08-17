@@ -155,6 +155,24 @@
                 };
                 const statusInfo = statusMap[product.status] || statusMap.available;
 
+                // Generate price HTML, showing discount if available
+                const price = product.price || 0;
+                const discountPrice = product.discountPrice || 0;
+                const hasDiscount = discountPrice > 0 && discountPrice < price;
+
+                let priceHTML;
+                if (hasDiscount) {
+                    priceHTML = `
+                        <div>
+                            <del style="color: var(--text-secondary); font-size: 0.9em;">${price.toLocaleString('th-TH')}</del>
+                            <br>
+                            <span style="color: var(--accent-red); font-weight: 700;">${discountPrice.toLocaleString('th-TH')} บาท</span>
+                        </div>
+                    `;
+                } else {
+                    priceHTML = `${price.toLocaleString('th-TH')} บาท`;
+                }
+
                 const tr = document.createElement('tr');
                 tr.dataset.id = product.id; // Store Firestore document ID on the table row
                 tr.innerHTML = `
@@ -169,7 +187,7 @@
                         </div>
                     </td>
                     <td data-label="สถานะ"><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
-                    <td data-label="ราคา">${product.price.toLocaleString('th-TH')} บาท</td>
+                    <td data-label="ราคา">${priceHTML}</td>
                     <td data-label="จัดการ">
                         <div class="action-buttons">
                             <a href="add-item.html?id=${product.id}" class="button edit-btn">แก้ไข</a>
