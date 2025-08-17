@@ -229,7 +229,7 @@ a { text-decoration: none; color: inherit; }
     color: white; 
 }
 
-.product-card.sold-item .card-image-container img { filter: grayscale(0.7); }
+.product-card.sold-item .card-image-container img { filter: grayscale(1); }
 
 .card-content { padding: 20px; }
 .card-content h3 { font-size: 1.4em; font-weight: 700; margin: 0 0 8px 0; color: var(--text-primary); }
