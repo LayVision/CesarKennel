@@ -188,13 +188,10 @@ a {
 
 .hero-image-container {
     width: 100%;
-    height: 400px;
+    aspect-ratio: 16 / 9; /* MODIFIED: This ensures the container matches the cropped image ratio */
     border-radius: var(--radius-lg);
     overflow: hidden;
     background-color: var(--bg-canvas);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
 }
 
@@ -583,9 +580,11 @@ a {
         padding: 0;
     }
 
+    /* REMOVED: No longer needed, aspect-ratio handles this responsively.
     .hero-image-container {
         height: 300px;
     }
+    */
 
     .hero-text-overlay {
         padding: 24px;
