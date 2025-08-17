@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // Adds an event listener to the whole document to close the menu when clicking outside of it.
         document.addEventListener('click', (e) => {
-            if (sidebar.classList.contains('open') && !sidebar.contains(e.target)) {
+            if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuButton.contains(e.target)) {
                 sidebar.classList.remove('open');
             }
         });
