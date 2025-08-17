@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- MODIFICATION START: Added noindex meta tag for admin pages -->
+    <meta name="robots" content="noindex, nofollow">
+    <!-- MODIFICATION END -->
     <title>เพิ่ม/แก้ไข ข้อมูลสุนัข</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
@@ -62,7 +65,6 @@
                         <label for="vaccine">วัคซีน</label>
                         <input type="text" id="vaccine" name="vaccine">
                     </div>
-                    <!-- MODIFICATION START: Changed input to select for Dewormed field -->
                     <div class="input-group">
                         <label for="dewormed">ถ่ายพยาธิ</label>
                         <select id="dewormed" name="dewormed" required>
@@ -70,7 +72,6 @@
                             <option value="false" selected>ยังไม่ได้ทำ</option>
                         </select>
                     </div>
-                    <!-- MODIFICATION END -->
                     <div class="input-group">
                         <label for="status">สถานะ</label>
                         <select id="status" name="status" required>
@@ -205,7 +206,6 @@
                 document.getElementById('status').value = data.status || 'available';
                 document.getElementById('description').value = data.description || '';
                 
-                // MODIFICATION: Handle boolean value for dewormed select
                 document.getElementById('dewormed').value = data.dewormed ? 'true' : 'false';
 
                 if (data.imageUrls && Array.isArray(data.imageUrls)) {
@@ -281,7 +281,6 @@
                     vaccine: document.getElementById('vaccine').value,
                     status: document.getElementById('status').value,
                     description: document.getElementById('description').value,
-                    // MODIFICATION: Convert select value 'true'/'false' to actual boolean
                     dewormed: document.getElementById('dewormed').value === 'true',
                     updatedAt: serverTimestamp(),
                     imageUrls: finalImageUrls,
