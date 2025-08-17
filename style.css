@@ -74,6 +74,7 @@ a { text-decoration: none; color: inherit; }
 .sidebar-nav a:hover { background-color: var(--border-color); color: var(--accent-primary); }
 .sidebar-nav a.active { background-color: var(--accent-primary); color: var(--text-primary); font-weight: 700;}
 
+/* === SIDEBAR SOCIAL LINKS (MODIFIED TO MATCH DESIGN) === */
 .sidebar-follow {
     margin-top: 40px;
 }
@@ -81,39 +82,30 @@ a { text-decoration: none; color: inherit; }
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* Increased spacing between icons */
 }
 .sidebar-social-links a {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 8px;
+    gap: 16px; /* Space between icon and text */
+    padding: 0; /* Removed padding from link */
     font-weight: 500;
-    transition: all 0.2s;
+    transition: color 0.2s; /* Only transition text color */
     font-size: 1.05em;
 }
 .sidebar-social-links a:hover {
-    background-color: var(--border-color);
-    color: var(--accent-primary);
+    background-color: transparent; /* No background on hover */
+    color: var(--accent-primary); /* Text color changes on hover */
 }
-/* MODIFICATION START: Replaced svg specific style with a general icon class */
 .sidebar-social-icon {
-    width: 20px;
-    height: 20px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.9em;
-    /* Make sure images scale correctly */
-    width: 100%;
-    height: 100%;
+    width: 64px; /* Made icons much larger */
+    height: 64px; /* Made icons much larger */
+    display: block;
     object-fit: cover;
 }
-.sidebar-social-icon svg {
-    fill: currentColor;
-}
-/* MODIFICATION END */
+/* === END OF MODIFICATION === */
 
 
 .filter-group { margin-bottom: 24px; }
@@ -513,12 +505,14 @@ a { text-decoration: none; color: inherit; }
     gap: 16px;
     margin-top: auto; /* Pushes social links to the bottom */
 }
+
+/* === FOOTER SOCIAL LINKS (MODIFIED TO MATCH DESIGN) === */
 .social-links a {
     display: inline-block;
-    width: 40px; /* Made smaller */
-    height: 40px; /* Made smaller */
+    width: 40px; 
+    height: 40px;
     border-radius: 50%;
-    transition: all 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 .social-links a img {
     width: 100%;
@@ -527,7 +521,10 @@ a { text-decoration: none; color: inherit; }
 }
 .social-links a:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25); /* Added subtle glow */
 }
+/* === END OF MODIFICATION === */
+
 
 .footer-map iframe {
     width: 100%;
