@@ -67,13 +67,11 @@
                 <div class="form-grid">
                      <div class="input-group"><label for="footer-phone">เบอร์โทรศัพท์</label><input type="text" id="footer-phone" name="footer-phone" placeholder="เช่น 081-234-5678"></div>
                      <div class="input-group"><label for="footer-email">อีเมล</label><input type="email" id="footer-email" name="footer-email" placeholder="เช่น contact@cesarkennel.com"></div>
-                     <!-- MODIFICATION START: Added footer address field -->
                      <div class="input-group full-width">
                         <label for="footer-address">ที่อยู่</label>
                         <textarea id="footer-address" name="footer-address" rows="3" placeholder="ใส่ที่อยู่ ที่นี่">79 เเม่ปูคา สันกำเเพง
 อ. สันกำแพง เชียงใหม่ 50310</textarea>
                     </div>
-                    <!-- MODIFICATION END -->
                      <div class="input-group"><label for="social-facebook">Facebook URL</label><input type="url" id="social-facebook" name="social-facebook" placeholder="https://facebook.com/yourpage"></div>
                      <div class="input-group"><label for="social-instagram">Instagram URL</label><input type="url" id="social-instagram" name="social-instagram" placeholder="https://instagram.com/yourprofile"></div>
                      <div class="input-group"><label for="social-line">LINE URL</label><input type="url" id="social-line" name="social-line" placeholder="https://line.me/ti/p/..."></div>
@@ -135,7 +133,10 @@
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const IMG_BB_API_KEY = '2c1b183962c1d06f8aecea08cbc78d11';
+        // MODIFICATION START: Replaced ImgBB API key with ImageKit.io Public Key
+        const IMAGEKIT_PUBLIC_KEY = 'public_iQbhdK7mwDo4oM7fHXTxd3d0z1U=';
+        const IMAGEKIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload';
+        // MODIFICATION END
 
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
         document.getElementById('logout-button')?.addEventListener('click', (e) => {
@@ -156,7 +157,7 @@
         
         const footerPhoneInput = document.getElementById('footer-phone');
         const footerEmailInput = document.getElementById('footer-email');
-        const footerAddressInput = document.getElementById('footer-address'); // MODIFICATION
+        const footerAddressInput = document.getElementById('footer-address');
         const socialFacebookInput = document.getElementById('social-facebook');
         const socialInstagramInput = document.getElementById('social-instagram');
         const socialLineInput = document.getElementById('social-line');
@@ -226,7 +227,7 @@
                 
                 if(data.footerPhone) footerPhoneInput.value = data.footerPhone;
                 if(data.footerEmail) footerEmailInput.value = data.footerEmail;
-                if(data.footerAddress) footerAddressInput.value = data.footerAddress; // MODIFICATION
+                if(data.footerAddress) footerAddressInput.value = data.footerAddress;
                 if(data.socialFacebook) socialFacebookInput.value = data.socialFacebook;
                 if(data.socialInstagram) socialInstagramInput.value = data.socialInstagram;
                 if(data.socialLine) socialLineInput.value = data.socialLine;
@@ -281,20 +282,24 @@
             try {
                 let coverImageUrl = null;
                 if (croppedBlob) {
-                     coverImageUrl = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            const base64String = reader.result.split(',')[1];
-                            const body = new URLSearchParams();
-                            body.append('image', base64String);
-                            fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: body })
-                            .then(res => res.json())
-                            .then(result => result.success ? resolve(result.data.url) : reject(new Error(result.error?.message || `Image upload failed`)))
-                            .catch(reject);
-                        };
-                        reader.onerror = error => reject(error);
-                        reader.readAsDataURL(croppedBlob);
+                    // MODIFICATION START: Upload cover image to ImageKit.io
+                    const formData = new FormData();
+                    formData.append('file', croppedBlob);
+                    formData.append('fileName', 'cover-image.jpg');
+                    formData.append('publicKey', IMAGEKIT_PUBLIC_KEY);
+                    formData.append('folder', '/site/');
+                    
+                    const response = await fetch(IMAGEKIT_UPLOAD_URL, {
+                        method: 'POST',
+                        body: formData
                     });
+                    const result = await response.json();
+                    if (result.url) {
+                        coverImageUrl = result.url;
+                    } else {
+                        throw new Error(result.message || 'Cover image upload failed');
+                    }
+                    // MODIFICATION END
                 }
                 
                 const galleryItems = Array.from(galleryPreviewContainer.querySelectorAll('.image-preview-item'));
@@ -302,20 +307,27 @@
                     if (item.dataset.url) return Promise.resolve(item.dataset.url);
                     const file = newGalleryFilesMap.get(item.dataset.id);
                     if (!file) return Promise.resolve(null);
-                    return new Promise((resolve, reject) => {
-                         const reader = new FileReader();
-                         reader.onload = () => {
-                            const base64String = reader.result.split(',')[1];
-                            const body = new URLSearchParams();
-                            body.append('image', base64String);
-                            fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: body })
-                            .then(res => res.json())
-                            .then(result => result.success ? resolve(result.data.url) : reject(new Error(result.error?.message)))
-                            .catch(reject);
-                         };
-                         reader.onerror = error => reject(error);
-                         reader.readAsDataURL(file);
+                    
+                    // MODIFICATION START: Upload gallery images to ImageKit.io
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('fileName', file.name);
+                    formData.append('publicKey', IMAGEKIT_PUBLIC_KEY);
+                    formData.append('folder', '/gallery/');
+
+                    return fetch(IMAGEKIT_UPLOAD_URL, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.url) {
+                            return result.url;
+                        } else {
+                            throw new Error(result.message || `Upload failed for ${file.name}`);
+                        }
                     });
+                    // MODIFICATION END
                 });
                 
                 const finalGalleryImageUrls = (await Promise.all(galleryUploadPromises)).filter(Boolean);
@@ -328,7 +340,7 @@
                     
                     footerPhone: footerPhoneInput.value,
                     footerEmail: footerEmailInput.value,
-                    footerAddress: footerAddressInput.value, // MODIFICATION
+                    footerAddress: footerAddressInput.value,
                     socialFacebook: socialFacebookInput.value,
                     socialInstagram: socialInstagramInput.value,
                     socialLine: socialLineInput.value,
