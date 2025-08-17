@@ -92,11 +92,11 @@
                     <div id="footer-address" style="white-space: pre-line; margin-top: 1em;"></div>
                 </div>
                 <div class="social-links">
-                    <!-- PATHS UPDATED TO LOCAL ICONS FOLDER -->
-                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="icons/messenger.png" alt="Facebook Messenger"></a>
-                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img src="icons/instagram.png" alt="Instagram"></a>
+                    <!-- Reordered Social Links -->
                     <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img src="icons/line.png" alt="Line"></a>
+                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="icons/messenger.png" alt="Facebook Messenger"></a>
                     <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img src="icons/tik-tok.png" alt="TikTok"></a>
+                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img src="icons/instagram.png" alt="Instagram"></a>
                 </div>
             </div>
             <div class="footer-map" id="footer-map-container">
@@ -235,15 +235,15 @@
                 const footerEmail = document.getElementById('footer-email');
                 if (data.footerEmail) footerEmail.textContent = `อีเมล: ${data.footerEmail}`;
 
-                // MODIFICATION: Load footer address
                 const footerAddress = document.getElementById('footer-address');
                 if (data.footerAddress) footerAddress.textContent = data.footerAddress;
                 
+                // Reordered social links for the footer
                 const footerSocialLinks = {
-                    'social-fb': data.socialFacebook,
-                    'social-ig': data.socialInstagram,
                     'social-line': data.socialLine,
-                    'social-tiktok': data.socialTiktok
+                    'social-fb': data.socialFacebook,
+                    'social-tiktok': data.socialTiktok,
+                    'social-ig': data.socialInstagram,
                 };
                 for (const [id, url] of Object.entries(footerSocialLinks)) {
                     const linkEl = document.getElementById(id);
@@ -256,18 +256,18 @@
                 const sidebarSocialContainer = document.getElementById('sidebar-social-links');
                 if (sidebarSocialContainer) {
                     let linksHTML = '';
-                    // PATHS UPDATED TO LOCAL ICONS FOLDER
-                    if (data.socialFacebook) {
-                        linksHTML += `<li><a href="${data.socialFacebook}" target="_blank"><img src="icons/messenger.png" class="sidebar-social-icon" alt="Facebook Messenger"><span>Facebook</span></a></li>`;
-                    }
-                    if (data.socialInstagram) {
-                        linksHTML += `<li><a href="${data.socialInstagram}" target="_blank"><img src="icons/instagram.png" class="sidebar-social-icon" alt="Instagram"><span>Instagram</span></a></li>`;
-                    }
+                    // Reordered social links for the sidebar
                     if (data.socialLine) {
                         linksHTML += `<li><a href="${data.socialLine}" target="_blank"><img src="icons/line.png" class="sidebar-social-icon" alt="Line"><span>LINE</span></a></li>`;
                     }
+                    if (data.socialFacebook) {
+                        linksHTML += `<li><a href="${data.socialFacebook}" target="_blank"><img src="icons/messenger.png" class="sidebar-social-icon" alt="Facebook Messenger"><span>Facebook</span></a></li>`;
+                    }
                     if (data.socialTiktok) {
                         linksHTML += `<li><a href="${data.socialTiktok}" target="_blank"><img src="icons/tik-tok.png" class="sidebar-social-icon" alt="TikTok"><span>TikTok</span></a></li>`;
+                    }
+                    if (data.socialInstagram) {
+                        linksHTML += `<li><a href="${data.socialInstagram}" target="_blank"><img src="icons/instagram.png" class="sidebar-social-icon" alt="Instagram"><span>Instagram</span></a></li>`;
                     }
                     sidebarSocialContainer.innerHTML = linksHTML;
                 }
@@ -310,7 +310,6 @@
                     productGrid.innerHTML += createProductCardHTML(product, productId);
                 });
 
-                // Call the global observer function to animate the new cards
                 if(window.observeDynamicContent) {
                     window.observeDynamicContent('.product-card');
                 }

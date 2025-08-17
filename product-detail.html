@@ -57,11 +57,11 @@
                     <div id="footer-address" style="white-space: pre-line; margin-top: 1em;"></div>
                 </div>
                 <div class="social-links">
-                    <!-- PATHS UPDATED TO LOCAL ICONS FOLDER -->
-                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="icons/messenger.png" alt="Facebook Messenger"></a>
-                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img src="icons/instagram.png" alt="Instagram"></a>
+                    <!-- Reordered Social Links -->
                     <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img src="icons/line.png" alt="Line"></a>
+                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="icons/messenger.png" alt="Facebook Messenger"></a>
                     <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img src="icons/tik-tok.png" alt="TikTok"></a>
+                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img src="icons/instagram.png" alt="Instagram"></a>
                 </div>
             </div>
             <div class="footer-map" id="footer-map-container">
@@ -109,15 +109,15 @@
             const footerEmail = document.getElementById('footer-email');
             if (settings.footerEmail) footerEmail.textContent = `อีเมล: ${settings.footerEmail}`;
             
-            // MODIFICATION: Load footer address
             const footerAddress = document.getElementById('footer-address');
             if (settings.footerAddress) footerAddress.textContent = settings.footerAddress;
 
+            // Reordered social links for the footer
             const footerSocialLinks = {
-                'social-fb': settings.socialFacebook,
-                'social-ig': settings.socialInstagram,
                 'social-line': settings.socialLine,
-                'social-tiktok': settings.socialTiktok
+                'social-fb': settings.socialFacebook,
+                'social-tiktok': settings.socialTiktok,
+                'social-ig': settings.socialInstagram
             };
             for (const [id, url] of Object.entries(footerSocialLinks)) {
                 const linkEl = document.getElementById(id);
@@ -130,18 +130,18 @@
             const sidebarSocialContainer = document.getElementById('sidebar-social-links');
             if (sidebarSocialContainer) {
                 let linksHTML = '';
-                 // PATHS UPDATED TO LOCAL ICONS FOLDER
-                if (settings.socialFacebook) {
-                    linksHTML += `<li><a href="${settings.socialFacebook}" target="_blank"><img src="icons/messenger.png" class="sidebar-social-icon" alt="Facebook Messenger"><span>Facebook</span></a></li>`;
-                }
-                if (settings.socialInstagram) {
-                    linksHTML += `<li><a href="${settings.socialInstagram}" target="_blank"><img src="icons/instagram.png" class="sidebar-social-icon" alt="Instagram"><span>Instagram</span></a></li>`;
-                }
+                // Reordered social links for the sidebar
                 if (settings.socialLine) {
                     linksHTML += `<li><a href="${settings.socialLine}" target="_blank"><img src="icons/line.png" class="sidebar-social-icon" alt="Line"><span>LINE</span></a></li>`;
                 }
+                if (settings.socialFacebook) {
+                    linksHTML += `<li><a href="${settings.socialFacebook}" target="_blank"><img src="icons/messenger.png" class="sidebar-social-icon" alt="Facebook Messenger"><span>Facebook</span></a></li>`;
+                }
                 if (settings.socialTiktok) {
                     linksHTML += `<li><a href="${settings.socialTiktok}" target="_blank"><img src="icons/tik-tok.png" class="sidebar-social-icon" alt="TikTok"><span>TikTok</span></a></li>`;
+                }
+                if (settings.socialInstagram) {
+                    linksHTML += `<li><a href="${settings.socialInstagram}" target="_blank"><img src="icons/instagram.png" class="sidebar-social-icon" alt="Instagram"><span>Instagram</span></a></li>`;
                 }
                 sidebarSocialContainer.innerHTML = linksHTML;
             }
