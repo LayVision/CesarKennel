@@ -18,6 +18,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Intersection Observer for Animations (NEW) ---
+    // This beautiful effect makes sections fade and slide up as they enter the viewport.
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1 // Animate when 10% of the element is visible
+    };
+
+    const animationObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe all static elements that have the .fade-in-up class
+    const staticElements = document.querySelectorAll('.fade-in-up');
+    staticElements.forEach(el => animationObserver.observe(el));
+    
+    // Create a function on the window object to observe dynamically added content (like product cards)
+    window.observeDynamicContent = (selector) => {
+        const dynamicElements = document.querySelectorAll(selector);
+        dynamicElements.forEach((el, index) => {
+            // Add a staggered delay to each item for a nice flowing effect
+            el.style.transitionDelay = `${index * 75}ms`;
+            animationObserver.observe(el);
+        });
+    }
+
+
     // --- Product Detail Gallery ---
     // This logic is now correctly handled in the product-detail.html file's module script 
     // to ensure it runs only after the dynamic gallery has been created.

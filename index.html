@@ -39,7 +39,7 @@
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <section class="hero-section">
+            <section class="hero-section fade-in-up">
                 <div class="hero-image-container">
                     <img id="hero-image" src="cesar-kennel-logo.png" alt="Cesar Kennel Logo">
                     
@@ -55,7 +55,7 @@
                 </div>
             </section>
             
-            <header class="desktop-header">
+            <header class="desktop-header fade-in-up">
                 <h1>เพื่อนคู่ใจที่ดีที่สุด</h1>
                 <p>สุนัขทุกตัวถูกเลี้ยงด้วยความรัก พร้อมที่จะเป็นสมาชิกใหม่ในครอบครัวคุณ</p>
             </header>
@@ -64,9 +64,9 @@
                 <!-- Content will be loaded dynamically. -->
             </div>
 
-            <div class="pagination-container" id="pagination"></div>
+            <div class="pagination-container fade-in-up" id="pagination"></div>
             
-            <section id="gallery-section" class="gallery-section" style="display: none;">
+            <section id="gallery-section" class="gallery-section fade-in-up" style="display: none;">
                 <h2>✨ พบกับน้องหมาน่ารักจากฟาร์มของเราได้ที่นี่ ✨</h2>
                 <div class="gallery-slider">
                     <div class="gallery-track" id="gallery-track">
@@ -307,6 +307,11 @@
                     const productId = doc.id;
                     productGrid.innerHTML += createProductCardHTML(product, productId);
                 });
+
+                // Call the global observer function to animate the new cards
+                if(window.observeDynamicContent) {
+                    window.observeDynamicContent('.product-card');
+                }
 
                 initializePagination();
 
