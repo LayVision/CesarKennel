@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- MODIFICATION START: Added noindex meta tag for admin pages -->
+    <!-- SEO: noindex tag prevents search engines from indexing this admin page -->
     <meta name="robots" content="noindex, nofollow">
-    <!-- MODIFICATION END -->
     <title>จัดการสุนัข - แผงควบคุม</title>
     <link rel="stylesheet" href="admin-style.css?v=2.0">
 </head>
 <body>
+    <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="admin-layout">
+        
+        <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Admin<span>.</span></div>
@@ -30,7 +32,9 @@
             </nav>
         </aside>
 
+        <!-- Main Admin Content Area -->
         <main class="admin-main">
+             <!-- Mobile Header: Visible only on smaller screens -->
              <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <div class="mobile-header-actions">
@@ -39,11 +43,13 @@
                 </div>
             </header>
 
+            <!-- Desktop Header: Visible on larger screens -->
             <header class="desktop-header">
                 <h1>จัดการสุนัข</h1>
                 <a href="add-item.html" class="button button-primary">+ เพิ่มสุนัขใหม่</a>
             </header>
 
+            <!-- Main Content Card -->
             <div class="admin-card">
                  <h2>รายการสุนัขทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
                  <div class="product-table-wrapper">
@@ -57,8 +63,8 @@
                                 <th style="width: 150px;">จัดการ</th>
                             </tr>
                         </thead>
+                        <!-- Product rows will be dynamically inserted here by JavaScript -->
                         <tbody id="product-list">
-                            <!-- Product rows will be inserted here by JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -66,14 +72,19 @@
         </main>
     </div>
 
+    <!-- Third-party library for drag-and-drop sorting -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- General purpose script for mobile menu, etc. -->
     <script src="script.js"></script>
 
+    <!-- Page-specific JavaScript using Firebase -->
     <script type="module">
+        // Import necessary Firebase modules
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
+        // Firebase configuration object
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -83,11 +94,16 @@
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
         
+        // Initialize Firebase app (ensuring it's only initialized once)
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // --- Authentication ---
+        // Redirect to login page if user is not authenticated
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
+        
+        // Logout button functionality
         document.getElementById('logout-button')?.addEventListener('click', (e) => {
             e.preventDefault();
             signOut(auth).then(() => {
@@ -96,9 +112,15 @@
             });
         });
 
+        // --- DOM Elements ---
         const productList = document.getElementById('product-list');
-        let productsCache = [];
+        let productsCache = []; // Local cache to hold product data for reordering
 
+        // --- Firestore Data Fetching ---
+        /**
+         * Fetches all products from Firestore, ordered by 'orderPosition'.
+         * Stores them in productsCache and calls renderProducts.
+         */
         const fetchProducts = async () => {
             productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`;
             const q = query(collection(db, "products"), orderBy("orderPosition", "asc"));
@@ -112,6 +134,9 @@
             renderProducts();
         };
 
+        /**
+         * Renders the products from the productsCache into the HTML table.
+         */
         const renderProducts = () => {
             productList.innerHTML = ''; // Clear table
             if (productsCache.length === 0) {
@@ -120,6 +145,7 @@
             }
 
             productsCache.forEach(product => {
+                // Map status values to display text and CSS classes
                 const statusMap = {
                     available: { class: 'available', text: 'พร้อมย้ายบ้าน' },
                     preordered: { class: 'preordered', text: 'ติดจอง' },
@@ -128,7 +154,7 @@
                 const statusInfo = statusMap[product.status] || statusMap.available;
                 
                 const tr = document.createElement('tr');
-                tr.dataset.id = product.id;
+                tr.dataset.id = product.id; // Store Firestore document ID on the table row
                 tr.innerHTML = `
                     <td style="cursor: grab; text-align: center;" class="drag-handle">☰</td>
                     <td data-label="ข้อมูลสุนัข">
@@ -153,6 +179,11 @@
             });
         };
 
+        // --- Event Delegation for Delete Buttons ---
+        /**
+         * Listens for clicks on the product list table. If a delete button is clicked,
+         * it confirms the action and deletes the corresponding document from Firestore.
+         */
         productList.addEventListener('click', async (e) => {
             if (e.target.classList.contains('delete-btn')) {
                 const id = e.target.dataset.id;
@@ -162,7 +193,7 @@
                 if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${productName}"?`)) {
                     try {
                         await deleteDoc(doc(db, 'products', id));
-                        row.remove();
+                        row.remove(); // Remove from UI immediately
                         alert('ลบข้อมูลสำเร็จ');
                     } catch (error) {
                         console.error("Error removing document: ", error);
@@ -172,23 +203,32 @@
             }
         });
 
+        // --- Drag-and-Drop Sorting ---
+        /**
+         * Initializes SortableJS on the table body.
+         * When a row is dropped, it updates the 'orderPosition' field for all
+         * documents in Firestore using a batch write for efficiency.
+         */
         new Sortable(productList, {
-            handle: '.drag-handle',
+            handle: '.drag-handle', // Specify the drag handle element
             animation: 150,
-            ghostClass: 'sortable-ghost',
+            ghostClass: 'sortable-ghost', // CSS class for the placeholder
             onEnd: async (evt) => {
                 const items = Array.from(productList.querySelectorAll('tr'));
                 const batch = writeBatch(db);
                 
+                // Loop through the reordered rows and update their orderPosition in the batch
                 items.forEach((item, index) => {
                     const docId = item.dataset.id;
                     const docRef = doc(db, 'products', docId);
                     batch.update(docRef, { orderPosition: index });
                 });
 
+                // Commit the batch write to Firestore
                 try {
                     await batch.commit();
-                    fetchProducts();
+                    // Refetch products to ensure data consistency, although UI is already updated
+                    fetchProducts(); 
                 } catch (error) {
                     console.error("Error updating order: ", error);
                     alert("เกิดข้อผิดพลาดในการจัดลำดับ");
@@ -196,7 +236,7 @@
             },
         });
 
-
+        // Initial data load when the page is ready
         fetchProducts();
     </script>
 </body>

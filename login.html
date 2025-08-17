@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- MODIFICATION START: Added noindex meta tag for admin pages -->
+    <!-- SEO: noindex tag prevents search engines from indexing this admin page -->
     <meta name="robots" content="noindex, nofollow">
-    <!-- MODIFICATION END -->
     <title>แผงควบคุมสำหรับผู้ดูแล</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
@@ -28,12 +27,12 @@
         </form>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs for authentication -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-        // --- Firebase Initialization ---
+        // Firebase configuration object
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -43,10 +42,12 @@
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // If user is already logged in, redirect them to the admin panel
+        // --- Authentication State Observer ---
+        // If a user is already logged in, redirect them directly to the admin panel.
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 window.location.href = 'admin.html';
@@ -61,17 +62,22 @@
             const email = loginForm.username.value;
             const password = loginForm.password.value;
             const button = loginForm.querySelector('button');
+            
+            // Disable button to prevent multiple submissions
             button.disabled = true;
             button.textContent = 'กำลังเข้าสู่ระบบ...';
 
+            // Attempt to sign in with Firebase Authentication
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Signed in successfully, redirect will be handled by onAuthStateChanged
+                    // Success! The onAuthStateChanged observer will handle the redirect.
                     window.location.href = 'admin.html';
                 })
                 .catch((error) => {
+                    // Handle login errors (e.g., wrong password)
                     console.error("Login Error:", error.message);
                     alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+                    // Re-enable the button
                     button.disabled = false;
                     button.textContent = 'เข้าสู่ระบบ';
                 });

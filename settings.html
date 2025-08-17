@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- MODIFICATION START: Added noindex meta tag for admin pages -->
+    <!-- SEO: noindex tag prevents search engines from indexing this admin page -->
     <meta name="robots" content="noindex, nofollow">
-    <!-- MODIFICATION END -->
     <title>ตั้งค่าเว็บไซต์ - ซีซาร์ เคนเนล</title>
     <link rel="stylesheet" href="admin-style.css">
+    <!-- Third-party library for image cropping -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 </head>
 <body>
+    <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="admin-layout">
+        
+        <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Admin<span>.</span></div>
@@ -31,17 +34,22 @@
             </nav>
         </aside>
 
+        <!-- Main Admin Content Area -->
         <main class="admin-main">
+            <!-- Mobile Header: Visible only on smaller screens -->
             <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
             
+            <!-- Desktop Header: Visible on larger screens -->
             <header class="desktop-header">
                 <h1>ตั้งค่าเว็บไซต์</h1>
             </header>
 
+            <!-- Settings Form -->
             <form id="settings-form" class="admin-card">
+                <!-- Section: Homepage Customization -->
                 <h2>ปรับแต่งหน้าแรก</h2>
                 <div class="form-grid">
                     <div class="input-group full-width">
@@ -54,6 +62,7 @@
                     </div>
                 </div>
                 
+                <!-- Section: Contact Links for Product Page -->
                 <h2 class="form-section-header">ลิงก์สำหรับติดต่อ (หน้าสินค้า)</h2>
                 <div class="form-grid">
                     <div class="input-group full-width">
@@ -66,14 +75,14 @@
                     </div>
                 </div>
                 
+                <!-- Section: Footer Information -->
                 <h2 class="form-section-header">ข้อมูลส่วนท้ายเว็บ (Footer)</h2>
                 <div class="form-grid">
                      <div class="input-group"><label for="footer-phone">เบอร์โทรศัพท์</label><input type="text" id="footer-phone" name="footer-phone" placeholder="เช่น 081-234-5678"></div>
                      <div class="input-group"><label for="footer-email">อีเมล</label><input type="email" id="footer-email" name="footer-email" placeholder="เช่น contact@cesarkennel.com"></div>
                      <div class="input-group full-width">
                         <label for="footer-address">ที่อยู่</label>
-                        <textarea id="footer-address" name="footer-address" rows="3" placeholder="ใส่ที่อยู่ ที่นี่">79 เเม่ปูคา สันกำเเพง
-อ. สันกำแพง เชียงใหม่ 50310</textarea>
+                        <textarea id="footer-address" name="footer-address" rows="3" placeholder="ใส่ที่อยู่ ที่นี่">79 เเม่ปูคา สันกำเเพง อ. สันกำแพง เชียงใหม่ 50310</textarea>
                     </div>
                      <div class="input-group"><label for="social-facebook">Facebook URL</label><input type="url" id="social-facebook" name="social-facebook" placeholder="https://facebook.com/yourpage"></div>
                      <div class="input-group"><label for="social-instagram">Instagram URL</label><input type="url" id="social-instagram" name="social-instagram" placeholder="https://instagram.com/yourprofile"></div>
@@ -81,10 +90,11 @@
                      <div class="input-group"><label for="social-tiktok">TikTok URL</label><input type="url" id="social-tiktok" name="social-tiktok" placeholder="https://tiktok.com/@yourprofile"></div>
                      <div class="input-group full-width">
                          <label for="google-maps-embed">Google Maps Embed Code (HTML)</label>
-                         <textarea id="google-maps-embed" name="google-maps-embed" rows="4" placeholder="วางโค้ด<iframe> จาก Google Maps ที่นี่"><iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d60440.021145593804!2d99.110425!3d18.775799!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30da27a492d61e43%3A0xa3a918912c35cd86!2zQ2VzYXIgRG9nIGNhcmUg4Lij4Lix4Lia4Lid4Liy4LiB4Liq4Li44LiZ4Lix4LiC4LmA4LiK4Li14Lii4LiH4LmD4Lir4Lih4LmI!5e0!3m2!1sen!2sus!4v1755346701144!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></textarea>
+                         <textarea id="google-maps-embed" name="google-maps-embed" rows="4" placeholder="วางโค้ด<iframe> จาก Google Maps ที่นี่"><iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!d60440.021145593804!2d99.110425!3d18.775799!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30da27a492d61e43%3A0xa3a918912c35cd86!2zQ2VzYXIgRG9nIGNhcmUg4Lij4Lix4Lia4Lid4Liy4LiB4Liq4Li44LiZ4Lix4LiC4LmA4LiK4Li14Lii4LiH4LmD4Lir4Lih4LmI!5e0!3m2!1sen!2sus!4v1755346701144!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></textarea>
                      </div>
                 </div>
                 
+                <!-- Section: Homepage Gallery -->
                 <h2 class="form-section-header">แกลเลอรี่หน้าแรก (ลากเพื่อจัดลำดับ, สูงสุด 10 รูป)</h2>
                 <div class="input-group full-width">
                     <label for="gallery-image-upload">อัปโหลดรูปภาพใหม่สำหรับแกลเลอรี่</label>
@@ -94,7 +104,7 @@
                     <!-- Gallery image previews will be generated here -->
                 </div>
 
-
+                <!-- Form Submission Button -->
                 <div class="form-actions full-width">
                    <button type="submit" class="button button-primary">บันทึกการตั้งค่าทั้งหมด</button>
                </div>
@@ -102,6 +112,7 @@
         </main>
     </div>
 
+    <!-- Modal for Image Cropping -->
     <div id="crop-modal" class="crop-modal">
         <div class="crop-modal-content">
             <h3>ตัดรูปภาพหน้าปก</h3>
@@ -115,10 +126,13 @@
         </div>
     </div>
 
+    <!-- General purpose script for mobile menu, etc. -->
     <script src="script.js"></script>
+    <!-- Third-party libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
+    <!-- Page-specific JavaScript using Firebase -->
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
@@ -138,6 +152,7 @@
         const auth = getAuth(app);
         const IMG_BB_API_KEY = '2c1b183962c1d06f8aecea08cbc78d11';
 
+        // --- Authentication ---
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
         document.getElementById('logout-button')?.addEventListener('click', (e) => {
             e.preventDefault();
@@ -147,14 +162,14 @@
             });
         });
 
+        // --- DOM Elements ---
         const settingsForm = document.getElementById('settings-form');
+        const settingsRef = doc(db, "settings", "siteConfig");
+        // Form inputs
         const coverImageInput = document.getElementById('cover-image-upload');
         const marqueeTextInput = document.getElementById('marquee-text');
-        const settingsRef = doc(db, "settings", "siteConfig");
-        
         const lineUrlInput = document.getElementById('line-url');
         const messengerUrlInput = document.getElementById('messenger-url');
-        
         const footerPhoneInput = document.getElementById('footer-phone');
         const footerEmailInput = document.getElementById('footer-email');
         const footerAddressInput = document.getElementById('footer-address');
@@ -163,18 +178,19 @@
         const socialLineInput = document.getElementById('social-line');
         const socialTiktokInput = document.getElementById('social-tiktok');
         const googleMapsEmbedInput = document.getElementById('google-maps-embed');
-        
+        // Gallery elements
         const galleryImageInput = document.getElementById('gallery-image-upload');
         const galleryPreviewContainer = document.getElementById('gallery-preview-container');
         const newGalleryFilesMap = new Map();
-
+        // Cropper modal elements
         const cropModal = document.getElementById('crop-modal');
         const imageToCrop = document.getElementById('image-to-crop');
         const cropBtn = document.getElementById('crop-btn');
         const cancelCropBtn = document.getElementById('cancel-crop-btn');
         let cropper = null;
-        let croppedBlob = null;
+        let croppedBlob = null; // Stores the cropped image data before upload
         
+        // --- Gallery Preview Management ---
         const createGalleryPreviewElement = (id, src, isExisting = false) => {
              if (galleryPreviewContainer.children.length >= 10) {
                 alert('คุณสามารถอัปโหลดรูปภาพแกลเลอรี่ได้สูงสุด 10 รูป');
@@ -185,13 +201,9 @@
             wrapper.dataset.id = id;
             if (isExisting) wrapper.dataset.url = src;
             wrapper.innerHTML = `
-                <span class="drag-handle">☰</span>
-                <img src="${src}" alt="Gallery preview">
-                <button type="button" class="remove-btn" title="Remove image">&times;</button>
-            `;
+                <span class="drag-handle">☰</span><img src="${src}" alt="Gallery preview"><button type="button" class="remove-btn" title="Remove image">&times;</button>`;
             galleryPreviewContainer.appendChild(wrapper);
         };
-
         galleryImageInput.addEventListener('change', (e) => {
             for (const file of e.target.files) {
                 if (galleryPreviewContainer.children.length >= 10) break;
@@ -203,7 +215,6 @@
             }
             e.target.value = '';
         });
-
         galleryPreviewContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-btn')) {
                 const wrapper = e.target.closest('.image-preview-item');
@@ -213,34 +224,32 @@
                 }
             }
         });
-
         new Sortable(galleryPreviewContainer, { animation: 150, handle: '.drag-handle', ghostClass: 'sortable-ghost' });
 
-
+        // --- Load Existing Settings ---
         const loadCurrentSettings = async () => {
             const docSnap = await getDoc(settingsRef);
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                if (data.marqueeText) marqueeTextInput.value = data.marqueeText;
-                if (data.lineUrl) lineUrlInput.value = data.lineUrl;
-                if (data.messengerUrl) messengerUrlInput.value = data.messengerUrl;
-                
-                if(data.footerPhone) footerPhoneInput.value = data.footerPhone;
-                if(data.footerEmail) footerEmailInput.value = data.footerEmail;
-                if(data.footerAddress) footerAddressInput.value = data.footerAddress;
-                if(data.socialFacebook) socialFacebookInput.value = data.socialFacebook;
-                if(data.socialInstagram) socialInstagramInput.value = data.socialInstagram;
-                if(data.socialLine) socialLineInput.value = data.socialLine;
-                if(data.socialTiktok) socialTiktokInput.value = data.socialTiktok;
-                if(data.googleMapsEmbed) googleMapsEmbedInput.value = data.googleMapsEmbed;
+                marqueeTextInput.value = data.marqueeText || '';
+                lineUrlInput.value = data.lineUrl || '';
+                messengerUrlInput.value = data.messengerUrl || '';
+                footerPhoneInput.value = data.footerPhone || '';
+                footerEmailInput.value = data.footerEmail || '';
+                footerAddressInput.value = data.footerAddress || '';
+                socialFacebookInput.value = data.socialFacebook || '';
+                socialInstagramInput.value = data.socialInstagram || '';
+                socialLineInput.value = data.socialLine || '';
+                socialTiktokInput.value = data.socialTiktok || '';
+                googleMapsEmbedInput.value = data.googleMapsEmbed || '';
                 
                 if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls)) {
                     data.galleryImageUrls.forEach(url => createGalleryPreviewElement(url, url, true));
                 }
             }
         };
-        loadCurrentSettings();
 
+        // --- Image Cropper Logic ---
         coverImageInput.addEventListener('change', (e) => {
             const files = e.target.files;
             if (files && files.length > 0) {
@@ -249,30 +258,30 @@
                     imageToCrop.src = event.target.result;
                     cropModal.style.display = 'flex';
                     if (cropper) cropper.destroy();
+                    // Initialize Cropper.js with a 16:9 aspect ratio
                     cropper = new Cropper(imageToCrop, { aspectRatio: 16 / 9, viewMode: 1, background: false });
                 };
                 reader.readAsDataURL(files[0]);
             }
         });
-
         cropBtn.addEventListener('click', () => {
             if (cropper) {
                 cropper.getCroppedCanvas({ width: 1280, height: 720 }).toBlob((blob) => {
-                    croppedBlob = blob;
+                    croppedBlob = blob; // Store the result
                     alert('ตัดรูปภาพเรียบร้อย! กด "บันทึกการตั้งค่าทั้งหมด" เพื่อยืนยัน');
                     closeCropModal();
                 }, 'image/jpeg');
             }
         });
-
         cancelCropBtn.addEventListener('click', closeCropModal);
-
         function closeCropModal() {
             cropModal.style.display = 'none';
-            if (cropper) cropper.destroy(); cropper = null;
+            if (cropper) cropper.destroy();
+            cropper = null;
             coverImageInput.value = '';
         }
 
+        // --- Form Submission ---
         settingsForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitButton = settingsForm.querySelector('button[type="submit"]');
@@ -280,53 +289,27 @@
             submitButton.textContent = 'กำลังบันทึก...';
 
             try {
+                // 1. Upload cropped cover image if it exists
                 let coverImageUrl = null;
                 if (croppedBlob) {
-                     coverImageUrl = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            const base64String = reader.result.split(',')[1];
-                            const body = new URLSearchParams();
-                            body.append('image', base64String);
-                            fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: body })
-                            .then(res => res.json())
-                            .then(result => result.success ? resolve(result.data.url) : reject(new Error(result.error?.message || `Image upload failed`)))
-                            .catch(reject);
-                        };
-                        reader.onerror = error => reject(error);
-                        reader.readAsDataURL(croppedBlob);
-                    });
+                     coverImageUrl = await uploadImage(croppedBlob);
                 }
                 
+                // 2. Handle gallery images
                 const galleryItems = Array.from(galleryPreviewContainer.querySelectorAll('.image-preview-item'));
                 const galleryUploadPromises = galleryItems.map(item => {
-                    if (item.dataset.url) return Promise.resolve(item.dataset.url);
+                    if (item.dataset.url) return Promise.resolve(item.dataset.url); // Existing image
                     const file = newGalleryFilesMap.get(item.dataset.id);
-                    if (!file) return Promise.resolve(null);
-                    return new Promise((resolve, reject) => {
-                         const reader = new FileReader();
-                         reader.onload = () => {
-                            const base64String = reader.result.split(',')[1];
-                            const body = new URLSearchParams();
-                            body.append('image', base64String);
-                            fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: body })
-                            .then(res => res.json())
-                            .then(result => result.success ? resolve(result.data.url) : reject(new Error(result.error?.message)))
-                            .catch(reject);
-                         };
-                         reader.onerror = error => reject(error);
-                         reader.readAsDataURL(file);
-                    });
+                    return file ? uploadImage(file) : Promise.resolve(null); // New image
                 });
-                
                 const finalGalleryImageUrls = (await Promise.all(galleryUploadPromises)).filter(Boolean);
 
+                // 3. Construct settings data object
                 const settingsData = {
                     marqueeText: marqueeTextInput.value,
                     lineUrl: lineUrlInput.value,
                     messengerUrl: messengerUrlInput.value,
                     galleryImageUrls: finalGalleryImageUrls,
-                    
                     footerPhone: footerPhoneInput.value,
                     footerEmail: footerEmailInput.value,
                     footerAddress: footerAddressInput.value,
@@ -338,10 +321,11 @@
                 };
                 if (coverImageUrl) settingsData.coverImageUrl = coverImageUrl;
 
+                // 4. Save to Firestore
                 await setDoc(settingsRef, settingsData, { merge: true });
 
                 alert('บันทึกการตั้งค่าสำเร็จ!');
-                croppedBlob = null;
+                croppedBlob = null; // Reset state
                 coverImageInput.value = '';
 
             } catch (error) {
@@ -352,6 +336,31 @@
                 submitButton.textContent = 'บันทึกการตั้งค่าทั้งหมด';
             }
         });
+
+        /**
+         * Generic function to upload an image file/blob to ImgBB.
+         * @param {Blob|File} imageBlob - The image data to upload.
+         * @returns {Promise<string>} A promise that resolves with the image URL.
+         */
+        function uploadImage(imageBlob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64String = reader.result.split(',')[1];
+                    const body = new URLSearchParams();
+                    body.append('image', base64String);
+                    fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: body })
+                        .then(res => res.json())
+                        .then(result => result.success ? resolve(result.data.url) : reject(new Error(result.error?.message || `Image upload failed`)))
+                        .catch(reject);
+                };
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(imageBlob);
+            });
+        }
+        
+        // Initial load of settings when page opens
+        loadCurrentSettings();
     </script>
 </body>
 </html>

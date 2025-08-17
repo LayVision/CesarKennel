@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- MODIFICATION START: Improved default title and added meta description for SEO -->
+    <!-- SEO: Default title and description, will be updated by JavaScript for specific products -->
     <title>รายละเอียดลูกสุนัข - Cesar Kennel เชียงใหม่</title>
     <meta name="description" content="ดูรายละเอียดเพิ่มเติมเกี่ยวกับลูกสุนัขจาก Cesar Kennel ฟาร์มไซบีเรียน ฮัสกี้ และอลาสกัน มาลามิวท์คุณภาพในเชียงใหม่ พร้อมรูปภาพและข้อมูลครบถ้วน">
-    <!-- MODIFICATION END -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="shop-layout">
+
+        <!-- Sidebar Navigation & Social Links -->
         <aside class="sidebar" id="sidebar">
             <div>
                 <div class="sidebar-logo">Cesar Kennel<span></span></div>
@@ -22,11 +24,10 @@
                         <li><a href="index.html?gender=เมีย">เพศเมีย</a></li>
                     </ul>
                 </nav>
-
                 <div class="sidebar-follow">
                     <h3>ช่องทางติดตาม</h3>
                     <ul class="sidebar-social-links" id="sidebar-social-links">
-                        <!-- Links will be injected by script -->
+                        <!-- Links will be injected by JavaScript -->
                     </ul>
                 </div>
             </div>
@@ -36,18 +37,22 @@
             </div>
         </aside>
         
+        <!-- Main Content Area -->
         <main class="main-content" id="main-content">
+            <!-- Mobile Header: Visible only on smaller screens -->
             <header class="mobile-header">
                 <div class="mobile-logo">Cesar Kennel<span></span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
+            <!-- Product Detail Container: All content will be loaded here -->
             <div class="product-detail-grid" id="product-detail-container">
                 <!-- Loading message or dynamic content appears here -->
             </div>
         </main>
     </div>
 
+    <!-- Site Footer -->
     <footer class="site-footer">
         <div class="footer-grid">
             <div class="footer-info">
@@ -59,7 +64,6 @@
                     <div id="footer-address" style="white-space: pre-line; margin-top: 1em;"></div>
                 </div>
                 <div class="social-links">
-                    <!-- Reordered Social Links -->
                     <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img src="icons/line.png" alt="Line"></a>
                     <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="icons/messenger.png" alt="Facebook Messenger"></a>
                     <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img src="icons/tik-tok.png" alt="TikTok"></a>
@@ -73,13 +77,17 @@
     </footer>
 
 
+    <!-- General purpose script for mobile menu, animations, etc. -->
     <script src="script.js"></script>
 
+    <!-- Page-specific JavaScript using Firebase -->
     <script type="module">
+        // Import necessary Firebase modules
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
+        // Firebase configuration object
         const firebaseConfig = {
             apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
             authDomain: "cesarkennel.firebaseapp.com",
@@ -89,101 +97,89 @@
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
         
+        // Initialize Firebase app (ensuring it's only initialized once)
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // --- Authentication Link ---
+        // Dynamically changes the login link based on authentication status
         const authLink = document.getElementById('auth-link');
         onAuthStateChanged(auth, user => {
-            if (user) {
-                authLink.textContent = 'แผงควบคุม';
-                authLink.href = 'admin.html';
-            } else {
-                authLink.textContent = 'เข้าสู่ระบบผู้ดูแล';
-                authLink.href = 'login.html';
-            }
+            authLink.textContent = user ? 'แผงควบคุม' : 'เข้าสู่ระบบผู้ดูแล';
+            authLink.href = user ? 'admin.html' : 'login.html';
         });
         
+        // --- UI Population Functions ---
+        /**
+         * Populates the footer and sidebar with data from the settings object.
+         * @param {object} settings - The site settings data from Firestore.
+         */
         const loadFooterAndSidebar = async (settings) => {
-            const footerPhone = document.getElementById('footer-phone');
-            if (settings.footerPhone) footerPhone.textContent = `โทร: ${settings.footerPhone}`;
-            
-            const footerEmail = document.getElementById('footer-email');
-            if (settings.footerEmail) footerEmail.textContent = `อีเมล: ${settings.footerEmail}`;
-            
-            const footerAddress = document.getElementById('footer-address');
-            if (settings.footerAddress) footerAddress.textContent = settings.footerAddress;
+            // Populate footer contact info
+            if (settings.footerPhone) document.getElementById('footer-phone').textContent = `โทร: ${settings.footerPhone}`;
+            if (settings.footerEmail) document.getElementById('footer-email').textContent = `อีเมล: ${settings.footerEmail}`;
+            if (settings.footerAddress) document.getElementById('footer-address').textContent = settings.footerAddress;
 
-            // Reordered social links for the footer
-            const footerSocialLinks = {
-                'social-line': settings.socialLine,
-                'social-fb': settings.socialFacebook,
-                'social-tiktok': settings.socialTiktok,
-                'social-ig': settings.socialInstagram
-            };
-            for (const [id, url] of Object.entries(footerSocialLinks)) {
-                const linkEl = document.getElementById(id);
-                if (linkEl && url) {
-                    linkEl.href = url;
-                    linkEl.style.display = 'inline-block';
-                }
-            }
+            // Populate social links in footer and sidebar
+            const socialLinksConfig = [
+                { id: 'social-line', url: settings.socialLine, name: 'LINE', icon: 'line.png' },
+                { id: 'social-fb', url: settings.socialFacebook, name: 'Facebook', icon: 'messenger.png' },
+                { id: 'social-tiktok', url: settings.socialTiktok, name: 'TikTok', icon: 'tik-tok.png' },
+                { id: 'social-ig', url: settings.socialInstagram, name: 'Instagram', icon: 'instagram.png' },
+            ];
             
-            const sidebarSocialContainer = document.getElementById('sidebar-social-links');
-            if (sidebarSocialContainer) {
-                let linksHTML = '';
-                // Reordered social links for the sidebar
-                if (settings.socialLine) {
-                    linksHTML += `<li><a href="${settings.socialLine}" target="_blank"><img src="icons/line.png" class="sidebar-social-icon" alt="Line"><span>LINE</span></a></li>`;
+            let sidebarLinksHTML = '';
+            socialLinksConfig.forEach(link => {
+                const footerEl = document.getElementById(link.id);
+                if (link.url) {
+                    if(footerEl) {
+                        footerEl.href = link.url;
+                        footerEl.style.display = 'inline-block';
+                    }
+                    sidebarLinksHTML += `<li><a href="${link.url}" target="_blank"><img src="icons/${link.icon}" class="sidebar-social-icon" alt="${link.name}"><span>${link.name}</span></a></li>`;
                 }
-                if (settings.socialFacebook) {
-                    linksHTML += `<li><a href="${settings.socialFacebook}" target="_blank"><img src="icons/messenger.png" class="sidebar-social-icon" alt="Facebook Messenger"><span>Facebook</span></a></li>`;
-                }
-                if (settings.socialTiktok) {
-                    linksHTML += `<li><a href="${settings.socialTiktok}" target="_blank"><img src="icons/tik-tok.png" class="sidebar-social-icon" alt="TikTok"><span>TikTok</span></a></li>`;
-                }
-                if (settings.socialInstagram) {
-                    linksHTML += `<li><a href="${settings.socialInstagram}" target="_blank"><img src="icons/instagram.png" class="sidebar-social-icon" alt="Instagram"><span>Instagram</span></a></li>`;
-                }
-                sidebarSocialContainer.innerHTML = linksHTML;
-            }
+            });
+            document.getElementById('sidebar-social-links').innerHTML = sidebarLinksHTML;
 
-            const mapContainer = document.getElementById('footer-map-container');
-            if (mapContainer && settings.googleMapsEmbed) {
-                mapContainer.innerHTML = settings.googleMapsEmbed;
+            // Populate Google Map
+            if (settings.googleMapsEmbed) {
+                document.getElementById('footer-map-container').innerHTML = settings.googleMapsEmbed;
             }
         };
 
-        const container = document.getElementById('product-detail-container');
+        // --- Main Data Fetching and Display Logic ---
+        /**
+         * Fetches both the specific product details and the global site settings.
+         * Then calls the appropriate functions to display the content.
+         */
         const fetchProductDetails = async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
+            const container = document.getElementById('product-detail-container');
+            const productId = new URLSearchParams(window.location.search).get('id');
 
             if (!productId) {
-                container.innerHTML = '<h1>ไม่พบรหัสสินค้า</h1><p>ไม่พบข้อมูลสุนัขที่คุณต้องการ โปรดกลับไปที่<a href="index.html">หน้าร้าน</a></p>';
+                container.innerHTML = '<h1>ไม่พบรหัสสินค้า</h1><p>โปรดกลับไปที่<a href="index.html">หน้าร้าน</a></p>';
                 return;
             }
 
             container.innerHTML = '<p style="text-align: center;">กำลังโหลดข้อมูล...</p>';
 
             try {
+                // Fetch product and settings data in parallel for performance
                 const productDocRef = doc(db, 'products', productId);
                 const settingsDocRef = doc(db, "settings", "siteConfig");
-                
-                const [productDocSnap, settingsDocSnap] = await Promise.all([
-                    getDoc(productDocRef),
-                    getDoc(settingsDocRef)
-                ]);
+                const [productDocSnap, settingsDocSnap] = await Promise.all([getDoc(productDocRef), getDoc(settingsDocRef)]);
                 
                 const settings = settingsDocSnap.exists() ? settingsDocSnap.data() : {};
                 
+                // Populate shared elements like footer and sidebar
                 loadFooterAndSidebar(settings);
 
+                // Display product details or a 404 message
                 if (productDocSnap.exists()) {
-                    const product = productDocSnap.data();
-                    displayProductDetails(product, settings);
+                    displayProductDetails(productDocSnap.data(), settings);
                 } else {
-                    container.innerHTML = '<h1>404 - ไม่พบข้อมูล</h1><p>เราไม่พบสุนัขที่คุณค้นหา อาจถูกลบไปแล้วหรือคุณมีลิงก์ที่ไม่ถูกต้อง <a href="index.html">กลับสู่หน้าร้าน</a></p>';
+                    container.innerHTML = '<h1>404 - ไม่พบข้อมูล</h1><p>เราไม่พบสุนัขที่คุณค้นหา <a href="index.html">กลับสู่หน้าร้าน</a></p>';
                     document.title = "ไม่พบข้อมูล - ซีซาร์ เคนเนล";
                 }
             } catch (error) {
@@ -192,52 +188,40 @@
             }
         };
 
+        /**
+         * Renders the product details, gallery, and contact buttons into the page.
+         * @param {object} product - The product data object from Firestore.
+         * @param {object} settings - The site settings data from Firestore.
+         */
         const displayProductDetails = (product, settings) => {
+            // Update page title and meta tags for SEO
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
             
+            // Determine which contact buttons to show based on settings and product status
             let buttonHTML = '';
             if (product.status === 'sold') {
                 buttonHTML = `<button class="add-to-cart-button sold-button" disabled>รายการนี้ขายแล้ว</button>`;
             } else {
-                const lineBtn = settings.lineUrl ? `
-                    <a href="${settings.lineUrl}" target="_blank" rel="noopener noreferrer" class="contact-btn line-btn">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6Z" fill="white"></path><path d="M18 16.5C18 14.0147 15.3137 12 12 12C8.68629 12 6 14.0147 6 16.5V18H18V16.5Z" fill="white"></path></svg>
-                        สั่งซื้อทาง LINE
-                    </a>` : '';
-                
-                const messengerBtn = settings.messengerUrl ? `
-                    <a href="${settings.messengerUrl}" target="_blank" rel="noopener noreferrer" class="contact-btn messenger-btn">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17.5H11V14L8.5 12.5L13 7.5V11H15V14L13 15.5V17.5Z" fill="white"></path></svg>
-                        แชทหาเรา
-                    </a>` : '';
-                
+                const lineBtn = settings.lineUrl ? `<a href="${settings.lineUrl}" target="_blank" rel="noopener noreferrer" class="contact-btn line-btn">สั่งซื้อทาง LINE</a>` : '';
+                const messengerBtn = settings.messengerUrl ? `<a href="${settings.messengerUrl}" target="_blank" rel="noopener noreferrer" class="contact-btn messenger-btn">แชทหาเรา</a>` : '';
                 buttonHTML = `<div class="contact-buttons-container">${lineBtn}${messengerBtn}</div>`;
             }
             
+            // Format price, showing discount if available
             const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
-            let priceHTML = `<span class="discounted-price">${product.price.toLocaleString('th-TH')} บาท</span>`;
-            if (hasDiscount) {
-                priceHTML = `
-                    <span class="original-price">${product.price.toLocaleString('th-TH')}</span>
-                    <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>
-                `;
-            }
+            let priceHTML = hasDiscount ? `
+                <span class="original-price">${product.price.toLocaleString('th-TH')}</span>
+                <span class="discounted-price">${product.discountPrice.toLocaleString('th-TH')} บาท</span>` :
+                `<span class="discounted-price">${product.price.toLocaleString('th-TH')} บาท</span>`;
 
-            const dewormedHTML = product.dewormed === true
-                ? `<span class="status-icon check">✓</span>`
-                : `<span class="status-icon cross">✗</span>`;
+            // Generate checkmark or cross for 'dewormed' status
+            const dewormedHTML = product.dewormed ? `<span class="status-icon check">✓</span>` : `<span class="status-icon cross">✗</span>`;
 
-            let mainSlidesHTML = '';
-            let thumbnailsHTML = '';
-            const imageUrls = product.imageUrls && product.imageUrls.length > 0 
-                ? product.imageUrls 
-                : ['https://via.placeholder.com/800'];
-
-            imageUrls.forEach((url, index) => {
-                mainSlidesHTML += `<div class="gallery-slide"><img src="${url}" alt="รูปของ ${product.name} - ${index + 1}"></div>`;
-                thumbnailsHTML += `<div class="thumbnail-item"><img src="${url}" alt="Thumbnail of ${product.name} - ${index + 1}"></div>`;
-            });
-
+            // Generate HTML for the image gallery
+            const imageUrls = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls : ['https://via.placeholder.com/800'];
+            let mainSlidesHTML = imageUrls.map((url, index) => `<div class="gallery-slide"><img src="${url}" alt="รูปของ ${product.name} - ${index + 1}"></div>`).join('');
+            let thumbnailsHTML = imageUrls.map((url, index) => `<div class="thumbnail-item"><img src="${url}" alt="Thumbnail of ${product.name} - ${index + 1}"></div>`).join('');
+            
             const galleryHTML = `
                 <div class="product-gallery-container">
                     <div class="main-image-wrapper">
@@ -245,19 +229,17 @@
                         <button class="gallery-arrow prev" id="product-gallery-prev">&#10094;</button>
                         <button class="gallery-arrow next" id="product-gallery-next">&#10095;</button>
                     </div>
-                    <div class="thumbnail-wrapper" id="thumbnail-wrapper">
-                        <div class="thumbnail-track" id="thumbnail-track">${thumbnailsHTML}</div>
-                    </div>
-                </div>
-            `;
+                    <div class="thumbnail-wrapper" id="thumbnail-wrapper"><div class="thumbnail-track" id="thumbnail-track">${thumbnailsHTML}</div></div>
+                </div>`;
 
+            // Combine all parts and inject into the container
+            const container = document.getElementById('product-detail-container');
             container.innerHTML = `
                 ${galleryHTML}
                 <div class="detail-info">
                     <h1>${product.name}</h1>
                     <div class="price">${priceHTML}</div>
                     <p class="description">${product.description || 'ไม่มีคำอธิบายเพิ่มเติม'}</p>
-                    
                     <ul class="details-list">
                         <li><strong>อายุ:</strong><span>${product.age}</span></li>
                         <li><strong>เพศ:</strong><span>${product.gender}</span></li>
@@ -267,68 +249,59 @@
                         <li><strong>ถ่ายพยาธิ:</strong><span>${dewormedHTML}</span></li>
                     </ul>
                     ${buttonHTML}
-                </div>
-            `;
+                </div>`;
             
+            // Initialize the gallery functionality now that the HTML is in the DOM
             initializeProductGallery();
         };
         
+        // --- Gallery Functionality ---
+        /**
+         * Initializes the image gallery slider on the product detail page.
+         * Handles slide transitions, thumbnail clicks, and auto-play.
+         */
         const initializeProductGallery = () => {
             const track = document.getElementById('product-gallery-track');
+            const thumbnails = Array.from(document.querySelectorAll('.thumbnail-item'));
             const prevButton = document.getElementById('product-gallery-prev');
             const nextButton = document.getElementById('product-gallery-next');
-            const thumbnailTrack = document.getElementById('thumbnail-track');
             
-            if (!track || !thumbnailTrack) return;
-
-            const slides = Array.from(track.children);
-            const thumbnails = Array.from(thumbnailTrack.children);
-            
-            if (slides.length <= 1) {
-                prevButton.style.display = 'none';
-                nextButton.style.display = 'none';
-                thumbnailTrack.parentElement.style.display = 'none';
+            if (!track || thumbnails.length <= 1) { // Exit if no gallery or only one image
+                if(prevButton) prevButton.style.display = 'none';
+                if(nextButton) nextButton.style.display = 'none';
+                const thumbnailWrapper = document.getElementById('thumbnail-wrapper');
+                if(thumbnailWrapper) thumbnailWrapper.style.display = 'none';
                 return;
             }
 
             let currentIndex = 0;
-            let autoSlideInterval;
+            let autoSlideInterval = setInterval(() => advanceSlide(1), 5000);
 
-            const showSlide = (index) => {
-                currentIndex = (index + slides.length) % slides.length;
-
-                const slideWidth = slides[0].getBoundingClientRect().width;
-                track.style.transform = `translateX(-${slideWidth * currentIndex}px)`;
-
+            function showSlide(index) {
+                currentIndex = (index + thumbnails.length) % thumbnails.length;
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
                 thumbnails.forEach((thumb, i) => thumb.classList.toggle('active', i === currentIndex));
-
-                const activeThumbnail = thumbnails[currentIndex];
-                if (activeThumbnail) {
-                    activeThumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                }
+                thumbnails[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             };
 
-            const advanceSlide = (direction = 1) => showSlide(currentIndex + direction);
-            const startAutoSlide = () => {
-                stopAutoSlide();
-                autoSlideInterval = setInterval(() => advanceSlide(1), 5000);
+            function advanceSlide(direction) {
+                showSlide(currentIndex + direction);
             };
-            const stopAutoSlide = () => clearInterval(autoSlideInterval);
 
-            nextButton.addEventListener('click', () => { advanceSlide(1); startAutoSlide(); });
-            prevButton.addEventListener('click', () => { advanceSlide(-1); startAutoSlide(); });
-            thumbnails.forEach((thumb, index) => thumb.addEventListener('click', () => { showSlide(index); startAutoSlide(); }));
+            // Event Listeners
+            nextButton.addEventListener('click', () => { advanceSlide(1); restartAutoSlide(); });
+            prevButton.addEventListener('click', () => { advanceSlide(-1); restartAutoSlide(); });
+            thumbnails.forEach((thumb, index) => thumb.addEventListener('click', () => { showSlide(index); restartAutoSlide(); }));
             
-            window.addEventListener('resize', () => {
-                track.style.transition = 'none';
-                showSlide(currentIndex);
-                setTimeout(() => { track.style.transition = 'transform 0.5s ease-in-out'; }, 50);
-            });
+            function restartAutoSlide() {
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = setInterval(() => advanceSlide(1), 5000);
+            }
 
-            showSlide(0);
-            startAutoSlide();
+            showSlide(0); // Show the first slide initially
         };
 
+        // --- Initial Load ---
         fetchProductDetails();
     </script>
 </body>
