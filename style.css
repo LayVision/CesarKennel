@@ -84,7 +84,7 @@ a { text-decoration: none; color: inherit; }
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 24px; /* Increased spacing between icons */
+    gap: 20px; /* Reduced spacing to match smaller icons */
 }
 .sidebar-social-links a {
     display: flex;
@@ -100,8 +100,8 @@ a { text-decoration: none; color: inherit; }
     color: var(--accent-primary); /* Text color changes on hover */
 }
 .sidebar-social-icon {
-    width: 64px; /* Made icons much larger */
-    height: 64px; /* Made icons much larger */
+    width: 48px; /* MODIFIED: Made icons smaller */
+    height: 48px; /* MODIFIED: Made icons smaller */
     display: block;
     object-fit: cover;
 }
