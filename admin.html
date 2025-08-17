@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,11 @@
     <title>จัดการสุนัข - แผงควบคุม</title>
     <link rel="stylesheet" href="admin-style.css?v=2.0">
 </head>
+
 <body>
     <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="admin-layout">
-        
+
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
@@ -24,7 +26,7 @@
                     </ul>
                 </nav>
             </div>
-             <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
@@ -34,8 +36,8 @@
 
         <!-- Main Admin Content Area -->
         <main class="admin-main">
-             <!-- Mobile Header: Visible only on smaller screens -->
-             <header class="mobile-header">
+            <!-- Mobile Header: Visible only on smaller screens -->
+            <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <div class="mobile-header-actions">
                     <a href="add-item.html" class="button button-primary mobile-add-btn">+ เพิ่มสุนัขใหม่</a>
@@ -51,8 +53,8 @@
 
             <!-- Main Content Card -->
             <div class="admin-card">
-                 <h2>รายการสุนัขทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
-                 <div class="product-table-wrapper">
+                <h2>รายการสุนัขทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
+                <div class="product-table-wrapper">
                     <table class="product-table">
                         <thead>
                             <tr>
@@ -93,7 +95,7 @@
             messagingSenderId: "512752480416",
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
-        
+
         // Initialize Firebase app (ensuring it's only initialized once)
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
@@ -102,7 +104,7 @@
         // --- Authentication ---
         // Redirect to login page if user is not authenticated
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
-        
+
         // Logout button functionality
         document.getElementById('logout-button')?.addEventListener('click', (e) => {
             e.preventDefault();
@@ -125,12 +127,12 @@
             productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`;
             const q = query(collection(db, "products"), orderBy("orderPosition", "asc"));
             const querySnapshot = await getDocs(q);
-            
+
             productsCache = []; // Clear cache before fetching
             querySnapshot.forEach(doc => {
                 productsCache.push({ id: doc.id, ...doc.data() });
             });
-            
+
             renderProducts();
         };
 
@@ -140,8 +142,8 @@
         const renderProducts = () => {
             productList.innerHTML = ''; // Clear table
             if (productsCache.length === 0) {
-                 productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลสุนัขในระบบ</td></tr>`;
-                 return;
+                productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลสุนัขในระบบ</td></tr>`;
+                return;
             }
 
             productsCache.forEach(product => {
@@ -152,7 +154,7 @@
                     sold: { class: 'sold', text: 'ขายแล้ว' }
                 };
                 const statusInfo = statusMap[product.status] || statusMap.available;
-                
+
                 const tr = document.createElement('tr');
                 tr.dataset.id = product.id; // Store Firestore document ID on the table row
                 tr.innerHTML = `
@@ -216,7 +218,7 @@
             onEnd: async (evt) => {
                 const items = Array.from(productList.querySelectorAll('tr'));
                 const batch = writeBatch(db);
-                
+
                 // Loop through the reordered rows and update their orderPosition in the batch
                 items.forEach((item, index) => {
                     const docId = item.dataset.id;
@@ -228,7 +230,7 @@
                 try {
                     await batch.commit();
                     // Refetch products to ensure data consistency, although UI is already updated
-                    fetchProducts(); 
+                    fetchProducts();
                 } catch (error) {
                     console.error("Error updating order: ", error);
                     alert("เกิดข้อผิดพลาดในการจัดลำดับ");
@@ -240,4 +242,5 @@
         fetchProducts();
     </script>
 </body>
+
 </html>

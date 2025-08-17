@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,11 @@
     <title>เพิ่ม/แก้ไข ข้อมูลสุนัข</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
+
 <body>
     <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="admin-layout">
-        
+
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
@@ -24,7 +26,7 @@
                     </ul>
                 </nav>
             </div>
-             <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.html">ดูหน้าร้าน</a></li>
                     <li><a href="#" class="logout-link" id="logout-button">ออกจากระบบ</a></li>
@@ -34,8 +36,8 @@
 
         <!-- Main Admin Content Area -->
         <main class="admin-main">
-             <!-- Mobile Header: Visible only on smaller screens -->
-             <header class="mobile-header">
+            <!-- Mobile Header: Visible only on smaller screens -->
+            <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
@@ -51,26 +53,44 @@
                 <!-- Section: General Information -->
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
-                    <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name" name="name" required></div>
-                    <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age" required></div>
-                    <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price" name="price" required></div>
-                    <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number" id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
+                    <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name"
+                            name="name" required></div>
+                    <div class="input-group"><label for="age">อายุ</label><input type="text" id="age" name="age"
+                            required></div>
+                    <div class="input-group"><label for="price">ราคา (บาท)</label><input type="number" id="price"
+                            name="price" required></div>
+                    <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number"
+                            id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
                     <div class="input-group">
                         <label for="gender">เพศ</label>
-                        <select id="gender" name="gender" required><option value="เมีย" selected>เมีย</option><option value="ผู้">ผู้</option></select>
+                        <select id="gender" name="gender" required>
+                            <option value="เมีย" selected>เมีย</option>
+                            <option value="ผู้">ผู้</option>
+                        </select>
                     </div>
-                    <div class="input-group"><label for="color">ตัวสี</label><input type="text" id="color" name="color" required></div>
-                    <div class="input-group"><label for="eye-color">ตาสี</label><input type="text" id="eye-color" name="eye-color"></div>
-                    <div class="input-group"><label for="vaccine">วัคซีน</label><input type="text" id="vaccine" name="vaccine"></div>
+                    <div class="input-group"><label for="color">ตัวสี</label><input type="text" id="color" name="color"
+                            required></div>
+                    <div class="input-group"><label for="eye-color">ตาสี</label><input type="text" id="eye-color"
+                            name="eye-color"></div>
+                    <div class="input-group"><label for="vaccine">วัคซีน</label><input type="text" id="vaccine"
+                            name="vaccine"></div>
                     <div class="input-group">
                         <label for="dewormed">ถ่ายพยาธิ</label>
-                        <select id="dewormed" name="dewormed" required><option value="true">ทำแล้ว</option><option value="false" selected>ยังไม่ได้ทำ</option></select>
+                        <select id="dewormed" name="dewormed" required>
+                            <option value="true">ทำแล้ว</option>
+                            <option value="false" selected>ยังไม่ได้ทำ</option>
+                        </select>
                     </div>
                     <div class="input-group">
                         <label for="status">สถานะ</label>
-                        <select id="status" name="status" required><option value="available" selected>พร้อมย้ายบ้าน</option><option value="preordered">ติดจอง</option><option value="sold">ขายแล้ว</option></select>
+                        <select id="status" name="status" required>
+                            <option value="available" selected>พร้อมย้ายบ้าน</option>
+                            <option value="preordered">ติดจอง</option>
+                            <option value="sold">ขายแล้ว</option>
+                        </select>
                     </div>
-                    <div class="input-group full-width"><label for="description">รายละเอียดเพิ่มเติม</label><textarea id="description" name="description" rows="4"></textarea></div>
+                    <div class="input-group full-width"><label for="description">รายละเอียดเพิ่มเติม</label><textarea
+                            id="description" name="description" rows="4"></textarea></div>
                 </div>
 
                 <!-- Section: Image Uploading -->
@@ -81,7 +101,7 @@
                 </div>
                 <!-- Container for image previews -->
                 <div id="image-preview-container" class="image-preview-container"></div>
-                
+
                 <!-- Form Submission Button -->
                 <div class="form-actions">
                     <button type="submit" class="button button-primary">บันทึกข้อมูล</button>
@@ -89,7 +109,7 @@
             </form>
         </main>
     </div>
-    
+
     <!-- Third-party library for drag-and-drop sorting -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <!-- General purpose script for mobile menu, etc. -->
@@ -111,7 +131,7 @@
             messagingSenderId: "512752480416",
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
-        
+
         // Initialize Firebase app (ensuring it's only initialized once)
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
@@ -164,7 +184,7 @@
             for (const file of e.target.files) {
                 const uniqueId = `${Date.now()}-${file.name}`; // Create a unique ID for the new file
                 newFilesMap.set(uniqueId, file); // Store the file object in the map
-                
+
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     // Create a preview using the file's base64 data
@@ -230,7 +250,7 @@
                 window.location.href = 'admin.html';
             }
         };
-        
+
         // If an ID is present in the URL, run the populateForm function
         if (itemId) {
             populateForm(itemId);
@@ -254,7 +274,7 @@
                     if (url) {
                         return Promise.resolve(url);
                     }
-                    
+
                     // If it's a new image, upload it to ImgBB
                     const file = newFilesMap.get(id);
                     if (file) {
@@ -268,15 +288,15 @@
                                 fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, {
                                     method: 'POST', body: body
                                 })
-                                .then(res => res.json())
-                                .then(result => {
-                                    if (result.success) {
-                                        resolve(result.data.url); // Resolve with the new URL
-                                    } else {
-                                        reject(new Error(result.error?.message || `Upload failed for ${file.name}`));
-                                    }
-                                })
-                                .catch(reject);
+                                    .then(res => res.json())
+                                    .then(result => {
+                                        if (result.success) {
+                                            resolve(result.data.url); // Resolve with the new URL
+                                        } else {
+                                            reject(new Error(result.error?.message || `Upload failed for ${file.name}`));
+                                        }
+                                    })
+                                    .catch(reject);
                             };
                             reader.onerror = error => reject(error);
                             reader.readAsDataURL(file);
@@ -318,10 +338,10 @@
                     const q = query(collection(db, "products"), orderBy("orderPosition", "asc"), limit(1));
                     const querySnapshot = await getDocs(q);
                     const firstPosition = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().orderPosition;
-                    
-                    productData.orderPosition = (firstPosition || 0) - 1; 
+
+                    productData.orderPosition = (firstPosition || 0) - 1;
                     productData.createdAt = serverTimestamp();
-                    
+
                     await addDoc(collection(db, 'products'), productData);
                     alert('เพิ่มสุนัขสำเร็จ!');
                 }
@@ -336,4 +356,5 @@
         });
     </script>
 </body>
+
 </html>

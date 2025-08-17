@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- SEO: Optimized title and meta description for better search engine ranking -->
     <title>ลูกสุนัขไซบีเรียน ฮัสกี้ เเละอลาสกัน มาลามิวท์ เชียงใหม่ พร้อมส่งทั่วประเทศไทย | Cesar Kennel</title>
-    <meta name="description" content="Cesar Kennel ฟาร์มไซบีเรียน ฮัสกี้ เเละอลาสกันมาลามิวท์ เกรดคุณภาพ เชียงใหม่ เพาะพันธุ์น้องหมาสุขภาพแข็งแรง เลี้ยงดูด้วยความรัก พร้อมจัดส่งลูกสุนัขถึงบ้านคุณทั่วประเทศไทย ค้นพบน้องหมาคู่ใจวันนี้!">
+    <meta name="description"
+        content="Cesar Kennel ฟาร์มไซบีเรียน ฮัสกี้ เเละอลาสกันมาลามิวท์ เกรดคุณภาพ เชียงใหม่ เพาะพันธุ์น้องหมาสุขภาพแข็งแรง เลี้ยงดูด้วยความรัก พร้อมจัดส่งลูกสุนัขถึงบ้านคุณทั่วประเทศไทย ค้นพบน้องหมาคู่ใจวันนี้!">
     <link rel="stylesheet" href="style.css?v=2.0">
 </head>
+
 <body>
     <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="shop-layout">
@@ -39,7 +42,7 @@
                 <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
-        
+
         <!-- Main Content Area -->
         <main class="main-content">
             <!-- Mobile Header: Visible only on smaller screens -->
@@ -62,10 +65,11 @@
                 </div>
                 <!-- Scrolling text banner -->
                 <div class="marquee-container">
-                    <p id="marquee-text-display" class="marquee-text">✨ สุนัขสุขภาพดี เกรดพรีเมียม พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
+                    <p id="marquee-text-display" class="marquee-text">✨ สุนัขสุขภาพดี เกรดพรีเมียม
+                        พร้อมย้ายบ้านแล้ววันนี้! ✨</p>
                 </div>
             </section>
-            
+
             <!-- Desktop Header: Welcome text, visible on larger screens -->
             <header class="desktop-header fade-in-up">
                 <h1>เพื่อนคู่ใจที่ดีที่สุด</h1>
@@ -79,7 +83,7 @@
 
             <!-- Pagination Controls -->
             <div class="pagination-container fade-in-up" id="pagination"></div>
-            
+
             <!-- Gallery Section: A slider for showcasing photos, hidden by default -->
             <section id="gallery-section" class="gallery-section fade-in-up" style="display: none;">
                 <h2>✨ พบกับน้องหมาน่ารักจากฟาร์มของเราได้ที่นี่ ✨</h2>
@@ -108,10 +112,14 @@
                 </div>
                 <div class="social-links">
                     <!-- Social media icons, URLs loaded from settings -->
-                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img src="icons/line.png" alt="Line"></a>
-                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="icons/messenger.png" alt="Facebook Messenger"></a>
-                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img src="icons/tik-tok.png" alt="TikTok"></a>
-                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img src="icons/instagram.png" alt="Instagram"></a>
+                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img
+                            src="icons/line.png" alt="Line"></a>
+                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img
+                            src="icons/messenger.png" alt="Facebook Messenger"></a>
+                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img
+                            src="icons/tik-tok.png" alt="TikTok"></a>
+                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img
+                            src="icons/instagram.png" alt="Instagram"></a>
                 </div>
             </div>
             <!-- Footer: Embedded Google Map -->
@@ -141,12 +149,12 @@
             messagingSenderId: "512752480416",
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
-        
+
         // Initialize Firebase app (ensuring it's only initialized once)
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
-        
+
         // --- Authentication Link ---
         // Dynamically changes the login link to a control panel link if the user is authenticated
         const authLink = document.getElementById('auth-link');
@@ -174,7 +182,7 @@
                 }
             });
         };
-        
+
         /**
          * Initializes the homepage gallery slider functionality.
          */
@@ -209,7 +217,7 @@
                 clearInterval(autoSlideInterval); // Reset timer on manual click
                 autoSlideInterval = setInterval(advanceSlide, 5000);
             });
-            
+
             // Recalculate slide position on window resize
             window.addEventListener('resize', () => setSlidePosition(currentIndex));
         };
@@ -225,16 +233,16 @@
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                
+
                 // Populate hero and marquee
                 if (data.coverImageUrl) document.getElementById('hero-image').src = data.coverImageUrl;
                 if (data.marqueeText) document.getElementById('marquee-text-display').textContent = data.marqueeText;
-                
+
                 // Populate homepage gallery
                 const gallerySection = document.getElementById('gallery-section');
                 const galleryTrack = document.getElementById('gallery-track');
                 if (data.galleryImageUrls && Array.isArray(data.galleryImageUrls) && data.galleryImageUrls.length > 0) {
-                    galleryTrack.innerHTML = data.galleryImageUrls.map(url => 
+                    galleryTrack.innerHTML = data.galleryImageUrls.map(url =>
                         `<div class="gallery-slide"><img src="${url}" alt="Gallery Image"></div>`
                     ).join('');
                     gallerySection.style.display = 'block';
@@ -245,7 +253,7 @@
                 if (data.footerPhone) document.getElementById('footer-phone').textContent = `โทร: ${data.footerPhone}`;
                 if (data.footerEmail) document.getElementById('footer-email').textContent = `อีเมล: ${data.footerEmail}`;
                 if (data.footerAddress) document.getElementById('footer-address').textContent = data.footerAddress;
-                
+
                 // Populate footer and sidebar social links
                 const socialLinksConfig = [
                     { id: 'social-line', url: data.socialLine, name: 'LINE', icon: 'line.png' },
@@ -253,20 +261,20 @@
                     { id: 'social-tiktok', url: data.socialTiktok, name: 'TikTok', icon: 'tik-tok.png' },
                     { id: 'social-ig', url: data.socialInstagram, name: 'Instagram', icon: 'instagram.png' },
                 ];
-                
+
                 let sidebarLinksHTML = '';
                 socialLinksConfig.forEach(link => {
                     const footerEl = document.getElementById(link.id);
                     if (link.url) {
-                        if(footerEl) {
-                           footerEl.href = link.url;
-                           footerEl.style.display = 'inline-block';
+                        if (footerEl) {
+                            footerEl.href = link.url;
+                            footerEl.style.display = 'inline-block';
                         }
                         sidebarLinksHTML += `<li><a href="${link.url}" target="_blank"><img src="icons/${link.icon}" class="sidebar-social-icon" alt="${link.name}"><span>${link.name}</span></a></li>`;
                     }
                 });
                 document.getElementById('sidebar-social-links').innerHTML = sidebarLinksHTML;
-                
+
                 // Populate Google Map
                 if (data.googleMapsEmbed) {
                     document.getElementById('footer-map-container').innerHTML = data.googleMapsEmbed;
@@ -281,7 +289,7 @@
         const fetchAndDisplayProducts = async () => {
             const productGrid = document.getElementById('product-grid');
             productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">กำลังโหลดข้อมูลสุนัข...</p>';
-            
+
             const urlParams = new URLSearchParams(window.location.search);
             const genderFilter = urlParams.get('gender');
             updateActiveMenu(genderFilter || 'all');
@@ -302,14 +310,14 @@
                     productGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">ตอนนี้ยังไม่มีสุนัขตรงตามเงื่อนไขค่ะ</p>';
                     return;
                 }
-                
+
                 productGrid.innerHTML = '';
                 querySnapshot.forEach(doc => {
                     productGrid.innerHTML += createProductCardHTML(doc.data(), doc.id);
                 });
 
                 // Trigger animations for the newly added cards
-                if(window.observeDynamicContent) {
+                if (window.observeDynamicContent) {
                     window.observeDynamicContent('.product-card');
                 }
 
@@ -339,7 +347,7 @@
                 <div class="card-price">
                     <span class="original-price">${price.toLocaleString('th-TH')}</span>
                     <span class="discounted-price">${discountPrice.toLocaleString('th-TH')} บาท</span>
-                </div>` : 
+                </div>` :
                 `<div class="card-price">${price.toLocaleString('th-TH')} บาท</div>`;
 
             // Map status to CSS class and text
@@ -366,7 +374,7 @@
                     </div>
                 </a>`;
         };
-        
+
         // --- Pagination ---
         /**
          * Initializes pagination based on the number of product cards.
@@ -376,7 +384,7 @@
             const paginationContainer = document.getElementById('pagination');
             const productGrid = document.getElementById('product-grid');
             if (!productGrid || !paginationContainer) return;
-            
+
             // Adjust items per page for tablet viewports
             const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1199px)").matches;
             const itemsPerPage = isTablet ? 9 : 8;
@@ -385,7 +393,7 @@
             // Hide pagination if not needed
             if (allItems.length <= itemsPerPage) {
                 paginationContainer.innerHTML = '';
-                allItems.forEach(item => item.style.display = 'block'); 
+                allItems.forEach(item => item.style.display = 'block');
                 return;
             };
 
@@ -437,4 +445,5 @@
         fetchAndDisplayProducts();
     </script>
 </body>
+
 </html>

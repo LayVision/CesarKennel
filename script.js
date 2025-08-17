@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation(); // Prevents the click from immediately closing the menu.
             sidebar.classList.toggle('open');
         });
-        
+
         // Adds an event listener to the whole document to close the menu when clicking outside of it.
         document.addEventListener('click', (e) => {
             // Close the sidebar if it's open and the click target is not the sidebar itself or a child of it.
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Observe all static elements that have the .fade-in-up class on page load
     const staticElements = document.querySelectorAll('.fade-in-up');
     staticElements.forEach(el => animationObserver.observe(el));
-    
+
     // Create a global function to observe dynamically added content (like product cards from Firebase)
     // This allows the index.html page to call this after it has loaded its products.
     window.observeDynamicContent = (selector) => {

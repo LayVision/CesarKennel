@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- SEO: Default title and description, will be updated by JavaScript for specific products -->
     <title>รายละเอียดลูกสุนัข - Cesar Kennel เชียงใหม่</title>
-    <meta name="description" content="ดูรายละเอียดเพิ่มเติมเกี่ยวกับลูกสุนัขจาก Cesar Kennel ฟาร์มไซบีเรียน ฮัสกี้ และอลาสกัน มาลามิวท์คุณภาพในเชียงใหม่ พร้อมรูปภาพและข้อมูลครบถ้วน">
+    <meta name="description"
+        content="ดูรายละเอียดเพิ่มเติมเกี่ยวกับลูกสุนัขจาก Cesar Kennel ฟาร์มไซบีเรียน ฮัสกี้ และอลาสกัน มาลามิวท์คุณภาพในเชียงใหม่ พร้อมรูปภาพและข้อมูลครบถ้วน">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="shop-layout">
@@ -36,7 +39,7 @@
                 <p><a href="login.html" id="auth-link">เข้าสู่ระบบผู้ดูแล</a></p>
             </div>
         </aside>
-        
+
         <!-- Main Content Area -->
         <main class="main-content" id="main-content">
             <!-- Mobile Header: Visible only on smaller screens -->
@@ -64,10 +67,14 @@
                     <div id="footer-address" style="white-space: pre-line; margin-top: 1em;"></div>
                 </div>
                 <div class="social-links">
-                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img src="icons/line.png" alt="Line"></a>
-                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img src="icons/messenger.png" alt="Facebook Messenger"></a>
-                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img src="icons/tik-tok.png" alt="TikTok"></a>
-                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img src="icons/instagram.png" alt="Instagram"></a>
+                    <a href="#" id="social-line" aria-label="Line" target="_blank" style="display: none;"><img
+                            src="icons/line.png" alt="Line"></a>
+                    <a href="#" id="social-fb" aria-label="Facebook" target="_blank" style="display: none;"><img
+                            src="icons/messenger.png" alt="Facebook Messenger"></a>
+                    <a href="#" id="social-tiktok" aria-label="TikTok" target="_blank" style="display: none;"><img
+                            src="icons/tik-tok.png" alt="TikTok"></a>
+                    <a href="#" id="social-ig" aria-label="Instagram" target="_blank" style="display: none;"><img
+                            src="icons/instagram.png" alt="Instagram"></a>
                 </div>
             </div>
             <div class="footer-map" id="footer-map-container">
@@ -96,7 +103,7 @@
             messagingSenderId: "512752480416",
             appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
         };
-        
+
         // Initialize Firebase app (ensuring it's only initialized once)
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
@@ -109,7 +116,7 @@
             authLink.textContent = user ? 'แผงควบคุม' : 'เข้าสู่ระบบผู้ดูแล';
             authLink.href = user ? 'admin.html' : 'login.html';
         });
-        
+
         // --- UI Population Functions ---
         /**
          * Populates the footer and sidebar with data from the settings object.
@@ -128,12 +135,12 @@
                 { id: 'social-tiktok', url: settings.socialTiktok, name: 'TikTok', icon: 'tik-tok.png' },
                 { id: 'social-ig', url: settings.socialInstagram, name: 'Instagram', icon: 'instagram.png' },
             ];
-            
+
             let sidebarLinksHTML = '';
             socialLinksConfig.forEach(link => {
                 const footerEl = document.getElementById(link.id);
                 if (link.url) {
-                    if(footerEl) {
+                    if (footerEl) {
                         footerEl.href = link.url;
                         footerEl.style.display = 'inline-block';
                     }
@@ -169,9 +176,9 @@
                 const productDocRef = doc(db, 'products', productId);
                 const settingsDocRef = doc(db, "settings", "siteConfig");
                 const [productDocSnap, settingsDocSnap] = await Promise.all([getDoc(productDocRef), getDoc(settingsDocRef)]);
-                
+
                 const settings = settingsDocSnap.exists() ? settingsDocSnap.data() : {};
-                
+
                 // Populate shared elements like footer and sidebar
                 loadFooterAndSidebar(settings);
 
@@ -196,7 +203,7 @@
         const displayProductDetails = (product, settings) => {
             // Update page title and meta tags for SEO
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
-            
+
             // Determine which contact buttons to show based on settings and product status
             let buttonHTML = '';
             if (product.status === 'sold') {
@@ -206,7 +213,7 @@
                 const messengerBtn = settings.messengerUrl ? `<a href="${settings.messengerUrl}" target="_blank" rel="noopener noreferrer" class="contact-btn messenger-btn">แชทหาเรา</a>` : '';
                 buttonHTML = `<div class="contact-buttons-container">${lineBtn}${messengerBtn}</div>`;
             }
-            
+
             // Format price, showing discount if available
             const hasDiscount = product.discountPrice > 0 && product.discountPrice < product.price;
             let priceHTML = hasDiscount ? `
@@ -221,7 +228,7 @@
             const imageUrls = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls : ['https://via.placeholder.com/800'];
             let mainSlidesHTML = imageUrls.map((url, index) => `<div class="gallery-slide"><img src="${url}" alt="รูปของ ${product.name} - ${index + 1}"></div>`).join('');
             let thumbnailsHTML = imageUrls.map((url, index) => `<div class="thumbnail-item"><img src="${url}" alt="Thumbnail of ${product.name} - ${index + 1}"></div>`).join('');
-            
+
             const galleryHTML = `
                 <div class="product-gallery-container">
                     <div class="main-image-wrapper">
@@ -250,11 +257,11 @@
                     </ul>
                     ${buttonHTML}
                 </div>`;
-            
+
             // Initialize the gallery functionality now that the HTML is in the DOM
             initializeProductGallery();
         };
-        
+
         // --- Gallery Functionality ---
         /**
          * Initializes the image gallery slider on the product detail page.
@@ -265,12 +272,12 @@
             const thumbnails = Array.from(document.querySelectorAll('.thumbnail-item'));
             const prevButton = document.getElementById('product-gallery-prev');
             const nextButton = document.getElementById('product-gallery-next');
-            
+
             if (!track || thumbnails.length <= 1) { // Exit if no gallery or only one image
-                if(prevButton) prevButton.style.display = 'none';
-                if(nextButton) nextButton.style.display = 'none';
+                if (prevButton) prevButton.style.display = 'none';
+                if (nextButton) nextButton.style.display = 'none';
                 const thumbnailWrapper = document.getElementById('thumbnail-wrapper');
-                if(thumbnailWrapper) thumbnailWrapper.style.display = 'none';
+                if (thumbnailWrapper) thumbnailWrapper.style.display = 'none';
                 return;
             }
 
@@ -292,7 +299,7 @@
             nextButton.addEventListener('click', () => { advanceSlide(1); restartAutoSlide(); });
             prevButton.addEventListener('click', () => { advanceSlide(-1); restartAutoSlide(); });
             thumbnails.forEach((thumb, index) => thumb.addEventListener('click', () => { showSlide(index); restartAutoSlide(); }));
-            
+
             function restartAutoSlide() {
                 clearInterval(autoSlideInterval);
                 autoSlideInterval = setInterval(() => advanceSlide(1), 5000);
@@ -305,4 +312,5 @@
         fetchProductDetails();
     </script>
 </body>
+
 </html>

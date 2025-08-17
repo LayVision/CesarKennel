@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <title>แผงควบคุมสำหรับผู้ดูแล</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
+
 <body>
     <!-- Centered container for the login form -->
     <div class="login-container">
@@ -58,11 +60,11 @@
         const loginForm = document.getElementById('login-form');
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const email = loginForm.username.value;
             const password = loginForm.password.value;
             const button = loginForm.querySelector('button');
-            
+
             // Disable button to prevent multiple submissions
             button.disabled = true;
             button.textContent = 'กำลังเข้าสู่ระบบ...';
@@ -84,4 +86,5 @@
         });
     </script>
 </body>
+
 </html>
