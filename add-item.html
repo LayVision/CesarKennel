@@ -62,6 +62,7 @@
                         <label for="vaccine">วัคซีน</label>
                         <input type="text" id="vaccine" name="vaccine">
                     </div>
+                    <!-- MODIFICATION START: Changed input to select for Dewormed field -->
                     <div class="input-group">
                         <label for="dewormed">ถ่ายพยาธิ</label>
                         <select id="dewormed" name="dewormed" required>
@@ -69,6 +70,7 @@
                             <option value="false" selected>ยังไม่ได้ทำ</option>
                         </select>
                     </div>
+                    <!-- MODIFICATION END -->
                     <div class="input-group">
                         <label for="status">สถานะ</label>
                         <select id="status" name="status" required>
@@ -119,10 +121,7 @@
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
-        // MODIFICATION START: Replaced ImgBB API key with ImageKit.io Public Key
-        const IMAGEKIT_PUBLIC_KEY = 'public_iQbhdK7mwDo4oM7fHXTxd3d0z1U=';
-        const IMAGEKIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload';
-        // MODIFICATION END
+        const IMG_BB_API_KEY = '2c1b183962c1d06f8aecea08cbc78d11';
 
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
         document.getElementById('logout-button')?.addEventListener('click', (e) => {
@@ -205,6 +204,8 @@
                 document.getElementById('vaccine').value = data.vaccine || '';
                 document.getElementById('status').value = data.status || 'available';
                 document.getElementById('description').value = data.description || '';
+                
+                // MODIFICATION: Handle boolean value for dewormed select
                 document.getElementById('dewormed').value = data.dewormed ? 'true' : 'false';
 
                 if (data.imageUrls && Array.isArray(data.imageUrls)) {
@@ -239,26 +240,30 @@
                     
                     const file = newFilesMap.get(id);
                     if (file) {
-                        // MODIFICATION START: Switched to ImageKit.io upload logic
-                        const formData = new FormData();
-                        formData.append('file', file);
-                        formData.append('fileName', file.name);
-                        formData.append('publicKey', IMAGEKIT_PUBLIC_KEY);
-                        formData.append('folder', '/dogs/');
+                        return new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                const base64String = reader.result.split(',')[1];
+                                const body = new URLSearchParams();
+                                body.append('image', base64String);
 
-                        return fetch(IMAGEKIT_UPLOAD_URL, {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(res => res.json())
-                        .then(result => {
-                            if (result.url) {
-                                return result.url;
-                            } else {
-                                throw new Error(result.message || `Upload failed for ${file.name}`);
-                            }
+                                fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, {
+                                    method: 'POST',
+                                    body: body
+                                })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        resolve(result.data.url);
+                                    } else {
+                                        reject(new Error(result.error?.message || `Upload failed for ${file.name}`));
+                                    }
+                                })
+                                .catch(reject);
+                            };
+                            reader.onerror = error => reject(error);
+                            reader.readAsDataURL(file);
                         });
-                        // MODIFICATION END
                     }
                     return Promise.resolve(null);
                 });
@@ -276,6 +281,7 @@
                     vaccine: document.getElementById('vaccine').value,
                     status: document.getElementById('status').value,
                     description: document.getElementById('description').value,
+                    // MODIFICATION: Convert select value 'true'/'false' to actual boolean
                     dewormed: document.getElementById('dewormed').value === 'true',
                     updatedAt: serverTimestamp(),
                     imageUrls: finalImageUrls,
