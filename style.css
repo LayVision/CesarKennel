@@ -16,7 +16,7 @@
     /* Pure white for high contrast text */
     --text-secondary: #b3b3b3;
     /* Light gray for secondary info, labels, and placeholders */
-    --accent-primary: #007BFF;
+    --accent-primary: #24bad9;
     /* Vibrant blue for primary buttons, active states, and links */
 
     /* Typography & Layout */
@@ -725,8 +725,8 @@ a {
 
 .social-links a:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
-    /* Subtle glow effect */
+    box-shadow: 0 4px 12px rgba(36, 186, 217, 0.25);
+    /* Subtle glow effect using the new accent color */
 }
 
 .footer-map iframe {
@@ -897,7 +897,7 @@ a {
     border-color: var(--accent-primary);
     opacity: 1;
     transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 10px rgba(36, 186, 217, 0.5);
 }
 
 /* ============================== */
