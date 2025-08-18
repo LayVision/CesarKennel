@@ -191,6 +191,7 @@ a {
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 16px;
     margin-bottom: 24px;
+    color: #24bad9;
 }
 
 .form-section-header {
@@ -375,6 +376,7 @@ a {
     margin-top: 0;
     margin-bottom: 32px;
     font-size: 1.8em;
+    color: #24bad9;
 }
 
 .login-form .input-group {
