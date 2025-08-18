@@ -1,5 +1,5 @@
 /* --- MODERN BLACK & WHITE THEME --- */
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.comcom/css2?family=Kanit:wght@400;500;700&display=swap');
 
 /* ======================================= */
 /* ======== 1. ROOT & UNIVERSAL STYLES ======== */
@@ -594,24 +594,28 @@ a {
         font-size: 0.9em;
     }
 
+    /* --- START: MOBILE OVERFLOW FIX --- */
     .product-detail-grid {
         grid-template-columns: 1fr;
         /* Stack gallery and info on mobile */
         padding: 24px;
+        min-width: 0;
+        /* CRITICAL: Prevents grid item from overflowing its container */
     }
 
-    /* START: MOBILE GALLERY FIX */
     .product-gallery-container {
         aspect-ratio: unset;
-        /* Remove the 1:1 aspect ratio on mobile */
+        /* Remove the fixed 1:1 ratio which causes overflow */
+        max-width: 100%;
+        /* Ensure the container itself doesn't overflow */
     }
 
     .main-image-wrapper {
         aspect-ratio: 4 / 3;
-        /* Use a more mobile-friendly aspect ratio */
+        /* Use a more mobile-friendly aspect ratio for the main image */
     }
 
-    /* END: MOBILE GALLERY FIX */
+    /* --- END: MOBILE OVERFLOW FIX --- */
 
     .detail-info h1 {
         font-size: 2.2em;
