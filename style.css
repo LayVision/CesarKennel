@@ -1,5 +1,25 @@
 /* --- MODERN BLACK & WHITE THEME --- */
-@import url('https://fonts.googleapis.comcom/css2?family=Kanit:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap');
+
+/* ======================================= */
+/* ======== 0. RESET & DEFAULTS ======== */
+/* ======================================= */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    /* Ensures padding and border are included in the element's total width and height */
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-main);
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    overflow-x: clip;
+    /* Prevents all horizontal scrolling */
+}
+
 
 /* ======================================= */
 /* ======== 1. ROOT & UNIVERSAL STYLES ======== */
@@ -25,13 +45,6 @@
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
     --radius-md: 12px;
     --radius-lg: 16px;
-}
-
-body {
-    margin: 0;
-    font-family: var(--font-main);
-    background-color: var(--bg-canvas);
-    color: var(--text-primary);
 }
 
 a {
@@ -594,13 +607,12 @@ a {
         font-size: 0.9em;
     }
 
-    /* --- START: MOBILE OVERFLOW FIX --- */
     .product-detail-grid {
         grid-template-columns: 1fr;
         /* Stack gallery and info on mobile */
         padding: 24px;
         min-width: 0;
-        /* CRITICAL: Prevents grid item from overflowing its container */
+        /* Prevents grid item from overflowing its container */
     }
 
     .product-gallery-container {
@@ -614,8 +626,6 @@ a {
         aspect-ratio: 4 / 3;
         /* Use a more mobile-friendly aspect ratio for the main image */
     }
-
-    /* --- END: MOBILE OVERFLOW FIX --- */
 
     .detail-info h1 {
         font-size: 2.2em;
