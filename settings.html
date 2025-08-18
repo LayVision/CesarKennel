@@ -63,8 +63,14 @@
                 <h2>ปรับแต่งหน้าแรก</h2>
                 <div class="form-grid">
                     <div class="input-group full-width">
-                        <label for="cover-image-upload">รูปภาพหน้าปก (จะแสดงแทนที่โลโก้)</label>
-                        <input type="file" id="cover-image-upload" name="cover-image" accept="image/*">
+                        <label for="cover-image-upload" class="image-upload-area">
+                            <div class="upload-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                            </div>
+                            <span class="upload-main-text">กดเพื่ออัพโหลดรูปภาพหน้าปก</span>
+                            <span class="upload-sub-text">จะแสดงแทนที่โลโก้ (แนะนำอัตราส่วน 16:9)</span>
+                        </label>
+                        <input type="file" id="cover-image-upload" name="cover-image" accept="image/*" style="display: none;">
                     </div>
                     <div class="input-group full-width">
                         <label for="marquee-text">ข้อความวิ่ง</label>
@@ -119,8 +125,14 @@
                 <!-- Section: Homepage Gallery -->
                 <h2 class="form-section-header">แกลเลอรี่หน้าแรก (ลากเพื่อจัดลำดับ, สูงสุด 10 รูป)</h2>
                 <div class="input-group full-width">
-                    <label for="gallery-image-upload">อัปโหลดรูปภาพใหม่สำหรับแกลเลอรี่</label>
-                    <input type="file" id="gallery-image-upload" multiple accept="image/*">
+                    <label for="gallery-image-upload" class="image-upload-area">
+                        <div class="upload-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        </div>
+                        <span class="upload-main-text">กดเพื่ออัพโหลดรูปภาพแกลเลอรี่</span>
+                        <span class="upload-sub-text">PNG, JPEG, JPG</span>
+                    </label>
+                    <input type="file" id="gallery-image-upload" multiple accept="image/*" style="display: none;">
                 </div>
                 <div id="gallery-preview-container" class="image-preview-container">
                     <!-- Gallery image previews will be generated here -->
