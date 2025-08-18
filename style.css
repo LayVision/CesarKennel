@@ -737,8 +737,8 @@ a {
 .main-image-wrapper .gallery-slide img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    /* Use 'cover' to fill the container, cropping if necessary */
+    object-fit: contain;
+    /* Use 'contain' to show whole image with black bars if needed */
 }
 
 .thumbnail-wrapper {
