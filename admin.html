@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO: noindex tag prevents search engines from indexing this admin page -->
     <meta name="robots" content="noindex, nofollow">
     <title>จัดการสุนัข - แผงควบคุม</title>
-    <link rel="stylesheet" href="admin-style.css?v=2.0">
+    <link rel="stylesheet" href="admin-style.css">
 </head>
-
 <body>
-    <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="admin-layout">
-
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
@@ -25,14 +20,12 @@
                         <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
-                <!-- START OF ADDED SECTION -->
                 <nav class="sidebar-nav">
                     <h3>บัญชีผู้ใช้</h3>
                     <ul>
                         <li><a href="change-password.html">เปลี่ยนรหัสผ่าน</a></li>
                     </ul>
                 </nav>
-                <!-- END OF ADDED SECTION -->
             </div>
             <nav class="sidebar-nav">
                 <ul>
@@ -44,229 +37,57 @@
 
         <!-- Main Admin Content Area -->
         <main class="admin-main">
-            <!-- Mobile Header: Visible only on smaller screens -->
             <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
-                <div class="mobile-header-actions">
-                    <a href="add-item.html" class="button button-primary mobile-add-btn">+ เพิ่มสุนัขใหม่</a>
-                    <button class="mobile-menu-button" id="menu-toggle">☰</button>
-                </div>
+                <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <!-- Desktop Header: Visible on larger screens -->
             <header class="desktop-header">
                 <h1>จัดการสุนัข</h1>
                 <a href="add-item.html" class="button button-primary">+ เพิ่มสุนัขใหม่</a>
             </header>
 
-            <!-- Main Content Card -->
             <div class="admin-card">
                 <h2>รายการสุนัขทั้งหมด (ลากเพื่อจัดลำดับ)</h2>
                 <div class="product-table-wrapper">
                     <table class="product-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px;"></th> <!-- Handle for drag-drop -->
+                                <th style="width: 50px;"></th>
                                 <th>ข้อมูลสุนัข</th>
                                 <th>สถานะ</th>
                                 <th>ราคา</th>
                                 <th style="width: 150px;">จัดการ</th>
                             </tr>
                         </thead>
-                        <!-- Product rows will be dynamically inserted here by JavaScript -->
-                        <tbody id="product-list">
-                        </tbody>
+                        <tbody id="product-list"></tbody>
                     </table>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Third-party library for drag-and-drop sorting -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <!-- General purpose script for mobile menu, etc. -->
     <script src="script.js"></script>
-
-    <!-- Page-specific JavaScript using Firebase -->
     <script type="module">
-        // Import necessary Firebase modules
+        // --- YOUR EXISTING ADMIN.HTML JAVASCRIPT GOES HERE ---
+        // (No changes needed for the script part)
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-        // Firebase configuration object
-        const firebaseConfig = {
-            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
-            authDomain: "cesarkennel.firebaseapp.com",
-            projectId: "cesarkennel",
-            storageBucket: "cesarkennel.firebasestorage.app",
-            messagingSenderId: "512752480416",
-            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
-        };
-
-        // Initialize Firebase app (ensuring it's only initialized once)
+        const firebaseConfig = { apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ", authDomain: "cesarkennel.firebaseapp.com", projectId: "cesarkennel", storageBucket: "cesarkennel.firebasestorage.app", messagingSenderId: "512752480416", appId: "1:512752480416:web:c71aa9dc281a3932b419c5" };
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
-
-        // --- Authentication ---
-        // Redirect to login page if user is not authenticated
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
-
-        // Logout button functionality
-        document.getElementById('logout-button')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            signOut(auth).then(() => {
-                alert('คุณออกจากระบบแล้ว');
-                window.location.href = 'index.html';
-            });
-        });
-
-        // --- DOM Elements ---
+        document.getElementById('logout-button')?.addEventListener('click', (e) => { e.preventDefault(); signOut(auth).then(() => { alert('คุณออกจากระบบแล้ว'); window.location.href = 'index.html'; }); });
         const productList = document.getElementById('product-list');
-        let productsCache = []; // Local cache to hold product data for reordering
-
-        // --- Firestore Data Fetching ---
-        /**
-         * Fetches all products from Firestore, ordered by 'orderPosition'.
-         * Stores them in productsCache and calls renderProducts.
-         */
-        const fetchProducts = async () => {
-            productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`;
-            const q = query(collection(db, "products"), orderBy("orderPosition", "asc"));
-            const querySnapshot = await getDocs(q);
-
-            productsCache = []; // Clear cache before fetching
-            querySnapshot.forEach(doc => {
-                productsCache.push({ id: doc.id, ...doc.data() });
-            });
-
-            renderProducts();
-        };
-
-        /**
-         * Renders the products from the productsCache into the HTML table.
-         */
-        const renderProducts = () => {
-            productList.innerHTML = ''; // Clear table
-            if (productsCache.length === 0) {
-                productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลสุนัขในระบบ</td></tr>`;
-                return;
-            }
-
-            productsCache.forEach(product => {
-                // Map status values to display text and CSS classes
-                const statusMap = {
-                    available: { class: 'available', text: 'พร้อมย้ายบ้าน' },
-                    preordered: { class: 'preordered', text: 'ติดจอง' },
-                    sold: { class: 'sold', text: 'ขายแล้ว' }
-                };
-                const statusInfo = statusMap[product.status] || statusMap.available;
-
-                // Generate price HTML, showing discount if available
-                const price = product.price || 0;
-                const discountPrice = product.discountPrice || 0;
-                const hasDiscount = discountPrice > 0 && discountPrice < price;
-
-                let priceHTML;
-                if (hasDiscount) {
-                    priceHTML = `
-                        <div>
-                            <del style="color: var(--text-secondary); font-size: 0.9em;">${price.toLocaleString('th-TH')}</del>
-                            <br>
-                            <span style="color: var(--accent-red); font-weight: 700;">${discountPrice.toLocaleString('th-TH')} บาท</span>
-                        </div>
-                    `;
-                } else {
-                    priceHTML = `${price.toLocaleString('th-TH')} บาท`;
-                }
-
-                const tr = document.createElement('tr');
-                tr.dataset.id = product.id; // Store Firestore document ID on the table row
-                tr.innerHTML = `
-                    <td style="cursor: grab; text-align: center;" class="drag-handle">☰</td>
-                    <td data-label="ข้อมูลสุนัข">
-                        <div class="product-info-cell">
-                            <img src="${product.thumbnailUrl || 'https://via.placeholder.com/60'}" alt="${product.name}">
-                            <div>
-                                <a href="product-detail.html?id=${product.id}" target="_blank" class="name">${product.name}</a>
-                                <div class="details">เพศ${product.gender}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td data-label="สถานะ"><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
-                    <td data-label="ราคา">${priceHTML}</td>
-                    <td data-label="จัดการ">
-                        <div class="action-buttons">
-                            <a href="add-item.html?id=${product.id}" class="button edit-btn">แก้ไข</a>
-                            <button class="button delete-btn" data-id="${product.id}">ลบ</button>
-                        </div>
-                    </td>
-                `;
-                productList.appendChild(tr);
-            });
-        };
-
-        // --- Event Delegation for Delete Buttons ---
-        /**
-         * Listens for clicks on the product list table. If a delete button is clicked,
-         * it confirms the action and deletes the corresponding document from Firestore.
-         */
-        productList.addEventListener('click', async (e) => {
-            if (e.target.classList.contains('delete-btn')) {
-                const id = e.target.dataset.id;
-                const row = e.target.closest('tr');
-                const productName = row.querySelector('.name').textContent;
-
-                if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${productName}"?`)) {
-                    try {
-                        await deleteDoc(doc(db, 'products', id));
-                        row.remove(); // Remove from UI immediately
-                        alert('ลบข้อมูลสำเร็จ');
-                    } catch (error) {
-                        console.error("Error removing document: ", error);
-                        alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                    }
-                }
-            }
-        });
-
-        // --- Drag-and-Drop Sorting ---
-        /**
-         * Initializes SortableJS on the table body.
-         * When a row is dropped, it updates the 'orderPosition' field for all
-         * documents in Firestore using a batch write for efficiency.
-         */
-        new Sortable(productList, {
-            handle: '.drag-handle', // Specify the drag handle element
-            animation: 150,
-            ghostClass: 'sortable-ghost', // CSS class for the placeholder
-            onEnd: async (evt) => {
-                const items = Array.from(productList.querySelectorAll('tr'));
-                const batch = writeBatch(db);
-
-                // Loop through the reordered rows and update their orderPosition in the batch
-                items.forEach((item, index) => {
-                    const docId = item.dataset.id;
-                    const docRef = doc(db, 'products', docId);
-                    batch.update(docRef, { orderPosition: index });
-                });
-
-                // Commit the batch write to Firestore
-                try {
-                    await batch.commit();
-                    // Refetch products to ensure data consistency, although UI is already updated
-                    fetchProducts();
-                } catch (error) {
-                    console.error("Error updating order: ", error);
-                    alert("เกิดข้อผิดพลาดในการจัดลำดับ");
-                }
-            },
-        });
-
-        // Initial data load when the page is ready
+        let productsCache = [];
+        const fetchProducts = async () => { productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>`; const q = query(collection(db, "products"), orderBy("orderPosition", "asc")); const querySnapshot = await getDocs(q); productsCache = []; querySnapshot.forEach(doc => { productsCache.push({ id: doc.id, ...doc.data() }); }); renderProducts(); };
+        const renderProducts = () => { productList.innerHTML = ''; if (productsCache.length === 0) { productList.innerHTML = `<tr><td colspan="5" style="text-align:center;">ยังไม่มีข้อมูลสุนัขในระบบ</td></tr>`; return; } productsCache.forEach(product => { const statusMap = { available: { class: 'available', text: 'พร้อมย้ายบ้าน' }, preordered: { class: 'preordered', text: 'ติดจอง' }, sold: { class: 'sold', text: 'ขายแล้ว' } }; const statusInfo = statusMap[product.status] || statusMap.available; const price = product.price || 0; const discountPrice = product.discountPrice || 0; const hasDiscount = discountPrice > 0 && discountPrice < price; let priceHTML; if (hasDiscount) { priceHTML = `<div><del style="color: var(--text-secondary); font-size: 0.9em;">${price.toLocaleString('th-TH')}</del><br><span style="color: var(--accent-red); font-weight: 700;">${discountPrice.toLocaleString('th-TH')} บาท</span></div>`; } else { priceHTML = `${price.toLocaleString('th-TH')} บาท`; } const tr = document.createElement('tr'); tr.dataset.id = product.id; tr.innerHTML = `<td style="cursor: grab; text-align: center;" class="drag-handle">☰</td><td data-label="ข้อมูลสุนัข"><div class="product-info-cell"><img src="${product.thumbnailUrl || 'https://via.placeholder.com/60'}" alt="${product.name}"><div><a href="product-detail.html?id=${product.id}" target="_blank" class="name">${product.name}</a><div class="details">เพศ${product.gender}</div></div></div></td><td data-label="สถานะ"><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td><td data-label="ราคา">${priceHTML}</td><td data-label="จัดการ"><div class="action-buttons"><a href="add-item.html?id=${product.id}" class="button edit-btn">แก้ไข</a><button class="button delete-btn" data-id="${product.id}">ลบ</button></div></td>`; productList.appendChild(tr); }); };
+        productList.addEventListener('click', async (e) => { if (e.target.classList.contains('delete-btn')) { const id = e.target.dataset.id; const row = e.target.closest('tr'); const productName = row.querySelector('.name').textContent; if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${productName}"?`)) { try { await deleteDoc(doc(db, 'products', id)); row.remove(); alert('ลบข้อมูลสำเร็จ'); } catch (error) { console.error("Error removing document: ", error); alert('เกิดข้อผิดพลาดในการลบข้อมูล'); } } } });
+        new Sortable(productList, { handle: '.drag-handle', animation: 150, ghostClass: 'sortable-ghost', onEnd: async (evt) => { const items = Array.from(productList.querySelectorAll('tr')); const batch = writeBatch(db); items.forEach((item, index) => { const docId = item.dataset.id; const docRef = doc(db, 'products', docId); batch.update(docRef, { orderPosition: index }); }); try { await batch.commit(); fetchProducts(); } catch (error) { console.error("Error updating order: ", error); alert("เกิดข้อผิดพลาดในการจัดลำดับ"); } }, });
         fetchProducts();
     </script>
 </body>
-
 </html>

@@ -4,16 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO: noindex tag prevents search engines from indexing this admin page -->
     <meta name="robots" content="noindex, nofollow">
     <title>เพิ่ม/แก้ไข ข้อมูลสุนัข</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
 
 <body>
-    <!-- Main Layout: A grid that separates the sidebar from the main content -->
     <div class="admin-layout">
-
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <div>
@@ -25,14 +22,12 @@
                         <li><a href="settings.html">ตั้งค่าเว็บไซต์</a></li>
                     </ul>
                 </nav>
-                <!-- START OF ADDED SECTION -->
                 <nav class="sidebar-nav">
                     <h3>บัญชีผู้ใช้</h3>
                     <ul>
                         <li><a href="change-password.html">เปลี่ยนรหัสผ่าน</a></li>
                     </ul>
                 </nav>
-                <!-- END OF ADDED SECTION -->
             </div>
             <nav class="sidebar-nav">
                 <ul>
@@ -44,21 +39,17 @@
 
         <!-- Main Admin Content Area -->
         <main class="admin-main">
-            <!-- Mobile Header: Visible only on smaller screens -->
             <header class="mobile-header">
                 <div class="mobile-logo">Admin<span>.</span></div>
                 <button class="mobile-menu-button" id="menu-toggle">☰</button>
             </header>
 
-            <!-- Desktop Header: Visible on larger screens -->
             <header class="desktop-header">
                 <h1 id="page-title">เพิ่มข้อมูลสุนัข</h1>
                 <a href="admin.html" class="button button-secondary">&larr; กลับไปที่รายการ</a>
             </header>
 
-            <!-- Add/Edit Form -->
             <form class="admin-card">
-                <!-- Section: General Information -->
                 <h2>ข้อมูลทั่วไป</h2>
                 <div class="form-grid">
                     <div class="input-group"><label for="name">ชื่อ / หัวข้อประกาศ</label><input type="text" id="name"
@@ -69,299 +60,71 @@
                             name="price" required></div>
                     <div class="input-group"><label for="discount-price">ราคาลดแล้ว (บาท)</label><input type="number"
                             id="discount-price" name="discount-price" placeholder="เว้นว่างถ้าไม่มีส่วนลด"></div>
-                    <div class="input-group">
-                        <label for="gender">เพศ</label>
-                        <select id="gender" name="gender" required>
+                    <div class="input-group"><label for="gender">เพศ</label><select id="gender" name="gender" required>
                             <option value="เมีย" selected>เมีย</option>
                             <option value="ผู้">ผู้</option>
-                        </select>
-                    </div>
+                        </select></div>
                     <div class="input-group"><label for="color">ตัวสี</label><input type="text" id="color" name="color"
                             required></div>
                     <div class="input-group"><label for="eye-color">ตาสี</label><input type="text" id="eye-color"
                             name="eye-color"></div>
                     <div class="input-group"><label for="vaccine">วัคซีน</label><input type="text" id="vaccine"
                             name="vaccine"></div>
-                    <div class="input-group">
-                        <label for="dewormed">ถ่ายพยาธิ</label>
-                        <select id="dewormed" name="dewormed" required>
+                    <div class="input-group"><label for="dewormed">ถ่ายพยาธิ</label><select id="dewormed"
+                            name="dewormed" required>
                             <option value="true">ทำแล้ว</option>
                             <option value="false" selected>ยังไม่ได้ทำ</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label for="status">สถานะ</label>
-                        <select id="status" name="status" required>
+                        </select></div>
+                    <div class="input-group"><label for="status">สถานะ</label><select id="status" name="status"
+                            required>
                             <option value="available" selected>พร้อมย้ายบ้าน</option>
                             <option value="preordered">ติดจอง</option>
                             <option value="sold">ขายแล้ว</option>
-                        </select>
-                    </div>
+                        </select></div>
                     <div class="input-group full-width"><label for="description">รายละเอียดเพิ่มเติม</label><textarea
                             id="description" name="description" rows="4"></textarea></div>
                 </div>
 
-                <!-- Section: Image Uploading -->
                 <h2 class="form-section-header">รูปภาพ (ลากเพื่อจัดลำดับ รูปแรกคือรูปปก)</h2>
-                <div class="input-group full-width">
-                    <label for="image_upload">อัปโหลดรูปภาพใหม่</label>
-                    <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*">
-                </div>
-                <!-- Container for image previews -->
+                <div class="input-group full-width"><label for="image_upload">อัปโหลดรูปภาพใหม่</label><input
+                        type="file" id="image_upload" name="image_upload[]" multiple accept="image/*"></div>
                 <div id="image-preview-container" class="image-preview-container"></div>
 
-                <!-- Form Submission Button -->
-                <div class="form-actions">
-                    <button type="submit" class="button button-primary">บันทึกข้อมูล</button>
+                <div class="form-actions"><button type="submit" class="button button-primary">บันทึกข้อมูล</button>
                 </div>
             </form>
         </main>
     </div>
 
-    <!-- Third-party library for drag-and-drop sorting -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <!-- General purpose script for mobile menu, etc. -->
     <script src="script.js"></script>
-
-    <!-- Page-specific JavaScript using Firebase -->
     <script type="module">
-        // Import necessary Firebase modules
+        // --- YOUR EXISTING ADD-ITEM.HTML JAVASCRIPT GOES HERE ---
+        // (No changes needed for the script part)
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, addDoc, collection, updateDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-        // Firebase configuration object
-        const firebaseConfig = {
-            apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ",
-            authDomain: "cesarkennel.firebaseapp.com",
-            projectId: "cesarkennel",
-            storageBucket: "cesarkennel.firebasestorage.app",
-            messagingSenderId: "512752480416",
-            appId: "1:512752480416:web:c71aa9dc281a3932b419c5"
-        };
-
-        // Initialize Firebase app (ensuring it's only initialized once)
+        const firebaseConfig = { apiKey: "AIzaSyA85L7n2CGKocgWg-Z8TsNlUN9AVVJguBQ", authDomain: "cesarkennel.firebaseapp.com", projectId: "cesarkennel", storageBucket: "cesarkennel.firebasestorage.app", messagingSenderId: "512752480416", appId: "1:512752480416:web:c71aa9dc281a3932b419c5" };
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const IMG_BB_API_KEY = '2c1b183962c1d06f8aecea08cbc78d11'; // API key for image hosting service
-
-        // --- Authentication ---
+        const IMG_BB_API_KEY = '2c1b183962c1d06f8aecea08cbc78d11';
         onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html' });
-        document.getElementById('logout-button')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            signOut(auth).then(() => {
-                alert('คุณออกจากระบบแล้ว');
-                window.location.href = 'index.html';
-            });
-        });
-
-        // --- DOM Elements and State ---
+        document.getElementById('logout-button')?.addEventListener('click', (e) => { e.preventDefault(); signOut(auth).then(() => { alert('คุณออกจากระบบแล้ว'); window.location.href = 'index.html'; }); });
         const form = document.querySelector('form.admin-card');
         const pageTitle = document.getElementById('page-title');
         const imageInput = document.getElementById('image_upload');
         const previewContainer = document.getElementById('image-preview-container');
         const urlParams = new URLSearchParams(window.location.search);
-        const itemId = urlParams.get('id'); // Get item ID from URL for editing
-        const newFilesMap = new Map(); // Stores newly selected image files before upload
-
-        // --- Image Preview Management ---
-        /**
-         * Creates and appends an image preview element to the container.
-         * @param {string} id - A unique identifier for the image (URL for existing, temp ID for new)
-         * @param {string} src - The image source (URL or base64 data)
-         * @param {boolean} isExisting - Flag to distinguish between old and new images
-         */
-        const createPreviewElement = (id, src, isExisting = false) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'image-preview-item';
-            wrapper.dataset.id = id;
-            if (isExisting) {
-                wrapper.dataset.url = src; // Store existing URL directly
-            }
-            wrapper.innerHTML = `
-                <span class="drag-handle">☰</span>
-                <img src="${src}" alt="Image preview">
-                <button type="button" class="remove-btn" title="Remove image">&times;</button>
-            `;
-            previewContainer.appendChild(wrapper);
-        };
-
-        // Event listener for new image file selection
-        imageInput.addEventListener('change', (e) => {
-            for (const file of e.target.files) {
-                const uniqueId = `${Date.now()}-${file.name}`; // Create a unique ID for the new file
-                newFilesMap.set(uniqueId, file); // Store the file object in the map
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    // Create a preview using the file's base64 data
-                    createPreviewElement(uniqueId, event.target.result, false);
-                };
-                reader.readAsDataURL(file);
-            }
-            e.target.value = ''; // Reset input to allow re-selecting the same file
-        });
-
-        // Event delegation for removing an image preview
-        previewContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-btn')) {
-                const wrapper = e.target.closest('.image-preview-item');
-                if (wrapper) {
-                    const id = wrapper.dataset.id;
-                    newFilesMap.delete(id); // Remove from new files map if it exists there
-                    wrapper.remove();
-                }
-            }
-        });
-
-        // Initialize drag-and-drop sorting for image previews
-        new Sortable(previewContainer, {
-            animation: 150,
-            handle: '.drag-handle',
-            ghostClass: 'sortable-ghost'
-        });
-
-        // --- Form Population for Editing ---
-        /**
-         * Fetches data for an existing item and populates the form fields.
-         * @param {string} id - The Firestore document ID of the item to edit.
-         */
-        const populateForm = async (id) => {
-            pageTitle.textContent = 'แก้ไขข้อมูลสุนัข';
-            const docRef = doc(db, 'products', id);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                // Populate all text, number, and select fields
-                document.getElementById('name').value = data.name || '';
-                document.getElementById('age').value = data.age || '';
-                document.getElementById('price').value = data.price || '';
-                document.getElementById('discount-price').value = data.discountPrice || '';
-                document.getElementById('gender').value = data.gender || 'เมีย';
-                document.getElementById('color').value = data.color || '';
-                document.getElementById('eye-color').value = data.eyeColor || '';
-                document.getElementById('vaccine').value = data.vaccine || '';
-                document.getElementById('status').value = data.status || 'available';
-                document.getElementById('description').value = data.description || '';
-                document.getElementById('dewormed').value = data.dewormed ? 'true' : 'false';
-
-                // Populate existing images
-                if (data.imageUrls && Array.isArray(data.imageUrls)) {
-                    data.imageUrls.forEach(url => {
-                        createPreviewElement(url, url, true);
-                    });
-                }
-            } else {
-                alert('ไม่พบข้อมูลสุนัข');
-                window.location.href = 'admin.html';
-            }
-        };
-
-        // If an ID is present in the URL, run the populateForm function
-        if (itemId) {
-            populateForm(itemId);
-        }
-
-        // --- Form Submission Logic ---
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitButton = form.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'กำลังบันทึก...';
-
-            try {
-                // Get all preview items in their current (sorted) order
-                const previewItems = Array.from(previewContainer.querySelectorAll('.image-preview-item'));
-
-                // Create an array of promises for image uploads
-                const uploadPromises = previewItems.map(item => {
-                    const { id, url } = item.dataset;
-                    // If it's an existing image, just resolve its URL
-                    if (url) {
-                        return Promise.resolve(url);
-                    }
-
-                    // If it's a new image, upload it to ImgBB
-                    const file = newFilesMap.get(id);
-                    if (file) {
-                        return new Promise((resolve, reject) => {
-                            const reader = new FileReader();
-                            reader.onload = () => {
-                                const base64String = reader.result.split(',')[1];
-                                const body = new URLSearchParams();
-                                body.append('image', base64String);
-
-                                fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, {
-                                    method: 'POST', body: body
-                                })
-                                    .then(res => res.json())
-                                    .then(result => {
-                                        if (result.success) {
-                                            resolve(result.data.url); // Resolve with the new URL
-                                        } else {
-                                            reject(new Error(result.error?.message || `Upload failed for ${file.name}`));
-                                        }
-                                    })
-                                    .catch(reject);
-                            };
-                            reader.onerror = error => reject(error);
-                            reader.readAsDataURL(file);
-                        });
-                    }
-                    return Promise.resolve(null); // Should not happen in normal flow
-                });
-
-                // Wait for all uploads to complete
-                const finalImageUrls = (await Promise.all(uploadPromises)).filter(Boolean);
-
-                // Construct the data object to save to Firestore
-                const productData = {
-                    name: document.getElementById('name').value,
-                    age: document.getElementById('age').value,
-                    price: Number(document.getElementById('price').value),
-                    discountPrice: Number(document.getElementById('discount-price').value) || 0,
-                    gender: document.getElementById('gender').value,
-                    color: document.getElementById('color').value,
-                    eyeColor: document.getElementById('eye-color').value,
-                    vaccine: document.getElementById('vaccine').value,
-                    status: document.getElementById('status').value,
-                    description: document.getElementById('description').value,
-                    dewormed: document.getElementById('dewormed').value === 'true',
-                    updatedAt: serverTimestamp(),
-                    imageUrls: finalImageUrls,
-                    thumbnailUrl: finalImageUrls.length > 0 ? finalImageUrls[0] : '' // First image is the thumbnail
-                };
-
-                // --- Save to Firestore ---
-                if (itemId) {
-                    // Update an existing document
-                    const docRef = doc(db, 'products', itemId);
-                    await updateDoc(docRef, productData);
-                    alert('อัปเดตข้อมูลสำเร็จ!');
-                } else {
-                    // Create a new document
-                    // Get the lowest order position to add the new item to the top
-                    const q = query(collection(db, "products"), orderBy("orderPosition", "asc"), limit(1));
-                    const querySnapshot = await getDocs(q);
-                    const firstPosition = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().orderPosition;
-
-                    productData.orderPosition = (firstPosition || 0) - 1;
-                    productData.createdAt = serverTimestamp();
-
-                    await addDoc(collection(db, 'products'), productData);
-                    alert('เพิ่มสุนัขสำเร็จ!');
-                }
-                window.location.href = 'admin.html'; // Redirect back to the list
-
-            } catch (error) {
-                console.error('Error saving product: ', error);
-                alert(`เกิดข้อผิดพลาด: ${error.message}`);
-                submitButton.disabled = false;
-                submitButton.textContent = 'บันทึกข้อมูล';
-            }
-        });
+        const itemId = urlParams.get('id');
+        const newFilesMap = new Map();
+        const createPreviewElement = (id, src, isExisting = false) => { const wrapper = document.createElement('div'); wrapper.className = 'image-preview-item'; wrapper.dataset.id = id; if (isExisting) { wrapper.dataset.url = src; } wrapper.innerHTML = `<span class="drag-handle">☰</span><img src="${src}" alt="Image preview"><button type="button" class="remove-btn" title="Remove image">&times;</button>`; previewContainer.appendChild(wrapper); };
+        imageInput.addEventListener('change', (e) => { for (const file of e.target.files) { const uniqueId = `${Date.now()}-${file.name}`; newFilesMap.set(uniqueId, file); const reader = new FileReader(); reader.onload = (event) => { createPreviewElement(uniqueId, event.target.result, false); }; reader.readAsDataURL(file); } e.target.value = ''; });
+        previewContainer.addEventListener('click', (e) => { if (e.target.classList.contains('remove-btn')) { const wrapper = e.target.closest('.image-preview-item'); if (wrapper) { const id = wrapper.dataset.id; newFilesMap.delete(id); wrapper.remove(); } } });
+        new Sortable(previewContainer, { animation: 150, handle: '.drag-handle', ghostClass: 'sortable-ghost' });
+        const populateForm = async (id) => { pageTitle.textContent = 'แก้ไขข้อมูลสุนัข'; const docRef = doc(db, 'products', id); const docSnap = await getDoc(docRef); if (docSnap.exists()) { const data = docSnap.data(); document.getElementById('name').value = data.name || ''; document.getElementById('age').value = data.age || ''; document.getElementById('price').value = data.price || ''; document.getElementById('discount-price').value = data.discountPrice || ''; document.getElementById('gender').value = data.gender || 'เมีย'; document.getElementById('color').value = data.color || ''; document.getElementById('eye-color').value = data.eyeColor || ''; document.getElementById('vaccine').value = data.vaccine || ''; document.getElementById('status').value = data.status || 'available'; document.getElementById('description').value = data.description || ''; document.getElementById('dewormed').value = data.dewormed ? 'true' : 'false'; if (data.imageUrls && Array.isArray(data.imageUrls)) { data.imageUrls.forEach(url => { createPreviewElement(url, url, true); }); } } else { alert('ไม่พบข้อมูลสุนัข'); window.location.href = 'admin.html'; } };
+        if (itemId) { populateForm(itemId); }
+        form.addEventListener('submit', async (e) => { e.preventDefault(); const submitButton = form.querySelector('button[type="submit"]'); submitButton.disabled = true; submitButton.textContent = 'กำลังบันทึก...'; try { const previewItems = Array.from(previewContainer.querySelectorAll('.image-preview-item')); const uploadPromises = previewItems.map(item => { const { id, url } = item.dataset; if (url) { return Promise.resolve(url); } const file = newFilesMap.get(id); if (file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => { const base64String = reader.result.split(',')[1]; const body = new URLSearchParams(); body.append('image', base64String); fetch(`https://api.imgbb.com/1/upload?key=${IMG_BB_API_KEY}`, { method: 'POST', body: body }).then(res => res.json()).then(result => { if (result.success) { resolve(result.data.url); } else { reject(new Error(result.error?.message || `Upload failed for ${file.name}`)); } }).catch(reject); }; reader.onerror = error => reject(error); reader.readAsDataURL(file); }); } return Promise.resolve(null); }); const finalImageUrls = (await Promise.all(uploadPromises)).filter(Boolean); const productData = { name: document.getElementById('name').value, age: document.getElementById('age').value, price: Number(document.getElementById('price').value), discountPrice: Number(document.getElementById('discount-price').value) || 0, gender: document.getElementById('gender').value, color: document.getElementById('color').value, eyeColor: document.getElementById('eye-color').value, vaccine: document.getElementById('vaccine').value, status: document.getElementById('status').value, description: document.getElementById('description').value, dewormed: document.getElementById('dewormed').value === 'true', updatedAt: serverTimestamp(), imageUrls: finalImageUrls, thumbnailUrl: finalImageUrls.length > 0 ? finalImageUrls[0] : '' }; if (itemId) { const docRef = doc(db, 'products', itemId); await updateDoc(docRef, productData); alert('อัปเดตข้อมูลสำเร็จ!'); } else { const q = query(collection(db, "products"), orderBy("orderPosition", "asc"), limit(1)); const querySnapshot = await getDocs(q); const firstPosition = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().orderPosition; productData.orderPosition = (firstPosition || 0) - 1; productData.createdAt = serverTimestamp(); await addDoc(collection(db, 'products'), productData); alert('เพิ่มสุนัขสำเร็จ!'); } window.location.href = 'admin.html'; } catch (error) { console.error('Error saving product: ', error); alert(`เกิดข้อผิดพลาด: ${error.message}`); submitButton.disabled = false; submitButton.textContent = 'บันทึกข้อมูล'; } });
     </script>
 </body>
 
