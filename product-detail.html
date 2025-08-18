@@ -8,6 +8,15 @@
     <title>รายละเอียดลูกสุนัข - Cesar Kennel เชียงใหม่</title>
     <meta name="description"
         content="ดูรายละเอียดเพิ่มเติมเกี่ยวกับลูกสุนัขจาก Cesar Kennel ฟาร์มไซบีเรียน ฮัสกี้ และอลาสกัน มาลามิวท์คุณภาพในเชียงใหม่ พร้อมรูปภาพและข้อมูลครบถ้วน">
+    
+    <!-- Open Graph Meta Tags for Social Sharing (will be updated by JavaScript) -->
+    <meta property="og:title" content="รายละเอียดลูกสุนัข - Cesar Kennel เชียงใหม่">
+    <meta property="og:description" content="ดูรายละเอียดเพิ่มเติมเกี่ยวกับลูกสุนัขจาก Cesar Kennel ฟาร์มไซบีเรียน ฮัสกี้ และอลาสกัน มาลามิวท์คุณภาพในเชียงใหม่">
+    <meta property="og:image" content="https://cesarkennel.com/cesar-kennel-logo.png">
+    <meta property="og:url" content="https://cesarkennel.com">
+    <meta property="og:type" content="product">
+    <meta property="og:site_name" content="Cesar Kennel">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -196,13 +205,30 @@
         };
 
         /**
+         * Helper function to update a meta tag's content.
+         * @param {string} property - The value of the 'property' attribute (e.g., 'og:title').
+         * @param {string} content - The new content for the meta tag.
+         */
+        const updateMetaTag = (property, content) => {
+            const el = document.querySelector(`meta[property='${property}']`);
+            if (el && content) {
+                el.setAttribute('content', content);
+            }
+        };
+
+        /**
          * Renders the product details, gallery, and contact buttons into the page.
          * @param {object} product - The product data object from Firestore.
          * @param {object} settings - The site settings data from Firestore.
          */
         const displayProductDetails = (product, settings) => {
-            // Update page title and meta tags for SEO
+            // Update page title and meta tags for SEO and Social Sharing
             document.title = `${product.name} - ซีซาร์ เคนเนล`;
+            updateMetaTag('og:title', product.name);
+            updateMetaTag('og:description', product.description || `ข้อมูลสุนัข: เพศ${product.gender}, อายุ ${product.age}`);
+            updateMetaTag('og:image', product.thumbnailUrl || (product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : ''));
+            updateMetaTag('og:url', window.location.href);
+
 
             // Determine which contact buttons to show based on settings and product status
             let buttonHTML = '';
