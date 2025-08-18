@@ -252,7 +252,15 @@
 
             // Generate HTML for the image gallery
             const imageUrls = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls : ['https://via.placeholder.com/800'];
-            let mainSlidesHTML = imageUrls.map((url, index) => `<div class="gallery-slide"><img src="${url}" alt="รูปของ ${product.name} - ${index + 1}"></div>`).join('');
+            
+            // --- MODIFICATION START ---
+            // Added onload="checkImageOrientation(this)" to the img tag.
+            // This will call the helper function to check if the image is portrait.
+            let mainSlidesHTML = imageUrls.map((url, index) => 
+                `<div class="gallery-slide"><img src="${url}" alt="รูปของ ${product.name} - ${index + 1}" onload="checkImageOrientation(this)"></div>`
+            ).join('');
+            // --- MODIFICATION END ---
+
             let thumbnailsHTML = imageUrls.map((url, index) => `<div class="thumbnail-item"><img src="${url}" alt="Thumbnail of ${product.name} - ${index + 1}"></div>`).join('');
 
             const galleryHTML = `
@@ -289,6 +297,20 @@
         };
 
         // --- Gallery Functionality ---
+
+        // --- MODIFICATION START ---
+        /**
+         * Helper function to apply the correct CSS class based on image orientation.
+         * This function is called by the 'onload' attribute of the gallery images.
+         */
+        window.checkImageOrientation = function(img) {
+            if (img.naturalHeight > img.naturalWidth) {
+                // This is a portrait image
+                img.classList.add('portrait-image');
+            }
+        };
+        // --- MODIFICATION END ---
+
         /**
          * Initializes the image gallery slider on the product detail page.
          * Handles slide transitions, thumbnail clicks, and auto-play.

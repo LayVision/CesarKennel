@@ -737,9 +737,18 @@ a {
 .main-image-wrapper .gallery-slide img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    /* Use 'contain' to show whole image with black bars if needed */
+    /* --- MODIFICATION START --- */
+    object-fit: cover; /* Default behavior: fill the container, cropping if necessary. */
+    /* --- MODIFICATION END --- */
 }
+
+/* --- MODIFICATION START --- */
+/* This new rule is applied by JavaScript to tall (portrait) images. */
+/* It overrides the default `cover` behavior to show the full image. */
+.main-image-wrapper .gallery-slide img.portrait-image {
+    object-fit: contain;
+}
+/* --- MODIFICATION END --- */
 
 .thumbnail-wrapper {
     width: 100%;
