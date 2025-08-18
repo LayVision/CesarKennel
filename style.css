@@ -511,8 +511,284 @@ a {
     background-color: #0078FF;
 }
 
+/* ============================== */
+/* ======== 8. PAGINATION ======== */
+/* ============================== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 48px;
+}
+
+.page-btn {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.page-btn:hover {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.page-btn.active {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+    cursor: default;
+}
+
+.page-btn.disabled {
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* =============================== */
+/* ======== 9. SITE FOOTER ======== */
+/* =============================== */
+.site-footer {
+    grid-column: 1 / -1;
+    /* Ensure footer spans full width in grid layout */
+    background-color: var(--bg-main);
+    color: var(--text-secondary);
+    padding: 60px 40px;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    /* Info on left, map on right */
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-logo {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+}
+
+.footer-description {
+    font-size: 1em;
+    margin: 0 0 24px 0;
+}
+
+.footer-contact {
+    margin-bottom: 24px;
+    line-height: 1.8;
+}
+
+.footer-contact span {
+    display: block;
+}
+
+.social-links {
+    display: flex;
+    gap: 16px;
+    margin-top: auto;
+    /* Pushes social links to the bottom of the flex container */
+}
+
+.social-links a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.social-links a img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.social-links a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(36, 186, 217, 0.25);
+    /* Subtle glow effect using the new accent color */
+}
+
+.footer-map iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    border: 0;
+    border-radius: var(--radius-lg);
+}
+
+/* =============================================== */
+/* ======== 10. GALLERY SLIDER (HOMEPAGE) ======== */
+/* =============================================== */
+.gallery-section {
+    margin: 60px 0;
+}
+
+.gallery-section h2 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+.gallery-slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.gallery-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.gallery-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    /* Maintain a widescreen aspect ratio */
+}
+
+.gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border: none;
+    font-size: 3rem;
+    padding: 0 20px;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.gallery-arrow:hover {
+    color: white;
+}
+
+.gallery-arrow.prev {
+    left: 0;
+}
+
+.gallery-arrow.next {
+    right: 0;
+}
+
+/* ================================================== */
+/* ======== 11. PRODUCT DETAIL GALLERY (MODERN) ======== */
+/* ================================================== */
+.product-gallery-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%; /* Ensure it doesn't exceed container width */
+    max-width: 100%; /* Prevent overflow */
+    min-width: 0; /* Allow shrinking */
+}
+
+.main-image-wrapper {
+    width: 100%;
+    aspect-ratio: 4 / 3; /* More reasonable aspect ratio */
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-canvas);
+    min-width: 0; /* Allow shrinking */
+}
+
+.main-image-wrapper .gallery-track {
+    height: 100%;
+    width: 100%;
+    display: flex; /* Ensure proper flex layout */
+}
+
+.main-image-wrapper .gallery-slide {
+    flex: 0 0 100%; /* Prevent shrinking and ensure full width */
+    height: 100%;
+    width: 100%;
+}
+
+.main-image-wrapper .gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Use 'contain' to see the whole image without cropping */
+}
+
+.thumbnail-wrapper {
+    width: 100%;
+    max-width: 100%; /* Prevent overflow */
+    overflow: hidden;
+}
+
+.thumbnail-track {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    /* Allows horizontal scrolling of thumbnails */
+    scrollbar-width: none;
+    /* Hide scrollbar for Firefox */
+    padding: 4px 0; /* Add some padding for better touch targets */
+}
+
+.thumbnail-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for Chrome/Safari */
+.thumbnail-item {
+    flex: 0 0 80px;
+    /* Fixed width for thumbnails */
+    height: 80px;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+    opacity: 0.6;
+}
+
+.thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail-item.active {
+    border-color: var(--accent-primary);
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(36, 186, 217, 0.5);
+}
+
 /* ===================================== */
-/* ======== 8. RESPONSIVE DESIGN ======== */
+/* ======== 12. RESPONSIVE DESIGN ======== */
 /* ===================================== */
 .mobile-header,
 .mobile-menu-button {
@@ -611,20 +887,44 @@ a {
         grid-template-columns: 1fr;
         /* Stack gallery and info on mobile */
         padding: 24px;
-        min-width: 0;
-        /* Prevents grid item from overflowing its container */
+        gap: 24px;
+        min-width: 0; /* Allow grid to shrink */
+        width: 100%;
+        max-width: 100%; /* Prevent overflow */
+        box-sizing: border-box;
     }
 
     .product-gallery-container {
-        aspect-ratio: unset;
-        /* Remove the fixed 1:1 ratio which causes overflow */
+        width: 100%;
         max-width: 100%;
-        /* Ensure the container itself doesn't overflow */
+        min-width: 0;
+        /* Remove fixed aspect ratio on mobile for better flexibility */
     }
 
     .main-image-wrapper {
-        aspect-ratio: 4 / 3;
-        /* Use a more mobile-friendly aspect ratio for the main image */
+        aspect-ratio: 16 / 10; /* Slightly taller ratio for mobile */
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Ensure thumbnails are properly sized on mobile */
+    .thumbnail-item {
+        flex: 0 0 60px; /* Smaller thumbnails on mobile */
+        height: 60px;
+    }
+
+    .details-list {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: 0;
+    }
+
+    .contact-buttons-container {
+        gap: 12px;
+    }
+
+    .contact-btn {
+        padding: 14px;
+        font-size: 1.1em;
     }
 
     .detail-info h1 {
@@ -636,129 +936,34 @@ a {
     }
 }
 
-/* ============================== */
-/* ======== 9. PAGINATION ======== */
-/* ============================== */
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 48px;
-}
+/* Additional fix for very small screens */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 16px;
+    }
 
-.page-btn {
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-main);
-    color: var(--text-primary);
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
+    .product-detail-grid {
+        padding: 16px;
+        gap: 16px;
+    }
 
-.page-btn:hover {
-    background-color: var(--accent-primary);
-    border-color: var(--accent-primary);
-}
+    .main-image-wrapper {
+        aspect-ratio: 1 / 1; /* Square ratio for very small screens */
+    }
 
-.page-btn.active {
-    background-color: var(--accent-primary);
-    border-color: var(--accent-primary);
-    cursor: default;
-}
+    .thumbnail-item {
+        flex: 0 0 50px; /* Even smaller thumbnails */
+        height: 50px;
+    }
 
-.page-btn.disabled {
-    color: var(--text-secondary);
-    cursor: not-allowed;
-    opacity: 0.5;
-}
+    .detail-info h1 {
+        font-size: 1.8em;
+    }
 
-/* =============================== */
-/* ======== 10. SITE FOOTER ======== */
-/* =============================== */
-.site-footer {
-    grid-column: 1 / -1;
-    /* Ensure footer spans full width in grid layout */
-    background-color: var(--bg-main);
-    color: var(--text-secondary);
-    padding: 60px 40px;
-    border-top: 1px solid var(--border-color);
-}
+    .detail-info .price {
+        font-size: 1.5em;
+    }
 
-.footer-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    /* Info on left, map on right */
-    gap: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.footer-logo {
-    font-size: 1.8em;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0 0 8px 0;
-}
-
-.footer-description {
-    font-size: 1em;
-    margin: 0 0 24px 0;
-}
-
-.footer-contact {
-    margin-bottom: 24px;
-    line-height: 1.8;
-}
-
-.footer-contact span {
-    display: block;
-}
-
-.social-links {
-    display: flex;
-    gap: 16px;
-    margin-top: auto;
-    /* Pushes social links to the bottom of the flex container */
-}
-
-.social-links a {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.social-links a img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-}
-
-.social-links a:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(36, 186, 217, 0.25);
-    /* Subtle glow effect using the new accent color */
-}
-
-.footer-map iframe {
-    width: 100%;
-    height: 100%;
-    min-height: 250px;
-    border: 0;
-    border-radius: var(--radius-lg);
-}
-
-@media (max-width: 768px) {
     .site-footer {
         padding: 40px 24px;
     }
@@ -774,151 +979,6 @@ a {
         align-items: center;
         justify-content: center;
     }
-}
-
-/* =============================================== */
-/* ======== 11. GALLERY SLIDER (HOMEPAGE) ======== */
-/* =============================================== */
-.gallery-section {
-    margin: 60px 0;
-}
-
-.gallery-section h2 {
-    text-align: center;
-    font-size: 2em;
-    font-weight: 700;
-    margin-bottom: 40px;
-}
-
-.gallery-slider {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    border-radius: var(--radius-lg);
-}
-
-.gallery-track {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-}
-
-.gallery-slide {
-    flex: 0 0 100%;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    /* Maintain a widescreen aspect ratio */
-}
-
-.gallery-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.gallery-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: transparent;
-    color: rgba(255, 255, 255, 0.7);
-    border: none;
-    font-size: 3rem;
-    padding: 0 20px;
-    cursor: pointer;
-    z-index: 10;
-    transition: color 0.2s;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.gallery-arrow:hover {
-    color: white;
-}
-
-.gallery-arrow.prev {
-    left: 0;
-}
-
-.gallery-arrow.next {
-    right: 0;
-}
-
-/* ================================================== */
-/* ======== 12. PRODUCT DETAIL GALLERY (MODERN) ======== */
-/* ================================================== */
-.product-gallery-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    aspect-ratio: 1 / 1;
-}
-
-.main-image-wrapper {
-    flex-grow: 1;
-    /* Takes up remaining space */
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-md);
-    background-color: var(--bg-canvas);
-}
-
-.main-image-wrapper .gallery-track {
-    height: 100%;
-}
-
-.main-image-wrapper .gallery-slide {
-    height: 100%;
-}
-
-.main-image-wrapper .gallery-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    /* Use 'contain' to see the whole image without cropping */
-}
-
-.thumbnail-wrapper {
-    width: 100%;
-    overflow: hidden;
-}
-
-.thumbnail-track {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    /* Allows horizontal scrolling of thumbnails */
-    scrollbar-width: none;
-    /* Hide scrollbar for Firefox */
-}
-
-.thumbnail-track::-webkit-scrollbar {
-    display: none;
-}
-
-/* Hide scrollbar for Chrome/Safari */
-.thumbnail-item {
-    flex: 0 0 80px;
-    /* Fixed width for thumbnails */
-    height: 80px;
-    cursor: pointer;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 2px solid transparent;
-    transition: all 0.2s ease-in-out;
-    opacity: 0.6;
-}
-
-.thumbnail-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.thumbnail-item.active {
-    border-color: var(--accent-primary);
-    opacity: 1;
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(36, 186, 217, 0.5);
 }
 
 /* ============================== */
