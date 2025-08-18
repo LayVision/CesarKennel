@@ -438,7 +438,7 @@ a {
     margin: 32px 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* Two-column layout for details */
+    /* Two-column layout for details on all screen sizes */
     gap: 0 24px;
     border-top: 1px solid var(--border-color);
 }
@@ -737,8 +737,8 @@ a {
 .main-image-wrapper .gallery-slide img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    /* Use 'contain' to see the whole image without cropping */
+    object-fit: cover;
+    /* Use 'cover' to fill the container, cropping if necessary */
 }
 
 .thumbnail-wrapper {
@@ -907,15 +907,10 @@ a {
         max-width: 100%;
     }
 
-    /* Ensure thumbnails are properly sized on mobile */
+    /* Keep thumbnails are properly sized on mobile */
     .thumbnail-item {
         flex: 0 0 60px; /* Smaller thumbnails on mobile */
         height: 60px;
-    }
-
-    .details-list {
-        grid-template-columns: 1fr; /* Single column on mobile */
-        gap: 0;
     }
 
     .contact-buttons-container {
