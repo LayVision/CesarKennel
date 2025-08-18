@@ -188,7 +188,8 @@ a {
 
 .hero-image-container {
     width: 100%;
-    aspect-ratio: 16 / 9; /* MODIFIED: This ensures the container matches the cropped image ratio */
+    aspect-ratio: 16 / 9;
+    /* MODIFIED: This ensures the container matches the cropped image ratio */
     border-radius: var(--radius-lg);
     overflow: hidden;
     background-color: var(--bg-canvas);
@@ -580,12 +581,6 @@ a {
         padding: 0;
     }
 
-    /* REMOVED: No longer needed, aspect-ratio handles this responsively.
-    .hero-image-container {
-        height: 300px;
-    }
-    */
-
     .hero-text-overlay {
         padding: 24px;
         background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0) 100%);
@@ -604,6 +599,19 @@ a {
         /* Stack gallery and info on mobile */
         padding: 24px;
     }
+
+    /* START: MOBILE GALLERY FIX */
+    .product-gallery-container {
+        aspect-ratio: unset;
+        /* Remove the 1:1 aspect ratio on mobile */
+    }
+
+    .main-image-wrapper {
+        aspect-ratio: 4 / 3;
+        /* Use a more mobile-friendly aspect ratio */
+    }
+
+    /* END: MOBILE GALLERY FIX */
 
     .detail-info h1 {
         font-size: 2.2em;
