@@ -442,6 +442,7 @@ a {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 24px;
+        flex-direction: row-reverse; /* MODIFICATION: Swap logo and menu button */
     }
 
     .mobile-logo {
@@ -455,12 +456,15 @@ a {
     }
 
     .mobile-menu-button {
-        display: block;
-        font-size: 1.5rem;
+        display: flex; /* MODIFICATION: Use flex for alignment */
+        align-items: center; /* MODIFICATION: Vertically align icon and text */
+        gap: 8px; /* MODIFICATION: Space between icon and text */
+        font-size: 1rem; /* MODIFICATION: Adjust font size */
         background: none;
-        border: none;
+        border: 1px solid var(--border-color); /* MODIFICATION: Add border */
+        border-radius: 8px; /* MODIFICATION: Add border radius */
         cursor: pointer;
-        padding: 0;
+        padding: 8px 12px; /* MODIFICATION: Add padding */
         color: var(--text-primary);
     }
 
@@ -468,6 +472,8 @@ a {
         display: flex;
         align-items: center;
         gap: 12px;
+        /* MODIFICATION: The menu button is now the primary action on the left */
+        flex-direction: row-reverse;
     }
 
     .mobile-add-btn {

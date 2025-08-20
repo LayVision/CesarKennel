@@ -843,6 +843,7 @@ a {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 24px;
+        flex-direction: row-reverse; /* MODIFICATION: Swap logo and menu button */
     }
 
     .desktop-header {
@@ -870,13 +871,17 @@ a {
     }
 
     .mobile-menu-button {
-        display: block;
-        font-size: 1.5rem;
+        display: flex; /* MODIFICATION: Use flex for alignment */
+        align-items: center; /* MODIFICATION: Vertically align icon and text */
+        gap: 8px; /* MODIFICATION: Space between icon and text */
+        font-size: 1rem; /* MODIFICATION: Adjust font size */
         background: none;
         color: var(--text-primary);
-        border: none;
+        border: 1px solid var(--border-color); /* MODIFICATION: Add border */
+        border-radius: 8px; /* MODIFICATION: Add border radius */
         cursor: pointer;
-        padding: 0;
+        padding: 8px 12px; /* MODIFICATION: Add padding */
+        animation: pulse-glow 2.5s infinite; /* MODIFICATION: Add animation */
     }
 
     .hero-text-overlay {
@@ -999,4 +1004,17 @@ a {
 .fade-in-up.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* MODIFICATION: New keyframe animation for the menu button */
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(36, 186, 217, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(36, 186, 217, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(36, 186, 217, 0);
+    }
 }
